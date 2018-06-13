@@ -1,6 +1,9 @@
-Param (
-    [Parameter(ValueFromPipelineByPropertyName=$True)]
-    $ContainerName=$env:ContainerName
-)
+function Remove-Environment
+{
+    Param (
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $ContainerName=$env:ContainerName
+    )
 
-Remove-NavContainer -containerName $ContainerName
+    Remove-NavContainer -containerName $ContainerName
+}

@@ -5,5 +5,5 @@ function Start-Environment
         $ContainerName
     )
 
-    docker stop $ContainerName
+    docker start $ContainerName
 }
