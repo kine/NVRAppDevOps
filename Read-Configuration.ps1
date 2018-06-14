@@ -8,7 +8,7 @@ function Read-Configuration
 
     . (Join-Path $Path 'Scripts\Settings.ps1')
 
-    $Configuration = . (Join-Path $PSScriptRoot 'Get-Configuration.ps1') `
+    $Configuration = Get-Configuration `
                             -ContainerName $ContainerName `
                             -ImageName $ImageName `
                             -LicenseFile $LicenseFile `
@@ -16,7 +16,7 @@ function Read-Configuration
                             -AppVersion $AppJSON.application `
                             -TestAppVersion $TestAppJSON.application `
                             -AppName $AppJSON.name `
-                            -TestAppName $AppJSON.name `
+                            -TestAppName $TestAppJSON.name `
                             -AppFile $AppFile `
                             -TestAppFile $TestAppFile `
                             -Publisher $AppJSON.publisher `

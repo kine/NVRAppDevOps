@@ -25,7 +25,6 @@ function Download-ALPackages
         $Password='',
         $TestApp
     )
-    . (Join-Path $PSSCriptRoot 'Settings.ps1')
 
     #$vsixExt = (Join-Path $env:TEMP 'al.vsix')
     #$vsixURL=docker logs $ContainerName | where-object {$_ -like '*vsix*'} | select-object -first 1

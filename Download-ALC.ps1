@@ -5,7 +5,6 @@ function Download-ALC
         $ContainerName,
         $destinationPath=$env:TEMP+'ALC'
     )
-    . (Join-Path $PSSCriptRoot 'Settings.ps1')
     $id = $ContainerName
     $tempFolder = (Join-Path "$env:TEMP" "$id")
     if (-not (Test-Path $destinationPath)) {
