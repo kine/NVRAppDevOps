@@ -10,7 +10,10 @@ function Init-Environment
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Build='',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $Password=''
+        $Password='',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $RepoPath=''
+
     )
 
     if ($Build -eq '') {
