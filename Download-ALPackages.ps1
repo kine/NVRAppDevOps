@@ -118,7 +118,7 @@ function Download-ALPackages
 
         }
     } else {
-        if ($TestAppJSON) {
+        if ($TestAppName) {
             $alpackages = (Join-Path $TestAppPath '.alpackages')
             if (-not (Test-path $alpackages)) {
                 mkdir $alpackages | out-null
