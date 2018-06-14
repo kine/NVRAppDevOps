@@ -13,8 +13,9 @@ function Read-Configuration
                             -ImageName $ImageName `
                             -LicenseFile $LicenseFile `
                             -VsixPath $VsixPath `
-                            -AppVersion $AppJSON.application `
-                            -TestAppVersion $TestAppJSON.application `
+                            -PlatformVersion $AppJSON.platform `
+                            -AppVersion $AppJSON.version `
+                            -TestAppVersion $TestAppJSON.version `
                             -AppName $AppJSON.name `
                             -TestAppName $TestAppJSON.name `
                             -AppFile $AppFile `

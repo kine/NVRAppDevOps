@@ -6,6 +6,7 @@ function Get-Configuration
         $LicenseFile,
         $VsixPath,
         $AppVersion,
+        $PlatformVersion,
         $TestAppVersion,
         $AppName,
         $TestAppName,
@@ -25,6 +26,7 @@ function Get-Configuration
     $Configuration | Add-Member -MemberType NoteProperty -Name 'ImageName' -Value $ImageName
     $Configuration | Add-Member -MemberType NoteProperty -Name 'LicenseFile' -Value $LicenseFile
     $Configuration | Add-Member -MemberType NoteProperty -Name 'VsixPath' -Value $VsixPath
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'PlatformVersion' -Value $PlatformVersion
     $Configuration | Add-Member -MemberType NoteProperty -Name 'AppVersion' -Value $AppVersion
     $Configuration | Add-Member -MemberType NoteProperty -Name 'TestAppVersion' -Value $TestAppVersion
     $Configuration | Add-Member -MemberType NoteProperty -Name 'AppName' -Value $AppName

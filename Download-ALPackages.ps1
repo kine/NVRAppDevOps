@@ -8,6 +8,8 @@ function Download-ALPackages
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $TestAppPath,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $PlatformVersion,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
         $AppVersion,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $TestAppVersion,
@@ -86,14 +88,14 @@ function Download-ALPackages
             $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $env:USERNAME
             Get-AlSymbolFile `
                 -AppName 'Application' `
-                -AppVersion $AppVersion `
+                -AppVersion $PlatformVersion `
                 -DownloadFolder $alpackages `
                 -Authentication 'Windows' `
                 -Credential $credentials   
 
             Get-AlSymbolFile `
                 -AppName 'System' `
-                -AppVersion $AppVersion `
+                -AppVersion $PlatformVersion `
                 -DownloadFolder $alpackages `
                 -Authentication 'Windows' `
                 -Credential $credentials  
@@ -104,14 +106,14 @@ function Download-ALPackages
             $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
             Get-AlSymbolFile `
                 -AppName 'Application' `
-                -AppVersion $AppVersion `
+                -AppVersion $PlatformVersion `
                 -DownloadFolder $alpackages `
                 -Authentication 'NavUserPassword' `
                 -Credential $credentials   
 
             Get-AlSymbolFile `
                 -AppName 'System' `
-                -AppVersion $AppVersion `
+                -AppVersion $PlatformVersion `
                 -DownloadFolder $alpackages `
                 -Authentication 'NavUserPassword' `
                 -Credential $credentials  
@@ -128,14 +130,14 @@ function Download-ALPackages
                 $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $env:USERNAME
                 Get-AlSymbolFile `
                     -AppName 'Application' `
-                    -AppVersion $AppVersion `
+                    -AppVersion $PlatformVersion `
                     -DownloadFolder $alpackages `
                     -Authentication 'Windows' `
                     -Credential $credentials   
 
                 Get-AlSymbolFile `
                     -AppName 'System' `
-                    -AppVersion $AppVersion `
+                    -AppVersion $PlatformVersion `
                     -DownloadFolder $alpackages `
                     -Authentication 'Windows' `
                     -Credential $credentials  
@@ -154,14 +156,14 @@ function Download-ALPackages
                 $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
                 Get-AlSymbolFile `
                     -AppName 'Application' `
-                    -AppVersion $AppVersion `
+                    -AppVersion $PlatformVersion `
                     -DownloadFolder $alpackages `
                     -Authentication 'NavUserPassword' `
                     -Credential $credentials   
 
                 Get-AlSymbolFile `
                     -AppName 'System' `
-                    -AppVersion $AppVersion `
+                    -AppVersion $PlatformVersion `
                     -DownloadFolder $alpackages `
                     -Authentication 'NavUserPassword' `
                     -Credential $credentials  
