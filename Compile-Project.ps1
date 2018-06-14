@@ -11,15 +11,15 @@ function Compile-Project
         $TestApp
     )
 
+    $ALC = (Get-ChildItem "C:\ProgramData\NavContainerHelper\Extensions\$ContainerName\" -Filter alc.exe -Recurse).FullName
     if (-not $TestApp) {
-        $ALC = (Get-ChildItem "C:\ProgramData\NavContainerHelper\Extensions\$ContainerName\" -Filter alc.exe -Recurse).FullName
         Write-Host "Running $ALC for MainApp"
         Push-Location
         Set-Location $AppPath
         & $ALC --% /project:.\ /packagecachepath:.\.alpackages | Convert-ALCOutputToTFS
         Pop-Location
     } else {
-        if ($TestAppJSON) {
+        if ($TestAppPath) {
             Write-Host "Running $ALC for TestApp"
             Push-Location
             Set-Location $TestAppPath
