@@ -1,4 +1,4 @@
-function Install-Nav
+function Install-App
 {
     Param(
         [Parameter(ValueFromPipelineByPropertyName=$True)]
