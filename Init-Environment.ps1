@@ -48,7 +48,7 @@ function Init-Environment
             -includeCSide `
             -alwaysPull `
             -includeTestToolkit `
-            -additionalParameter ("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','usessl=n','webclient=n','httpsite=n') 
+            -additionalParameter ("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') 
     #        -myScripts @{"SetupWebClient.ps1"=''} 
     #    -memoryLimit 4GB 
     }
