@@ -7,7 +7,13 @@ function Read-Configuration
     )
 
     . (Join-Path $Path 'Scripts\Settings.ps1')
-
+    $ClientFile = (get-childitem -Path "C:\ProgramData\NavContainerHelper\Extensions\$ContainerName\Program Files\" -Include "Microsoft.Dynamics.Nav.Client.exe" -Recurse | Select-Object -First 1).FullName
+    
+    if ($ClientFile) {
+        $ClientPath = (Split-Path ($ClientFile))
+    } else {
+        $ClientPath = ''
+    }
     $Configuration = Get-Configuration `
                             -ContainerName $ContainerName `
                             -ImageName $ImageName `
@@ -26,7 +32,8 @@ function Read-Configuration
                             -AppPath $AppPath `
                             -TestAppPath $TestAppPath `
                             -Build $Build `
-                            -Password $Password
+                            -Password $Password `
+                            -ClientPath $ClientPath
 
     Write-Output $Configuration
 }

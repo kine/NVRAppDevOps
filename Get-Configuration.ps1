@@ -18,7 +18,8 @@ function Get-Configuration
         $AppPath,
         $TestAppPath,
         $Build,
-        $Password
+        $Password,
+        $ClientPath
     )
 
     $Configuration = New-Object -TypeName PSObject
@@ -40,6 +41,8 @@ function Get-Configuration
     $Configuration | Add-Member -MemberType NoteProperty -Name 'TestAppPath' -Value $TestAppPath
     $Configuration | Add-Member -MemberType NoteProperty -Name 'Build' -Value $Build
     $Configuration | Add-Member -MemberType NoteProperty -Name 'Password' -Value $Password
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'ClientPath' -Value $ClientPath
+    
 
     Write-Output $Configuration
 }

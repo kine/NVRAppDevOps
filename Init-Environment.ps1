@@ -15,8 +15,8 @@ function Init-Environment
         $RepoPath=''
 
     )
-
-    if ($Build -eq '') {
+    Write-Host "Build is $Build"
+    if ($Build -ne 'true') {
         $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $env:USERNAME
 
         New-NavContainer -accept_eula `
