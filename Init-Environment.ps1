@@ -33,7 +33,15 @@ function Init-Environment
                         -additionalParameters("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true') `
                         -memoryLimit 4GB 
     } else {
-        $PWord = ConvertTo-SecureString -String 'Pass@word1' -AsPlainText -Force
+        if ((-not $Password) -or ($Password -eq '')) {
+            Write-Host 'Using fixed password and NavUserPassword authentication'
+            $PWord = ConvertTo-SecureString -String 'Pass@word1' -AsPlainText -Force
+            $Auth = 'NavUserPassword'
+        } else {
+            Write-Host "Using passed password '$Password' and Windows authentication"
+            $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
+            $Auth = 'Windows'
+        }
         $User = $env:USERNAME
         $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
         New-NavContainer -accept_eula `
@@ -42,7 +50,7 @@ function Init-Environment
             -imageName $ImageName `
             -licenseFile $LicenseFile `
             -Credential $credentials `
-            -auth NavUserPassword `
+            -auth $Auth `
             -enableSymbolLoading `
             -doNotExportObjectsToText `
             -includeCSide `

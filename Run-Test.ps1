@@ -16,8 +16,9 @@ function Run-Test
     $params += @('-consolemode')
     $params += @("dynamicsnav://///RunCodeunit?Codeunit=$TestCodeunitId")
 
-    Write-InfoMessage "Running $ClientExe $params"
+    Write-Host "Running $ClientExe $params"
 
     & $ClientExe $params | Out-Null
-
+    Write-Host "Test run finished"
+    
 }

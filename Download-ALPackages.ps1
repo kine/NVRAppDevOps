@@ -24,7 +24,7 @@ function Download-ALPackages
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Build='',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $Password='',
+        $Password='Pass@word1',
         $TestApp
     )
 
@@ -70,7 +70,7 @@ function Download-ALPackages
             $null = Invoke-RestMethod `
                         -Method get `
                         -Uri "http://$($ContainerName):7049/nav/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
-                        -Credential $credentials `
+                        -Credential $Credential `
                         -OutFile $TargetFile `
                         -TimeoutSec 600 -Verbose
         }
@@ -101,21 +101,21 @@ function Download-ALPackages
                 -Credential $credentials  
 
         } else {
-            $PWord = ConvertTo-SecureString -String 'Pass@word1' -AsPlainText -Force
+            $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
             $User = $env:USERNAME
             $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
             Get-AlSymbolFile `
                 -AppName 'Application' `
                 -AppVersion $PlatformVersion `
                 -DownloadFolder $alpackages `
-                -Authentication 'NavUserPassword' `
+                -Authentication 'Windows' `
                 -Credential $credentials   
 
             Get-AlSymbolFile `
                 -AppName 'System' `
                 -AppVersion $PlatformVersion `
                 -DownloadFolder $alpackages `
-                -Authentication 'NavUserPassword' `
+                -Authentication 'Windows' `
                 -Credential $credentials  
 
         }
@@ -151,28 +151,28 @@ function Download-ALPackages
                     -Publisher $Publisher
 
             } else {
-                $PWord = ConvertTo-SecureString -String 'Pass@word1' -AsPlainText -Force
+                $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
                 $User = $env:USERNAME
                 $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
                 Get-AlSymbolFile `
                     -AppName 'Application' `
                     -AppVersion $PlatformVersion `
                     -DownloadFolder $alpackages `
-                    -Authentication 'NavUserPassword' `
+                    -Authentication 'Windows' `
                     -Credential $credentials   
 
                 Get-AlSymbolFile `
                     -AppName 'System' `
                     -AppVersion $PlatformVersion `
                     -DownloadFolder $alpackages `
-                    -Authentication 'NavUserPassword' `
+                    -Authentication 'Windows' `
                     -Credential $credentials  
 
                 Get-AlSymbolFile `
                     -AppName $AppName `
                     -AppVersion $AppVersion `
                     -DownloadFolder $alpackages `
-                    -Authentication 'NavUserPassword' `
+                    -Authentication 'Windows' `
                     -Credential $credentials `
                     -Publisher $Publisher
             }
