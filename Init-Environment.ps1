@@ -38,7 +38,7 @@ function Init-Environment
             $PWord = ConvertTo-SecureString -String 'Pass@word1' -AsPlainText -Force
             $Auth = 'NavUserPassword'
         } else {
-            Write-Host "Using passed password '$Password' and Windows authentication"
+            Write-Host "Using passed password and Windows authentication"
             $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
             $Auth = 'Windows'
         }

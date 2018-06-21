@@ -8,9 +8,13 @@ function Test-App
         [Parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$True)]
         $TestCodeunitId,
         [Parameter(Mandatory=$true)]
-        $TrxFile
+        $TrxFile,
+        [switch]$ErrorOnFailedTest
     )
 
     Run-Test -ContainerName $ContainerName -ClientPath $ClientPath -TestCodeunitId $TestCodeunitId
-    Read-TestResult -ContainerName $ContainerName | Convert-TestResultToNunitResult -TrxFile $TrxFile   
+    $result = (Read-TestResult -ContainerName $ContainerName | Convert-TestResultToNunitResult -TrxFile $TrxFile)
+    if ($ErrorOnFailedTest -and ($result.TestRun.ResultSummary.Counters.failed -gt 0)) {
+        Write-Error "There is $($result.TestRun.ResultSummary.Counters.failed) failing tests!"
+    }
 }
