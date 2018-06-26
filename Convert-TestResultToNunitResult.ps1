@@ -138,6 +138,7 @@ function Convert-TestResultToNunitResult
         $Result.SetAttribute('testListId','8c84fa94-04c1-424b-9868-57a2d4851a1d')
         $Result.SetAttribute('testType','13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b')
     }
+    Write-Host "Saving test results to $TrxFile (current working folder is $(Get-Location))"
     $TestResults.Save($TrxFile)
     Write-Output $TestResults
 }

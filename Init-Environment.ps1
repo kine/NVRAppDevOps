@@ -56,10 +56,12 @@ function Init-Environment
             -includeCSide `
             -alwaysPull `
             -includeTestToolkit `
-            -additionalParameter ("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') 
+            -additionalParameter ('-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') 
     #        -myScripts @{"SetupWebClient.ps1"=''} 
     #    -memoryLimit 4GB 
     }
+    Write-Host 'Compiling Test toolkit objects'
+    Compile-ObjectsInNavContainer -containerName $ContainerName -filter "VersionList=*Test*" 
     #$vsixExt = (Join-Path $env:TEMP 'al.vsix')
     #$vsixURL=docker logs $ContainerName | where-object {$_ -like '*vsix*'} | select-object -first 1
 
