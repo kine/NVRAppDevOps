@@ -60,8 +60,8 @@ function Init-Environment
     #        -myScripts @{"SetupWebClient.ps1"=''} 
     #    -memoryLimit 4GB 
     }
-    Write-Host 'Compiling Test toolkit objects'
-    Compile-ObjectsInNavContainer -containerName $ContainerName -filter "VersionList=*Test*" 
+    #Write-Host 'Compiling Test toolkit objects'
+    #Compile-ObjectsInNavContainer -containerName $ContainerName -filter "Version List=*Test*" 
     #$vsixExt = (Join-Path $env:TEMP 'al.vsix')
     #$vsixURL=docker logs $ContainerName | where-object {$_ -like '*vsix*'} | select-object -first 1
 

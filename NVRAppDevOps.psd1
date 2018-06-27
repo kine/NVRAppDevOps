@@ -12,7 +12,7 @@
 RootModule = 'NVRAppDevOps.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.1.7.0'
+ModuleVersion = '0.1.9.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
