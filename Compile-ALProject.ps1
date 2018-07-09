@@ -1,4 +1,4 @@
-function Compile-Project 
+function Compile-ALProject 
 {
     Param (
         [Parameter(ValueFromPipelineByPropertyName=$True)]

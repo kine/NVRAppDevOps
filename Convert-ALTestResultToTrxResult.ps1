@@ -1,4 +1,4 @@
-function Convert-TestResultToNunitResult
+function Convert-ALTestResultToTrxResult
 {
     param(
         $TrxFile

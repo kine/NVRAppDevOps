@@ -1,4 +1,4 @@
-function Upgrade-AppData
+function Upgrade-ALAppData
 {
     Param(
         [Parameter(ValueFromPipelineByPropertyName=$True)]
