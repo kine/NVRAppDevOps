@@ -1,4 +1,4 @@
-function Run-Test
+function Run-ALTest
 {
     param(
         [Parameter(ValueFromPipelineByPropertyName=$True)]

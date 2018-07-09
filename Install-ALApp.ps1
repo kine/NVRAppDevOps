@@ -1,4 +1,4 @@
-function Install-App
+function Install-ALApp
 {
     Param(
         [Parameter(ValueFromPipelineByPropertyName=$True)]

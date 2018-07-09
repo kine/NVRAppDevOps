@@ -1,4 +1,4 @@
-function Publish-App
+function Publish-ALApp
 {
   Param(
       [Parameter(ValueFromPipelineByPropertyName=$True)]

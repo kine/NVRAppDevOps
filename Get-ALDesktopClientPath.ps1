@@ -1,4 +1,4 @@
-function Get-DesktopClientPath
+function Get-ALDesktopClientPath
 {
     Param(
         [Parameter(ValueFromPipelineByPropertyName=$True)]

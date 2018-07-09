@@ -1,4 +1,4 @@
-function Remove-Environment
+function Remove-ALEnvironment
 {
     Param (
         [Parameter(ValueFromPipelineByPropertyName=$True)]

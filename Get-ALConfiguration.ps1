@@ -1,4 +1,4 @@
-function Get-Configuration 
+function Get-ALConfiguration 
 {
     Param(
         $ContainerName,

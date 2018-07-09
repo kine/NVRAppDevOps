@@ -1,4 +1,4 @@
-function Read-TestResult
+function Read-ALTestResult
 {
     param(
         [Parameter(ValueFromPipelineByPropertyName=$True)]

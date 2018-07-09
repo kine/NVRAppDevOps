@@ -1,4 +1,4 @@
-function Run-DesktopClient
+function Run-ALDesktopClient
 {
     param(
         [Parameter(ValueFromPipelineByPropertyName=$True)]

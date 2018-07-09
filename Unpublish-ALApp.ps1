@@ -1,4 +1,4 @@
-function Unpublish-App
+function Unpublish-ALApp
 {
     Param(
         [Parameter(ValueFromPipelineByPropertyName=$True)]

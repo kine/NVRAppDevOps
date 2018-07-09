@@ -1,4 +1,4 @@
-function Read-Configuration
+function Read-ALConfiguration
 {    
     Param(
         $Path,

@@ -1,4 +1,4 @@
-function Start-Environment
+function Start-ALEnvironment
 {
     Param (
         [Parameter(ValueFromPipelineByPropertyName=$True)]

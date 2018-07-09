@@ -1,4 +1,4 @@
-function Test-App
+function Test-ALApp
 {
     param (
         [Parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$True)]

@@ -1,4 +1,4 @@
-function Sync-App
+function Sync-ALApp
 {
     Param(
         [Parameter(ValueFromPipelineByPropertyName=$True)]
