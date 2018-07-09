@@ -1,12 +1,19 @@
 function Read-ALConfiguration
 {    
     Param(
-        $Path,
+        #Path to the repository
+        $Path='.\',
+        #If set, scripts will work as under VSTS/TFS. If not set, it will work in "interactive" mode
         $Build,
+        #Password which will be used for the container user - when WindowsAuthentication used, it is the domain password of the current user
         $Password
     )
 
-    . (Join-Path $Path 'Scripts\Settings.ps1')
+    $SettingsScript = (Join-Path $Path 'Scripts\Settings.ps1')
+    if (Test-Path $SettingsScript) {
+        Write-Host "Running $SettingsScript ..."
+        . (Join-Path $Path 'Scripts\Settings.ps1')
+    }
     $ClientPath = Get-ALDesktopClientPath -ContainerName $ContainerName
     $Configuration = Get-ALConfiguration `
                             -ContainerName $ContainerName `
