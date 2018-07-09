@@ -12,7 +12,7 @@ function Test-ALApp
         [switch]$ErrorOnFailedTest
     )
 
-    Run-Test -ContainerName $ContainerName -ClientPath $ClientPath -TestCodeunitId $TestCodeunitId
+    Run-ALTest -ContainerName $ContainerName -ClientPath $ClientPath -TestCodeunitId $TestCodeunitId
     $result = (Read-TestResult -ContainerName $ContainerName | Convert-TestResultToNunitResult -TrxFile $TrxFile)
     if ($ErrorOnFailedTest -and ($result.TestRun.ResultSummary.Counters.failed -gt 0)) {
         Write-Error "There is $($result.TestRun.ResultSummary.Counters.failed) failing tests!"
