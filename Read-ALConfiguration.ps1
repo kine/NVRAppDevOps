@@ -7,8 +7,8 @@ function Read-ALConfiguration
     )
 
     . (Join-Path $Path 'Scripts\Settings.ps1')
-    $ClientPath = Get-DesktopClientPath -ContainerName $ContainerName
-    $Configuration = Get-Configuration `
+    $ClientPath = Get-ALDesktopClientPath -ContainerName $ContainerName
+    $Configuration = Get-ALConfiguration `
                             -ContainerName $ContainerName `
                             -ImageName $ImageName `
                             -LicenseFile $LicenseFile `
