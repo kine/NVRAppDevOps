@@ -22,6 +22,10 @@ Import the module
 
     Import-Module NVRAppDevOps
 
+If there is issue with Execution Policy, allow unsigned scripts by
+
+    Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+
 To init environment:
 
     Read-ALConfiguration -Path <path> | Init-ALEnvironment
