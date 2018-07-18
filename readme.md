@@ -25,8 +25,8 @@ Import the module
 To init environment:
 
     Read-ALConfiguration -Path <path> | Init-ALEnvironment
-    
-<path> is where Scripts\settings.ps1 exists (.\ if you are in the root of the repo, ..\ if you are in subfolder like MainApp)
+
+\<path\> is where Scripts\settings.ps1 exists (.\ if you are in the root of the repo, ..\ if you are in subfolder like MainApp)
 
 Another commands you can use:
 
