@@ -25,6 +25,7 @@ function Download-ALPackages
         $Build='',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Password='Pass@word1',
+        $AlPackagesPath,
         $TestApp
     )
 
@@ -79,7 +80,11 @@ function Download-ALPackages
     }
 
     if (-not $TestApp) {
-        $alpackages = (Join-Path $AppPath '.alpackages')
+        if (-not $AlPackagesPath) {
+            $alpackages = (Join-Path $AppPath '.alpackages')
+        } else {
+            $alpackages = $AlPackagesPath
+        }
         if (-not (Test-path $alpackages)) {
             mkdir $alpackages | out-null
         }
@@ -121,7 +126,11 @@ function Download-ALPackages
         }
     } else {
         if ($TestAppName) {
-            $alpackages = (Join-Path $TestAppPath '.alpackages')
+            if (-not $AlPackagesPath) {
+                $alpackages = (Join-Path $TestAppPath '.alpackages')
+            } else {
+                $alpackages = $AlPackagesPath
+            }
             if (-not (Test-path $alpackages)) {
                 mkdir $alpackages | out-null
             }
