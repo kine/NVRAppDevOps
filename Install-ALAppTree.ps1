@@ -5,12 +5,11 @@ function Install-ALAppTree
         $ContainerName=$env:ContainerName,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $AppName=$env:RELEASE_DEFINITIONNAME,
-        $OrderedApps,
-        $PackagesPath
+        $OrderedApps
 
     )
 
-    foreach ($App in $OrderedApps) {
-        Install-NavContainerApp -containerName $ContainerName -appName $App.name
+    for ($i=$OrderedApps.Count;$i -gt 0;$i--) {
+        Install-NavContainerApp -containerName $ContainerName -appName $OrderedApps[$i-1].name
     }
 }
