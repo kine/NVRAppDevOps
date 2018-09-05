@@ -34,7 +34,8 @@ function Read-ALConfiguration
                             -TestAppPath $TestAppPath `
                             -Build $Build `
                             -Password $Password `
-                            -ClientPath $ClientPath
+                            -ClientPath $ClientPath `
+                            -AppDownloadScript $AppDownloadScript
 
     Write-Output $Configuration
 }
