@@ -10,8 +10,7 @@ function Download-ALSystemPackages
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Password='Pass@word1',
         $IncludeTestModule=$False,
-        $AlPackagesPath,
-        $TestApp
+        $AlPackagesPath
     )
 
     function Get-AlSymbolFile {
@@ -69,54 +68,31 @@ function Download-ALSystemPackages
 
     if ($Build -eq '') {
         $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $env:USERNAME
-        Get-AlSymbolFile `
-            -AppName 'Application' `
-            -AppVersion $PlatformVersion `
-            -DownloadFolder $alpackages `
-            -Authentication 'Windows' `
-            -Credential $credentials   
-
-        Get-AlSymbolFile `
-            -AppName 'System' `
-            -AppVersion $PlatformVersion `
-            -DownloadFolder $alpackages `
-            -Authentication 'Windows' `
-            -Credential $credentials  
-
-        if ($IncludeTestModule) {
-            Get-AlSymbolFile `
-            -AppName 'Test' `
-            -AppVersion $PlatformVersion `
-            -DownloadFolder $alpackages `
-            -Authentication 'Windows' `
-            -Credential $credentials  
-        }
-
     } else {
         $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
         $User = $env:USERNAME
         $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
-        Get-AlSymbolFile `
-            -AppName 'Application' `
-            -AppVersion $PlatformVersion `
-            -DownloadFolder $alpackages `
-            -Authentication 'Windows' `
-            -Credential $credentials   
+    }
+    Get-AlSymbolFile `
+        -AppName 'Application' `
+        -AppVersion $PlatformVersion `
+        -DownloadFolder $alpackages `
+        -Authentication 'Windows' `
+        -Credential $credentials   
 
-        Get-AlSymbolFile `
-            -AppName 'System' `
-            -AppVersion $PlatformVersion `
-            -DownloadFolder $alpackages `
-            -Authentication 'Windows' `
-            -Credential $credentials  
+    Get-AlSymbolFile `
+        -AppName 'System' `
+        -AppVersion $PlatformVersion `
+        -DownloadFolder $alpackages `
+        -Authentication 'Windows' `
+        -Credential $credentials  
 
-        if ($IncludeTestModule) {
-            Get-AlSymbolFile `
-            -AppName 'Test' `
-            -AppVersion $PlatformVersion `
-            -DownloadFolder $alpackages `
-            -Authentication 'Windows' `
-            -Credential $credentials  
-        }
+    if ($IncludeTestModule) {
+        Get-AlSymbolFile `
+        -AppName 'Test' `
+        -AppVersion $PlatformVersion `
+        -DownloadFolder $alpackages `
+        -Authentication 'Windows' `
+        -Credential $credentials  
     }
 }

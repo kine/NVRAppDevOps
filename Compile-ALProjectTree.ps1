@@ -8,6 +8,7 @@ function Compile-ALProjectTree
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $CertPwd,
         $OrderedApps,
+        # Set path where to store the app files
         $PackagesPath
     )
     if (-not $PackagesPath) {
