@@ -1,3 +1,16 @@
+<#
+.SYNOPSIS
+    Extract alc.exe from the container
+.DESCRIPTION
+    Extract alc.exe from the container to be able to compile AL projects
+.EXAMPLE
+    PS C:\> Read-ALConfiguration -Path .\ | Download-ALC
+    Read configuration for the project and downlaod the ALC from configured container
+.Parameter ContainerName
+    Name of the container to use for downloading the compiler
+.Parameter destinationPath
+    Path where to copy the container
+#>
 function Download-ALC
 {
     param (

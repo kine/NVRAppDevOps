@@ -1,3 +1,24 @@
+<#
+.SYNOPSIS
+    Create container for the AL project
+.DESCRIPTION
+    Create container for the AL project
+.EXAMPLE
+    PS C:\>  Read-ALConfiguration -Path <repopath> | Init-ALEnvironment
+    Read the config for the repo and create the environment
+.Parameter ContainerName
+    Name of the container to create
+.Parameter ImageName
+    Name of the docker image to use
+.Parameter LicenseFile
+    Path of the .flf file to use
+.Parameter Build
+    If specified, password will be taken from parameter and not asked from user
+.Parameter Password
+    Password to use for creating the user inside the container
+.Parameter RepoPath
+    Path to the repository - will be mapped as c:\app into the container
+#>
 function Init-ALEnvironment
 {
     Param (
@@ -78,11 +99,4 @@ function Init-ALEnvironment
         code --install-extension $vsixExt
     }
 
-    #Add-Type -AssemblyName System.IO.Compression.FileSystem
-    #[System.IO.Compression.ZipFile]::ExtractToDirectory($vsixExt,(Joint-Path $vsixpath 'alc'))
-
-    #Import-ObjectsToNavContainer -containerName $ContainerName -objectsFile (Join-Path $PSSCriptRoot 'CALObjects\COD10.txt')
-    #Import-ObjectsToNavContainer -containerName $ContainerName -objectsFile (Join-Path $PSSCriptRoot 'CALObjects\COD704.txt')
-    #Import-ObjectsToNavContainer -containerName $ContainerName -objectsFile (Join-Path $PSSCriptRoot 'CALObjects\TAB99008535.txt')
-    #Compile-ObjectsInNavContainer -containerName $ContainerName -filter 'compiled=0'
 }

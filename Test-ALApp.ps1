@@ -9,11 +9,12 @@ function Test-ALApp
         $TestCodeunitId,
         [Parameter(Mandatory=$true)]
         $TrxFile,
+        $Password='',
         [switch]$ErrorOnFailedTest
     )
 
     Run-ALTest -ContainerName $ContainerName -ClientPath $ClientPath -TestCodeunitId $TestCodeunitId
-    $result = (Read-ALTestResult -ContainerName $ContainerName | Convert-ALTestResultToTrxResult -TrxFile $TrxFile)
+    $result = (Read-ALTestResult -ContainerName $ContainerName -Password $Password | Convert-ALTestResultToTrxResult -TrxFile $TrxFile)
     if ($ErrorOnFailedTest -and ($result.TestRun.ResultSummary.Counters.failed -gt 0)) {
         Write-Error "There is $($result.TestRun.ResultSummary.Counters.failed) failing tests!"
     }

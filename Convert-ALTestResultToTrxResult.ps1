@@ -1,3 +1,25 @@
+<#
+.SYNOPSIS
+    Get BC test result table and convert it to trx file
+.DESCRIPTION
+    Get the output of the webservice for reading test results and convert the results to trx file (Visual Studio Test result file)
+.EXAMPLE
+    PS C:\> Read-ALConfiguration -Path .\ | Test-ALApp -TrxFile <trxfile> -TestCodeunitId <testcodeunitid> -ErrorOnFailedTest
+    Will read project configuration in current folder, run tests and produce the trx file with help of this function
+.Parameter TrxFile
+    Name of the file to produce
+
+.INPUTS
+    Input stream must contain array of BC test results, which must include these members:
+    Codeunit_Name    
+    Codeunit_ID
+    Function_Name
+    Execution_Time
+    Start_time
+    Result - value from set Passed|Failed|Inconclusive|Incomplete
+    Error_Message
+
+#>
 function Convert-ALTestResultToTrxResult
 {
     param(

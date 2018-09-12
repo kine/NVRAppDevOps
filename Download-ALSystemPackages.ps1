@@ -1,3 +1,24 @@
+<#
+.SYNOPSIS
+    Download system app packages
+.DESCRIPTION
+    Download system app packages from given container
+.EXAMPLE
+    PS C:\> Read-ALConfiguration -Path .\ | Download-ALSystemPackages -AlPackagesPath <apppath>
+    Will read configuration of the AL project and download system packages for it into <apppath> folder
+.Parameter ContainerName
+    Name of the container to use
+.Parameter Build   
+    If specified, script will not ask for user name and password to authenticate to container
+.Parameter PlatformVersion
+    Version for which the apps will be downloaded
+.Parameter Password
+    If Build is specified, this password will be used to authenticate to container (with user name = current user name)    
+.Parameter IncludeTestModule
+    If set, the Test app package will be downloaded too
+.Parameter AlPackagesPath
+    Path to store the app packages into
+#>
 function Download-ALSystemPackages
 {
     param (

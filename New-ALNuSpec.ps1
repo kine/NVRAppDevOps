@@ -65,9 +65,4 @@ function New-ALNuSpec
         $nuspec.package.metadata.SelectSingleNode("./*[name()='dependencies']").AppendChild($depXml)
     }
     $nuspec.Save($NuspecFileName)
-    #remove-module NVRAppDevOps
-    #import-module C:\git\NVRAppDevOps
-    #import-module 'C:\Program Files\Microsoft Dynamics 365 Business Central\130\Service\Microsoft.Dynamics.Nav.Apps.Management.dll'
-    #$apps=Get-ALAppOrder -Path C:\git\SubAppTest\Apps\
-    #New-ALNuSpec -AppFile $apps[3].AppPath -AppName $apps[3].name -Publisher $apps[3].publisher -AppVersion $apps[3].version -NuspecFileName C:\git\SubAppTest\Apps\TestApp1.nuspec -id TestApp1 -AppDependencies $apps[3].dependencies
 }

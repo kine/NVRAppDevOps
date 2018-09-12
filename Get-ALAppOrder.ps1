@@ -1,3 +1,25 @@
+<#
+.SYNOPSIS
+    Sort apps into order in which must be compiled/installed to fullfill their dependencies
+.DESCRIPTION
+    Sort apps into order in which must be compiled/installed to fullfill their dependencies
+.EXAMPLE
+    PS C:\> Get-ALAppOrder -Path .\
+    Read all app.json from the subfolders and sort the app objects
+.Parameter Path
+    Folder in whcih the app.json will be searched. If no app.json is found, all *.app packages will be used.
+.OUTPUTS
+    Array of App objects having these members:
+        name
+        publisher
+        version
+        AppPath
+        dependencies
+            name
+            publisher
+            version
+
+#>
 function Get-ALAppOrder
 {
     Param(

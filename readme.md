@@ -32,14 +32,7 @@ To init environment:
 
 \<path\> is where Scripts\settings.ps1 exists (.\ if you are in the root of the repo, ..\ if you are in subfolder like MainApp)
 
-Another commands you can use:
+For list of commands use:
 
-    Install-ALApp
-    Publish-ALApp
-    Remove-ALEnvironment
-    Run-ALDesktopClient
-    Run-ALDevelClient
-    Start-ALEnvironment
-    Stop-ALEnvironment
-    Sync-ALApp
-    Unpublish-ALApp
+    Get-Command -module NVRAppDevOps
+    
