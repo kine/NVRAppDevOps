@@ -36,3 +36,6 @@ For list of commands use:
 
     Get-Command -module NVRAppDevOps
     
+## CI/CD using
+
+You can use YAML templates from https://github.com/kine/MSDYN365BC_Yaml to create your Pipelines using this PowerShell module.

@@ -56,7 +56,11 @@ function Compile-ALProjectTree
 
         if ($CertPath) {
             Write-Host "Signing the app..."
-            SignTool sign /f $CertPath /p $CertPwd /t http://timestamp.verisign.com/scripts/timestamp.dll $AppFileName
+            if ($CertPwd) {
+                SignTool sign /f $CertPath /p $CertPwd /t http://timestamp.verisign.com/scripts/timestamp.dll $AppFileName
+            } else {
+                SignTool sign /f $CertPath /t http://timestamp.verisign.com/scripts/timestamp.dll $AppFileName
+            }
         }
         Copy-Item -Path $AppFileName -Destination $PackagesPath
         Pop-Location
