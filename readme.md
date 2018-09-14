@@ -33,3 +33,4 @@ For list of commands use:
 ## CI/CD using
 
 You can use YAML templates from https://github.com/kine/MSDYN365BC_Yaml to create your Pipelines using this PowerShell module.
+Template for AL App using this is prepared here:https://github.com/kine/MSDyn365BC_AppTemplate
