@@ -32,6 +32,11 @@ function Download-ALSystemPackages
         $PlatformVersion,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Password='Pass@word1',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $Username=$env:USERNAME,
+        [ValidateSet('Windows', 'NavUserPassword')]
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $Auth='Windows',
         $IncludeTestModule=$False,
         $AlPackagesPath,
         [bool]$UseDefaultCred=$False
@@ -102,14 +107,14 @@ function Download-ALSystemPackages
 
     if ($UseDefaultCred) {
         $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
-        $User = $env:USERNAME
+        $User = $Username
         $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
     } else {
         if ($Build -eq '') {
-            $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $env:USERNAME
+            $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $Username
         } else {
             $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
-            $User = $env:USERNAME
+            $User = $Username
             $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
         }
     }
@@ -117,7 +122,7 @@ function Download-ALSystemPackages
         -AppName 'Application' `
         -AppVersion $PlatformVersion `
         -DownloadFolder $alpackages `
-        -Authentication 'Windows' `
+        -Authentication $Auth `
         -Credential $credentials `
         -UseDefaultCred $UseDefaultCred  
 
@@ -125,7 +130,7 @@ function Download-ALSystemPackages
         -AppName 'System' `
         -AppVersion $PlatformVersion `
         -DownloadFolder $alpackages `
-        -Authentication 'Windows' `
+        -Authentication $Auth `
         -Credential $credentials `
         -UseDefaultCred $UseDefaultCred   
 
@@ -134,7 +139,7 @@ function Download-ALSystemPackages
         -AppName 'Test' `
         -AppVersion $PlatformVersion `
         -DownloadFolder $alpackages `
-        -Authentication 'Windows' `
+        -Authentication $Auth `
         -Credential $credentials `
         -UseDefaultCred $UseDefaultCred   
     }

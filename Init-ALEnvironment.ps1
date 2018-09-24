@@ -33,12 +33,17 @@ function Init-ALEnvironment
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Password='',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $RepoPath=''
+        $RepoPath='',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $Username=$env:USERNAME,
+        [ValidateSet('Windows', 'NavUserPassword')]
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $Auth='Windows'
 
     )
     Write-Host "Build is $Build"
     if ($Build -ne 'true') {
-        $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $env:USERNAME
+        $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $Username
 
         New-NavContainer -accept_eula `
                         -accept_outdated `
@@ -52,19 +57,18 @@ function Init-ALEnvironment
                         -alwaysPull `
                         -includeTestToolkit `
                         -shortcuts "Desktop" `
+                        -auth $Auth `
                         -additionalParameters @("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true') `
                         -memoryLimit 4GB 
     } else {
         if ((-not $Password) -or ($Password -eq '')) {
             Write-Host 'Using fixed password and NavUserPassword authentication'
             $PWord = ConvertTo-SecureString -String 'Pass@word1' -AsPlainText -Force
-            $Auth = 'NavUserPassword'
         } else {
             Write-Host "Using passed password and Windows authentication"
             $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
-            $Auth = 'Windows'
         }
-        $User = $env:USERNAME
+        $User = $Username
         $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
         New-NavContainer -accept_eula `
             -accept_outdated `

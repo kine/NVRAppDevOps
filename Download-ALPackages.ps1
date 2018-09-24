@@ -25,6 +25,11 @@ function Download-ALPackages
         $Build='',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Password='Pass@word1',
+        [ValidateSet('Windows', 'NavUserPassword')]
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $Auth='Windows',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $Username=$env:USERNAME,
         $AlPackagesPath,
         $TestApp
     )
@@ -90,37 +95,37 @@ function Download-ALPackages
         }
 
         if ($Build -eq '') {
-            $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $env:USERNAME
+            $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $Username
             Get-AlSymbolFile `
                 -AppName 'Application' `
                 -AppVersion $PlatformVersion `
                 -DownloadFolder $alpackages `
-                -Authentication 'Windows' `
+                -Authentication $Auth `
                 -Credential $credentials   
 
             Get-AlSymbolFile `
                 -AppName 'System' `
                 -AppVersion $PlatformVersion `
                 -DownloadFolder $alpackages `
-                -Authentication 'Windows' `
+                -Authentication $Auth `
                 -Credential $credentials  
 
         } else {
             $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
-            $User = $env:USERNAME
+            $User = $Username
             $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
             Get-AlSymbolFile `
                 -AppName 'Application' `
                 -AppVersion $PlatformVersion `
                 -DownloadFolder $alpackages `
-                -Authentication 'Windows' `
+                -Authentication $Auth `
                 -Credential $credentials   
 
             Get-AlSymbolFile `
                 -AppName 'System' `
                 -AppVersion $PlatformVersion `
                 -DownloadFolder $alpackages `
-                -Authentication 'Windows' `
+                -Authentication $Auth `
                 -Credential $credentials  
 
         }
@@ -136,26 +141,26 @@ function Download-ALPackages
             }
 
             if ($Build -eq '') {
-                $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $env:USERNAME
+                $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $Username
                 Get-AlSymbolFile `
                     -AppName 'Application' `
                     -AppVersion $PlatformVersion `
                     -DownloadFolder $alpackages `
-                    -Authentication 'Windows' `
+                    -Authentication $Auth `
                     -Credential $credentials   
 
                 Get-AlSymbolFile `
                     -AppName 'System' `
                     -AppVersion $PlatformVersion `
                     -DownloadFolder $alpackages `
-                    -Authentication 'Windows' `
+                    -Authentication $Auth `
                     -Credential $credentials  
 
                 Get-AlSymbolFile `
                     -AppName $AppName `
                     -AppVersion $AppVersion `
                     -DownloadFolder $alpackages `
-                    -Authentication 'Windows' `
+                    -Authentication $Auth `
                     -Credential $credentials `
                     -Publisher $Publisher
 
@@ -167,21 +172,21 @@ function Download-ALPackages
                     -AppName 'Application' `
                     -AppVersion $PlatformVersion `
                     -DownloadFolder $alpackages `
-                    -Authentication 'Windows' `
+                    -Authentication $Auth `
                     -Credential $credentials   
 
                 Get-AlSymbolFile `
                     -AppName 'System' `
                     -AppVersion $PlatformVersion `
                     -DownloadFolder $alpackages `
-                    -Authentication 'Windows' `
+                    -Authentication $Auth `
                     -Credential $credentials  
 
                 Get-AlSymbolFile `
                     -AppName $AppName `
                     -AppVersion $AppVersion `
                     -DownloadFolder $alpackages `
-                    -Authentication 'Windows' `
+                    -Authentication $Auth `
                     -Credential $credentials `
                     -Publisher $Publisher
             }

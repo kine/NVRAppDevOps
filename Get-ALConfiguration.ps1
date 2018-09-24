@@ -21,7 +21,10 @@ function Get-ALConfiguration
         $Password,
         $ClientPath,
         $AppDownloadScript,
-        [hashtable]$PathMap
+        [hashtable]$PathMap,
+        $Username=$env:USERNAME,
+        $Auth='Windows'
+
     )
 
     function Get-ResultPath 
@@ -56,6 +59,8 @@ function Get-ALConfiguration
     $Configuration | Add-Member -MemberType NoteProperty -Name 'TestAppPath' -Value (Get-ResultPath -Path $TestAppPath -PathMap $PathMap)
     $Configuration | Add-Member -MemberType NoteProperty -Name 'Build' -Value $Build
     $Configuration | Add-Member -MemberType NoteProperty -Name 'Password' -Value $Password
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'Username' -Value $Username
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'Auth' -Value $Auth
     $Configuration | Add-Member -MemberType NoteProperty -Name 'ClientPath' -Value (Get-ResultPath -Path $ClientPath -PathMap $PathMap)
     $Configuration | Add-Member -MemberType NoteProperty -Name 'AppDownloadScript' -Value $AppDownloadScript
     
