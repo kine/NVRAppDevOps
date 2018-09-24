@@ -6,7 +6,8 @@ function Read-ALConfiguration
         #If set, scripts will work as under VSTS/TFS. If not set, it will work in "interactive" mode
         $Build,
         #Password which will be used for the container user - when WindowsAuthentication used, it is the domain password of the current user
-        $Password
+        $Password,
+        [hashtable]$PathMap
     )
 
     $SettingsScript = (Join-Path $Path 'Scripts\Settings.ps1')
@@ -35,7 +36,8 @@ function Read-ALConfiguration
                             -Build $Build `
                             -Password $Password `
                             -ClientPath $ClientPath `
-                            -AppDownloadScript $AppDownloadScript
+                            -AppDownloadScript $AppDownloadScript `
+                            -PathMap $PathMap
 
     Write-Output $Configuration
 }
