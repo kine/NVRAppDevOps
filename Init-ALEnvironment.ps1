@@ -51,7 +51,8 @@ function Init-ALEnvironment
                         -includeCSide `
                         -alwaysPull `
                         -includeTestToolkit `
-                        -additionalParameters("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true') `
+                        -shortcuts "Desktop" `
+                        -additionalParameters @("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true') `
                         -memoryLimit 4GB 
     } else {
         if ((-not $Password) -or ($Password -eq '')) {
@@ -77,25 +78,16 @@ function Init-ALEnvironment
             -includeCSide `
             -alwaysPull `
             -includeTestToolkit `
-            -additionalParameter ('-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') 
-    #        -myScripts @{"SetupWebClient.ps1"=''} 
-    #    -memoryLimit 4GB 
+            -shortcuts "None" `
+            -additionalParameter @("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N',@{'MainLoop.ps1' = 'while ($true) { start-sleep -seconds 10 }'}) 
     }
-    #Write-Host 'Compiling Test toolkit objects'
-    #Compile-ObjectsInNavContainer -containerName $ContainerName -filter "Version List=*Test*" 
-    #$vsixExt = (Join-Path $env:TEMP 'al.vsix')
-    #$vsixURL=docker logs $ContainerName | where-object {$_ -like '*vsix*'} | select-object -first 1
-
-    Write-Host 'Extracting VSIX'
-    docker exec -t $ContainerName PowerShell.exe -Command {$targetDir = "c:\run\my\alc"; $vsix = (Get-ChildItem "c:\run\*.vsix" -Recurse | Select-Object -First 1);Add-Type -AssemblyName System.IO.Compression.FileSystem;[System.IO.Compression.ZipFile]::ExtractToDirectory($vsix.FullName, $targetDir) ;Write-Host "$vsix";copy-item $vsix "c:\run\my"}
-
-
-    #Write-Host 'Downloading vsix package'
-    #Start-BitsTransfer -Source $vsixURL -Destination $vsixExt
-    $vsixExt = (Get-ChildItem "C:\ProgramData\NavContainerHelper\Extensions\$ContainerName\" -Filter *.vsix).FullName
 
     if ($Build -eq '') {
-        Write-Host 'Installing vsix package'
+        Write-Host 'Extracting VSIX'
+        docker exec -t $ContainerName PowerShell.exe -Command {$targetDir = "c:\run\my\alc"; $vsix = (Get-ChildItem "c:\run\*.vsix" -Recurse | Select-Object -First 1);Add-Type -AssemblyName System.IO.Compression.FileSystem;[System.IO.Compression.ZipFile]::ExtractToDirectory($vsix.FullName, $targetDir) ;Write-Host "$vsix";copy-item $vsix "c:\run\my"}
+   
+        $vsixExt = (Get-ChildItem "C:\ProgramData\NavContainerHelper\Extensions\$ContainerName\" -Filter *.vsix).FullName
+            Write-Host 'Installing vsix package'
         code --install-extension $vsixExt
     }
 
