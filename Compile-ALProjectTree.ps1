@@ -43,16 +43,14 @@ function Compile-ALProjectTree
     }
     foreach ($App in $OrderedApps) {
         Write-Host "**** Compiling $($App.name) ****"
-        $ALC = (Get-ChildItem "C:\ProgramData\NavContainerHelper\Extensions\$ContainerName\" -Filter alc.exe -Recurse).FullName
-        Write-Host "Running $ALC for $($App.name)"
         $AppPath = Split-Path -Path $App.AppPath
-        Push-Location
-        Set-Location $AppPath
-        $escparser = '--%'
-        $AppFileName = "$($App.publisher)_$($App.name)_$($App.version).app"
-        Write-Host "Generating $AppFileName..."
-        
-        & $ALC $escparser /project:.\ /packagecachepath:"$PackagesPath"  | Convert-ALCOutputToTFS
+        $AppFileName = (Join-Path $PackagesPath "$($App.publisher)_$($App.name)_$($App.version).app")
+
+        if ($env:TFS_BUILD) {
+            Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps | Out-Null
+        } else {
+            Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath | Out-Null
+        }
 
         if ($CertPath) {
             Write-Host "Signing the app..."
@@ -62,7 +60,5 @@ function Compile-ALProjectTree
                 SignTool sign /f $CertPath /t http://timestamp.verisign.com/scripts/timestamp.dll $AppFileName
             }
         }
-        Copy-Item -Path $AppFileName -Destination $PackagesPath
-        Pop-Location
     }
 }
