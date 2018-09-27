@@ -20,6 +20,8 @@
     Path to store the app packages into
 .Parameter UseDefaultCred
     Use default credentials when downloading the symbols
+.Parameter Force
+    Download the package even when already exists on disk
 #>
 function Download-ALSystemPackages
 {
@@ -34,7 +36,8 @@ function Download-ALSystemPackages
         $Password='Pass@word1',
         $IncludeTestModule=$False,
         $AlPackagesPath,
-        [bool]$UseDefaultCred=$False
+        [bool]$UseDefaultCred=$False,
+        [switch]$Force
     )
 
     function Get-AlSymbolFile {
@@ -53,41 +56,43 @@ function Download-ALSystemPackages
             [String] $Authentication='Windows',
             [Parameter(Mandatory = $true)] 
             [pscredential] $Credential ,
-            [bool]$UseDefaultCred=$false
+            [bool]$UseDefaultCred=$false,
+            [bool]$Force
         )
 
         $TargetFile = Join-Path -Path $DownloadFolder -ChildPath "$($Publisher)_$($AppName)_$($AppVersion).app"
 
-        if ($Authentication -eq 'NavUserPassword') {
-            $PasswordTemplate = "$($Credential.UserName):$($Credential.GetNetworkCredential().Password)"
-            $PasswordBytes = [System.Text.Encoding]::Default.GetBytes($PasswordTemplate)
-            $EncodedText = [Convert]::ToBase64String($PasswordBytes)
-            
-            $null = Invoke-RestMethod `
-                        -Method get `
-                        -Uri "http://$($ContainerName):7049/nav/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
-                        -Headers @{ "Authorization" = "Basic $EncodedText"} `
-                        -OutFile $TargetFile `
-                        -TimeoutSec 600 -Verbose
-            
-        }  else {
-            if ($UseDefaultCred) {
+        if ($Force -or (!Test-path $TargetFile) {
+            if ($Authentication -eq 'NavUserPassword') {
+                $PasswordTemplate = "$($Credential.UserName):$($Credential.GetNetworkCredential().Password)"
+                $PasswordBytes = [System.Text.Encoding]::Default.GetBytes($PasswordTemplate)
+                $EncodedText = [Convert]::ToBase64String($PasswordBytes)
+                
                 $null = Invoke-RestMethod `
-                        -Method get `
-                        -Uri "http://$($ContainerName):7049/nav/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
-                        -UseDefaultCredentials `
-                        -OutFile $TargetFile `
-                        -TimeoutSec 600 -Verbose
-            } else {
-                $null = Invoke-RestMethod `
-                        -Method get `
-                        -Uri "http://$($ContainerName):7049/nav/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
-                        -Credential $Credential `
-                        -OutFile $TargetFile `
-                        -TimeoutSec 600 -Verbose
+                            -Method get `
+                            -Uri "http://$($ContainerName):7049/nav/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
+                            -Headers @{ "Authorization" = "Basic $EncodedText"} `
+                            -OutFile $TargetFile `
+                            -TimeoutSec 600 -Verbose
+                
+            }  else {
+                if ($UseDefaultCred) {
+                    $null = Invoke-RestMethod `
+                            -Method get `
+                            -Uri "http://$($ContainerName):7049/nav/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
+                            -UseDefaultCredentials `
+                            -OutFile $TargetFile `
+                            -TimeoutSec 600 -Verbose
+                } else {
+                    $null = Invoke-RestMethod `
+                            -Method get `
+                            -Uri "http://$($ContainerName):7049/nav/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
+                            -Credential $Credential `
+                            -OutFile $TargetFile `
+                            -TimeoutSec 600 -Verbose
+                }
             }
         }
-
         Get-Item $TargetFile
     }
 
@@ -119,7 +124,8 @@ function Download-ALSystemPackages
         -DownloadFolder $alpackages `
         -Authentication 'Windows' `
         -Credential $credentials `
-        -UseDefaultCred $UseDefaultCred  
+        -UseDefaultCred $UseDefaultCred `
+        -Force $Force
 
     Get-AlSymbolFile `
         -AppName 'System' `
@@ -128,6 +134,7 @@ function Download-ALSystemPackages
         -Authentication 'Windows' `
         -Credential $credentials `
         -UseDefaultCred $UseDefaultCred   
+        -Force $Force
 
     if ($IncludeTestModule) {
         Get-AlSymbolFile `
@@ -137,5 +144,6 @@ function Download-ALSystemPackages
         -Authentication 'Windows' `
         -Credential $credentials `
         -UseDefaultCred $UseDefaultCred   
+        -Force $Force
     }
 }
