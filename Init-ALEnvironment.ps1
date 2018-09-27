@@ -18,6 +18,8 @@
     Password to use for creating the user inside the container
 .Parameter RepoPath
     Path to the repository - will be mapped as c:\app into the container
+.Parameter RAM
+    Size of RAM for the container (e.g. '4GB')
 #>
 function Init-ALEnvironment
 {
@@ -33,7 +35,9 @@ function Init-ALEnvironment
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Password='',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $RepoPath=''
+        $RepoPath='',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $RAM='4GB'
 
     )
     Write-Host "Build is $Build"
@@ -52,7 +56,7 @@ function Init-ALEnvironment
                         -alwaysPull `
                         -includeTestToolkit `
                         -additionalParameters("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true') `
-                        -memoryLimit 4GB 
+                        -memoryLimit $RAM 
     } else {
         if ((-not $Password) -or ($Password -eq '')) {
             Write-Host 'Using fixed password and NavUserPassword authentication'
@@ -77,7 +81,8 @@ function Init-ALEnvironment
             -includeCSide `
             -alwaysPull `
             -includeTestToolkit `
-            -additionalParameter ('-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') 
+            -additionalParameter ('-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') `
+            -memoryLimit $RAM
     #        -myScripts @{"SetupWebClient.ps1"=''} 
     #    -memoryLimit 4GB 
     }

@@ -35,7 +35,8 @@ function Read-ALConfiguration
                             -Build $Build `
                             -Password $Password `
                             -ClientPath $ClientPath `
-                            -AppDownloadScript $AppDownloadScript
+                            -AppDownloadScript $AppDownloadScript `
+                            -RAM $RAM
 
     Write-Output $Configuration
 }
