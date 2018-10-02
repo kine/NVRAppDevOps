@@ -23,7 +23,11 @@ function Get-ALConfiguration
         $AppDownloadScript,
         [hashtable]$PathMap,
         $Username=$env:USERNAME,
-        $Auth='Windows'
+        $Auth='Windows',
+        $RAM='4GB',
+        [String]$DockerHost,
+        [PSCredential]$DockerHostCred,
+        [bool]$DockerHostSSL
 
     )
 
@@ -63,6 +67,10 @@ function Get-ALConfiguration
     $Configuration | Add-Member -MemberType NoteProperty -Name 'Auth' -Value $Auth
     $Configuration | Add-Member -MemberType NoteProperty -Name 'ClientPath' -Value (Get-ResultPath -Path $ClientPath -PathMap $PathMap)
     $Configuration | Add-Member -MemberType NoteProperty -Name 'AppDownloadScript' -Value $AppDownloadScript
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'RAM' -Value $RAM
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHost' -Value $DockerHost
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHostCred' -Value $DockerHostCred
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHostSSL' -Value $DockerHostSSL
     
 
     Write-Output $Configuration

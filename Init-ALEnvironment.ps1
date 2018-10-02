@@ -18,6 +18,8 @@
     Password to use for creating the user inside the container
 .Parameter RepoPath
     Path to the repository - will be mapped as c:\app into the container
+.Parameter RAM
+    Size of RAM for the container (e.g. '4GB')
 #>
 function Init-ALEnvironment
 {
@@ -38,7 +40,14 @@ function Init-ALEnvironment
         $Username=$env:USERNAME,
         [ValidateSet('Windows', 'NavUserPassword')]
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $Auth='Windows'
+        $Auth='Windows',
+        $RAM='4GB',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [String]$DockerHost,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [PSCredential]$DockerHostCred,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [bool]$DockerHostSSL
 
     )
     Write-Host "Build is $Build"
@@ -59,7 +68,7 @@ function Init-ALEnvironment
                         -shortcuts "Desktop" `
                         -auth $Auth `
                         -additionalParameters @("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true') `
-                        -memoryLimit 4GB 
+                        -memoryLimit $RAM  
     } else {
         if ((-not $Password) -or ($Password -eq '')) {
             Write-Host 'Using fixed password and NavUserPassword authentication'
@@ -83,15 +92,16 @@ function Init-ALEnvironment
             -alwaysPull `
             -includeTestToolkit `
             -shortcuts "None" `
-            -additionalParameter @("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N',@{'MainLoop.ps1' = 'while ($true) { start-sleep -seconds 10 }'}) 
+            -additionalParameter @("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N',@{'MainLoop.ps1' = 'while ($true) { start-sleep -seconds 10 }'}) `
+            -memoryLimit $RAM
     }
 
     if ($Build -eq '') {
         Write-Host 'Extracting VSIX'
         docker exec -t $ContainerName PowerShell.exe -Command {$targetDir = "c:\run\my\alc"; $vsix = (Get-ChildItem "c:\run\*.vsix" -Recurse | Select-Object -First 1);Add-Type -AssemblyName System.IO.Compression.FileSystem;[System.IO.Compression.ZipFile]::ExtractToDirectory($vsix.FullName, $targetDir) ;Write-Host "$vsix";copy-item $vsix "c:\run\my"}
-   
+
         $vsixExt = (Get-ChildItem "C:\ProgramData\NavContainerHelper\Extensions\$ContainerName\" -Filter *.vsix).FullName
-            Write-Host 'Installing vsix package'
+        Write-Host 'Installing vsix package'
         code --install-extension $vsixExt
     }
 

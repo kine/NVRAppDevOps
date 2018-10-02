@@ -10,7 +10,10 @@ function Read-ALConfiguration
         $Username=$env:USERNAME,
         [ValidateSet('Windows', 'NavUserPassword')]
         $Auth='Windows',
-        [hashtable]$PathMap
+        [hashtable]$PathMap,
+        [String]$DockerHost,
+        [PSCredential]$DockerHostCred,
+        [bool]$DockerHostSSL
     )
 
     $SettingsScript = (Join-Path $Path 'Scripts\Settings.ps1')
@@ -42,7 +45,11 @@ function Read-ALConfiguration
                             -AppDownloadScript $AppDownloadScript `
                             -PathMap $PathMap `
                             -Auth $Auth `
-                            -Username $Username
+                            -Username $Username `
+                            -RAM $RAM `
+                            -DockerHost $DockerHost `
+                            -DockerHostSSL $DockerHostSSL `
+                            -DockerHostCred $DockerHostCred
 
     Write-Output $Configuration
 }

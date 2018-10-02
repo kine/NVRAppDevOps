@@ -36,7 +36,14 @@ function Compile-ALProjectTree
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $CertPwd,
         $OrderedApps,
-        $PackagesPath
+        $PackagesPath,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [String]$DockerHost,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [PSCredential]$DockerHostCred,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [bool]$DockerHostSSL
+
     )
     if (-not $PackagesPath) {
         $PackagesPath = Get-Location
