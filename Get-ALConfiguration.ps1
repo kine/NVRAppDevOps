@@ -21,7 +21,10 @@ function Get-ALConfiguration
         $Password,
         $ClientPath,
         $AppDownloadScript,
-        $RAM='4GB'
+        $RAM='4GB',
+        [String]$DockerHost,
+        [PSCredential]$DockerHostCred,
+        [bool]$DockerHostSSL
     )
 
     $Configuration = New-Object -TypeName PSObject
@@ -46,6 +49,9 @@ function Get-ALConfiguration
     $Configuration | Add-Member -MemberType NoteProperty -Name 'ClientPath' -Value $ClientPath
     $Configuration | Add-Member -MemberType NoteProperty -Name 'AppDownloadScript' -Value $AppDownloadScript
     $Configuration | Add-Member -MemberType NoteProperty -Name 'RAM' -Value $RAM
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHost' -Value $DockerHost
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHostCred' -Value $DockerHostCred
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHostSSL' -Value $DockerHostSSL
     
 
     Write-Output $Configuration

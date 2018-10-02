@@ -37,7 +37,13 @@ function Init-ALEnvironment
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $RepoPath='',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $RAM='4GB'
+        $RAM='4GB',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [String]$DockerHost,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [PSCredential]$DockerHostCred,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [bool]$DockerHostSSL
 
     )
     Write-Host "Build is $Build"
