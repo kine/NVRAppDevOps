@@ -62,7 +62,7 @@ function Download-ALSystemPackages
 
         $TargetFile = Join-Path -Path $DownloadFolder -ChildPath "$($Publisher)_$($AppName)_$($AppVersion).app"
 
-        if ($Force -or (!Test-path $TargetFile) {
+        if ($Force -or (!Test-path $TargetFile)) {
             if ($Authentication -eq 'NavUserPassword') {
                 $PasswordTemplate = "$($Credential.UserName):$($Credential.GetNetworkCredential().Password)"
                 $PasswordBytes = [System.Text.Encoding]::Default.GetBytes($PasswordTemplate)
