@@ -133,7 +133,7 @@ function Download-ALSystemPackages
         -DownloadFolder $alpackages `
         -Authentication 'Windows' `
         -Credential $credentials `
-        -UseDefaultCred $UseDefaultCred   
+        -UseDefaultCred $UseDefaultCred `
         -Force $Force
 
     if ($IncludeTestModule) {
@@ -143,7 +143,7 @@ function Download-ALSystemPackages
         -DownloadFolder $alpackages `
         -Authentication 'Windows' `
         -Credential $credentials `
-        -UseDefaultCred $UseDefaultCred   
+        -UseDefaultCred $UseDefaultCred `
         -Force $Force
     }
 }
