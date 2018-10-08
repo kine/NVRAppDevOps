@@ -63,7 +63,8 @@ function Init-ALEnvironment
                         -includeTestToolkit `
                         -additionalParameters("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true') `
                         -memoryLimit $RAM `
-                        -assignPremiumPlan
+                        -assignPremiumPlan `
+                        -updateHosts
     } else {
         if ((-not $Password) -or ($Password -eq '')) {
             Write-Host 'Using fixed password and NavUserPassword authentication'
@@ -90,7 +91,8 @@ function Init-ALEnvironment
             -includeTestToolkit `
             -additionalParameter ('-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') `
             -memoryLimit $RAM `
-            -assignPremiumPlan
+            -assignPremiumPlan `
+            -updateHosts
 
     #        -myScripts @{"SetupWebClient.ps1"=''} 
     #    -memoryLimit 4GB 
