@@ -12,7 +12,7 @@
 RootModule = 'NVRAppDevOps.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.9.9'
+ModuleVersion = '0.9.10'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -101,13 +101,33 @@ PrivateData = @{
         # LicenseUri = ''
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://www.github.com/kine/NVRAppDevOps'
 
         # A URL to an icon representing this module.
         # IconUri = ''
 
         # ReleaseNotes of this module
-        # ReleaseNotes = ''
+        ReleaseNotes = @'
+0.9.10
+- Add AssignPremiumPlan
+- Add updateHost
+
+0.9.9 
+- Fixed parameters in Download-ALSystemPackages
+
+0.9.8 
+- Fixed condition in Download-ALSystemPackages
+
+0.9.7 
+- Addd navcontainerhelper as dependency
+- Fixed missing bracket
+
+0.9.6
+- Added force flag to Download-ALSystemPackages
+
+0.9.5
+- Added RAM size parameter
+'@
 
         # External dependent modules of this module
         # ExternalModuleDependencies = ''
