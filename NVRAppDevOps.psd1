@@ -12,7 +12,7 @@
 RootModule = 'NVRAppDevOps.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.9.10'
+ModuleVersion = '0.9.11'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -108,6 +108,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.11
+- Fixed Unpublish-AlAppTree
+
 0.9.10
 - Add AssignPremiumPlan
 - Add updateHost
