@@ -12,7 +12,7 @@
 RootModule = 'NVRAppDevOps.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.9.12'
+ModuleVersion = '0.9.13'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -108,6 +108,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.13
+- Added Set-ALDockerHostFolder
+
 0.9.12
 - Added Set-ALAppBuildNo script
 
