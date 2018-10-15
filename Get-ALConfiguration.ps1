@@ -71,6 +71,8 @@ function Get-ALConfiguration
     $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHost' -Value $DockerHost
     $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHostCred' -Value $DockerHostCred
     $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHostSSL' -Value $DockerHostSSL
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHostPathMap' -Value $PathMap
+
     
 
     Write-Output $Configuration

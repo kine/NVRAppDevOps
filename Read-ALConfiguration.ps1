@@ -11,11 +11,16 @@ function Read-ALConfiguration
         [ValidateSet('Windows', 'NavUserPassword')]
         $Auth='Windows',
         [hashtable]$PathMap,
+        [String]$PathMapString,
         [String]$DockerHost,
         [PSCredential]$DockerHostCred,
         [bool]$DockerHostSSL
     )
-
+    if ($PathMapString -and (-not $PathMap)) {
+        $PathMap = @{
+            "$($PathMap.Split(':')[0])" = "$($PathMap.Split(':')[1])"
+        }
+    }
     $SettingsScript = (Join-Path $Path 'Scripts\Settings.ps1')
     if (Test-Path $SettingsScript) {
         Write-Host "Running $SettingsScript ..."
