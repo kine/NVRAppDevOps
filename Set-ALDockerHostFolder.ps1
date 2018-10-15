@@ -53,7 +53,7 @@ function Set-ALDockerHostFolder
         } -ArgumentList $HostPath, $ShareName
         if ($ShareMapAs) {
             New-PSDrive -Name $ShareMapAs -PSProvider "FileSystem" -Root "\\$DockerHost\$ShareName" -Scope Global -Persist
-            Write-Host -ForegroundColor Green "Set mapping for the DockerHost like '$($HostPath):$($ShareMapAs):\\'"
+            Write-Host -ForegroundColor Green "Set mapping for the DockerHost like '$($ShareMapAs):\\;$($HostPath)'"
         }
     } else {
         if (-not (Test-Path -Path $HostPath)) {
