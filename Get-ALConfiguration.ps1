@@ -39,7 +39,7 @@ function Get-ALConfiguration
         )
         $ResultPath = (Get-Item -Path $Path).FullName
         foreach($Path in $PathMap.Keys) {
-            $ResultPath = $ResultPath.Replace($Path,$PathMap[$Path])
+            $ResultPath = $ResultPath.ToLower().Replace($Path.ToLower(),$PathMap[$Path].ToLower())
         }
         return $ResultPath
     }

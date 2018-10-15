@@ -18,8 +18,9 @@ function Read-ALConfiguration
     )
     if ($PathMapString -and (-not $PathMap)) {
         $PathMap = @{
-            "$($PathMap.Split(':')[0])" = "$($PathMap.Split(':')[1])"
+            "$($PathMapString.Split(';')[0])" = "$($PathMapString.Split(';')[1])"
         }
+        write-host "Path map $PathMap"
     }
     $SettingsScript = (Join-Path $Path 'Scripts\Settings.ps1')
     if (Test-Path $SettingsScript) {
