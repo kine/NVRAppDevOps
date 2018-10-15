@@ -4,7 +4,12 @@ function Read-ALTestResult
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $ContainerName=$env:ContainerName,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $Password=''
+        $Password='',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $Username=$env:USERNAME,
+        [ValidateSet('Windows', 'NavUserPassword')]
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $Auth='Windows'
     )
     $session = Get-NavContainerSession -containerName $ContainerName -silent
     $CompanyName = Invoke-Command -Session $session `
@@ -17,7 +22,7 @@ function Read-ALTestResult
     } else {
         Write-Host "Using passed password"
         $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
-        $User = $env:USERNAME
+        $User = $Username
         $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
         $proxy = New-WebServiceProxy -Uri "http://$($ContainerName):7047/NAV/WS/$($CompanyName)/Page/CALTestResults" -Class WS -Namespace NVRAppDevOps -Credential $credentials
     }

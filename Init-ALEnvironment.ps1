@@ -37,6 +37,10 @@ function Init-ALEnvironment
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $RepoPath='',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $Username=$env:USERNAME,
+        [ValidateSet('Windows', 'NavUserPassword')]
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $Auth='Windows',
         $RAM='4GB',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         [String]$DockerHost,
@@ -48,7 +52,7 @@ function Init-ALEnvironment
     )
     Write-Host "Build is $Build"
     if ($Build -ne 'true') {
-        $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $env:USERNAME
+        $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $Username
 
         New-NavContainer -accept_eula `
                         -accept_outdated `
@@ -61,7 +65,9 @@ function Init-ALEnvironment
                         -includeCSide `
                         -alwaysPull `
                         -includeTestToolkit `
-                        -additionalParameters("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true') `
+                        -shortcuts "Desktop" `
+                        -auth $Auth `
+                        -additionalParameters @("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true') `
                         -memoryLimit $RAM `
                         -assignPremiumPlan `
                         -updateHosts
@@ -69,13 +75,11 @@ function Init-ALEnvironment
         if ((-not $Password) -or ($Password -eq '')) {
             Write-Host 'Using fixed password and NavUserPassword authentication'
             $PWord = ConvertTo-SecureString -String 'Pass@word1' -AsPlainText -Force
-            $Auth = 'NavUserPassword'
         } else {
             Write-Host "Using passed password and Windows authentication"
             $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
-            $Auth = 'Windows'
         }
-        $User = $env:USERNAME
+        $User = $Username
         $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
         New-NavContainer -accept_eula `
             -accept_outdated `
@@ -89,28 +93,21 @@ function Init-ALEnvironment
             -includeCSide `
             -alwaysPull `
             -includeTestToolkit `
-            -additionalParameter ('-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') `
+            -additionalParameter @("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N',@{'MainLoop.ps1' = 'while ($true) { start-sleep -seconds 10 }'}) `
             -memoryLimit $RAM `
             -assignPremiumPlan `
+            -shortcuts "None" `
             -updateHosts
 
     #        -myScripts @{"SetupWebClient.ps1"=''} 
     #    -memoryLimit 4GB 
     }
-    #Write-Host 'Compiling Test toolkit objects'
-    #Compile-ObjectsInNavContainer -containerName $ContainerName -filter "Version List=*Test*" 
-    #$vsixExt = (Join-Path $env:TEMP 'al.vsix')
-    #$vsixURL=docker logs $ContainerName | where-object {$_ -like '*vsix*'} | select-object -first 1
 
+    if ($Build -eq '') {
     Write-Host 'Extracting VSIX'
     docker exec -t $ContainerName PowerShell.exe -Command {$targetDir = "c:\run\my\alc"; $vsix = (Get-ChildItem "c:\run\*.vsix" -Recurse | Select-Object -First 1);Add-Type -AssemblyName System.IO.Compression.FileSystem;[System.IO.Compression.ZipFile]::ExtractToDirectory($vsix.FullName, $targetDir) ;Write-Host "$vsix";copy-item $vsix "c:\run\my"}
 
-
-    #Write-Host 'Downloading vsix package'
-    #Start-BitsTransfer -Source $vsixURL -Destination $vsixExt
     $vsixExt = (Get-ChildItem "C:\ProgramData\NavContainerHelper\Extensions\$ContainerName\" -Filter *.vsix).FullName
-
-    if ($Build -eq '') {
         Write-Host 'Installing vsix package'
         code --install-extension $vsixExt
     }

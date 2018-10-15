@@ -7,6 +7,10 @@ function Read-ALConfiguration
         $Build,
         #Password which will be used for the container user - when WindowsAuthentication used, it is the domain password of the current user
         $Password,
+        $Username=$env:USERNAME,
+        [ValidateSet('Windows', 'NavUserPassword')]
+        $Auth='Windows',
+        [hashtable]$PathMap,
         [String]$DockerHost,
         [PSCredential]$DockerHostCred,
         [bool]$DockerHostSSL
@@ -39,6 +43,9 @@ function Read-ALConfiguration
                             -Password $Password `
                             -ClientPath $ClientPath `
                             -AppDownloadScript $AppDownloadScript `
+                            -PathMap $PathMap `
+                            -Auth $Auth `
+                            -Username $Username `
                             -RAM $RAM `
                             -DockerHost $DockerHost `
                             -DockerHostSSL $DockerHostSSL `
