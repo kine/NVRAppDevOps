@@ -37,6 +37,9 @@ function Get-ALConfiguration
             $Path,
             [hashtable]$PathMap
         )
+        if (-not $Path) {
+            return $Path
+        }
         $ResultPath = (Get-Item -Path $Path).FullName
         foreach($Path in $PathMap.Keys) {
             $ResultPath = $ResultPath.ToLower().Replace($Path.ToLower(),$PathMap[$Path].ToLower())
