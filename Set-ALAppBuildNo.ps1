@@ -14,7 +14,11 @@ function Set-ALAppBuildNo
 {
     Param (
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $RepoPath=''
+        $RepoPath='',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $AppName='',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $TestAppName=''
     )
     function Get-NoOfDaysSince20000101
     {
@@ -27,14 +31,17 @@ function Set-ALAppBuildNo
         return $seconds
     }
     $Apps = Get-ChildItem -Path $RepoPath -Filter app.json -Recurse
+    $Build = Get-NoOfDaysSince20000101
+    $Revision = Get-NoOfSecondsSinceMidnight
     foreach ($App in $Apps) {
         $AppSetup = Get-Content -Path $App.FullName -Encoding UTF8| ConvertFrom-Json
-        $Version = [Version]$AppSetup.version
-        $Build = Get-NoOfDaysSince20000101
-        $Revision = Get-NoOfSecondsSinceMidnight
-        $NewVersion = "$($Version.Major).$($Version.Minor).$Build.$Revision"
-        $AppSetup.version = $NewVersion
-        $AppSetup | ConvertTo-Json -Depth 5 -Compress | Set-Content -Path $App.FullName -Encoding UTF8
-        #(Get-Content -Path $App.FullName -Encoding UTF8) -replace ""
+        if (($AppSetup.name -eq $AppName) -or ($AppSetup.name -eq $TestAppName)) {
+            $Version = [Version]$AppSetup.version
+            $NewVersion = "$($Version.Major).$($Version.Minor).$Build.$Revision"
+            Write-Host "Setting version for $($AppSetup.name) to $NewVersion"
+            $AppSetup.version = $NewVersion
+            $AppSetup | ConvertTo-Json -Depth 5 -Compress | Set-Content -Path $App.FullName -Encoding UTF8
+            #(Get-Content -Path $App.FullName -Encoding UTF8) -replace ""
+        }
     }
 }
