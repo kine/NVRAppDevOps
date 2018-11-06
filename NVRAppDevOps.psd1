@@ -12,7 +12,7 @@
 RootModule = 'NVRAppDevOps.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.9.14'
+ModuleVersion = '0.9.15'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -108,6 +108,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.15
+- Added parameter useBestContainerOS when creating environment
+
 0.9.14
 - Modified Set-ALAppBuildNo to include only MainApp and TestApp and use same Build and Revision for both
 

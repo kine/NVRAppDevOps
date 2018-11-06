@@ -70,7 +70,8 @@ function Init-ALEnvironment
                         -additionalParameters @("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true') `
                         -memoryLimit $RAM `
                         -assignPremiumPlan `
-                        -updateHosts
+                        -updateHosts `
+                        -useBestContainerOS
     } else {
         if ((-not $Password) -or ($Password -eq '')) {
             Write-Host 'Using fixed password and NavUserPassword authentication'
