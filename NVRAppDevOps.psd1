@@ -12,7 +12,7 @@
 RootModule = 'NVRAppDevOps.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.9.15'
+ModuleVersion = '0.9.16'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -108,6 +108,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.16
+- Fixed Init-ALEnvironment MainLoop override bug
+        
 0.9.15
 - Added parameter useBestContainerOS when creating environment
 

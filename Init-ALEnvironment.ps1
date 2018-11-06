@@ -94,7 +94,7 @@ function Init-ALEnvironment
             -includeCSide `
             -alwaysPull `
             -includeTestToolkit `
-            -additionalParameter @("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N',@{'MainLoop.ps1' = 'while ($true) { start-sleep -seconds 10 }'}) `
+            -additionalParameter @("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') `
             -memoryLimit $RAM `
             -assignPremiumPlan `
             -shortcuts "None" `
