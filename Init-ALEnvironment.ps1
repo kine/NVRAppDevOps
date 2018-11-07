@@ -20,6 +20,8 @@
     Path to the repository - will be mapped as c:\app into the container
 .Parameter RAM
     Size of RAM for the container (e.g. '4GB')
+.Parameter SkipImportTestSuite
+    Will not import test suite and it could be imported later through separate command
 #>
 function Init-ALEnvironment
 {
@@ -47,12 +49,18 @@ function Init-ALEnvironment
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         [PSCredential]$DockerHostCred,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        [bool]$DockerHostSSL
+        [bool]$DockerHostSSL,
+        [switch]$SkipImportTestSuite
 
     )
     Write-Host "Build is $Build"
+    $inclTestToolkit = $True
+    if ($SkipImportTestSuite) {
+        $inclTestToolkit = $False
+    }
     if ($Build -ne 'true') {
         $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $Username
+        $myscripts = @(@{'MainLoop.ps1' = 'while ($true) { start-sleep -seconds 10 }'})
 
         New-NavContainer -accept_eula `
                         -accept_outdated `
@@ -64,14 +72,16 @@ function Init-ALEnvironment
                         -enableSymbolLoading `
                         -includeCSide `
                         -alwaysPull `
-                        -includeTestToolkit `
+                        -includeTestToolkit:$inclTestToolkit `
                         -shortcuts "Desktop" `
                         -auth $Auth `
-                        -additionalParameters @("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true') `
+                        -additionalParameters @("--volume ""$($RepoPath):C:\app""",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true') `
                         -memoryLimit $RAM `
                         -assignPremiumPlan `
                         -updateHosts `
-                        -useBestContainerOS
+                        -useBestContainerOS `
+                        -myScripts $myscripts 
+
     } else {
         if ((-not $Password) -or ($Password -eq '')) {
             Write-Host 'Using fixed password and NavUserPassword authentication'
@@ -93,8 +103,8 @@ function Init-ALEnvironment
             -doNotExportObjectsToText `
             -includeCSide `
             -alwaysPull `
-            -includeTestToolkit `
-            -additionalParameter @("-v $($RepoPath):c:\app",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') `
+            -includeTestToolkit:$inclTestToolkit `
+            -additionalParameter @("--volume ""$($RepoPath):C:\app""",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') `
             -memoryLimit $RAM `
             -assignPremiumPlan `
             -shortcuts "None" `
