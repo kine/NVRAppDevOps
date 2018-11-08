@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.26'
+ModuleVersion = '0.9.32'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,7 +111,7 @@ PrivateData = @{
         ReleaseNotes = @'
 0.9.26
 - Using container to get info about App file in Get-ALAppOrder to support release pipeline
-        
+
 0.9.25
 - Added UpdateDevOpsBuildNo to set Azure DevOps build version based on the new App build in Set-ALAppBuildNo
 

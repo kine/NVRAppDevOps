@@ -46,6 +46,7 @@ function Set-ALAppBuildNo
             $AppSetup | ConvertTo-Json -Depth 5 -Compress | Set-Content -Path $App.FullName -Encoding UTF8
             #(Get-Content -Path $App.FullName -Encoding UTF8) -replace ""
             if ($UpdateDevOpsBuildNo -and ($AppSetup.name -eq $AppName)) {
+                write-host "Updating build pipeline no. to $NewVersion"
                 write-host "##vso[build.updatebuildnumber]$NewVersion"
             }
         }

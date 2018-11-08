@@ -21,10 +21,10 @@ function Get-NavContainerAppInfoFile {
     )
 
     $containerPath = Get-NavContainerPath -containerName $ContainerName -path $AppPath
-    $args = @{"Path" = $containerPath}
+    #$args = @{"Path" = $containerPath}
 
-    $session = Get-NavContainerSession -containerName $containerName -silent
-    Invoke-Command -Session $session -ScriptBlock { Param($inArgs)
-        Get-NavAppInfo @inArgs
-    } -ArgumentList $args
+    $session = Get-NavContainerSession -containerName $ContainerName -silent
+    Invoke-Command -Session $session -ScriptBlock { Param($Path)
+        Get-NavAppInfo -Path $Path | ConvertTo-Json -Depth 2
+    } -ArgumentList $containerPath | ConvertFrom-Json
 }
