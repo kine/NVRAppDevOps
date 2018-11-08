@@ -104,10 +104,11 @@ function Init-ALEnvironment
             -includeCSide `
             -alwaysPull `
             -includeTestToolkit:$inclTestToolkit `
-            -additionalParameter @("--volume ""$($RepoPath):C:\app""",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') `
+            -additionalParameters @("--volume ""$($RepoPath):C:\app""",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') `
             -memoryLimit $RAM `
             -assignPremiumPlan `
             -shortcuts "None" `
+            -useBestContainerOS `
             -updateHosts
 
     #        -myScripts @{"SetupWebClient.ps1"=''} 

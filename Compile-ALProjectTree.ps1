@@ -59,11 +59,12 @@ function Compile-ALProjectTree
             Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath | Out-Null
         }
 
-        if (Test-Path $CertPath) {
-            Write-Host "Signing the app..."
+        if ($CertPath) {
             if ($CertPwd) {
+                Write-Host "Signing the app with $CertPath and password..."
                 SignTool sign /f $CertPath /p $CertPwd /t http://timestamp.verisign.com/scripts/timestamp.dll $AppFileName
             } else {
+                Write-Host "Signing the app with $CertPath..."
                 SignTool sign /f $CertPath /t http://timestamp.verisign.com/scripts/timestamp.dll $AppFileName
             }
         }

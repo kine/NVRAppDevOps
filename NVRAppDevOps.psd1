@@ -11,9 +11,6 @@
 # Script module or binary module file associated with this manifest.
 RootModule = 'NVRAppDevOps.psm1'
 
-# Version number of this module.
-ModuleVersion = '0.9.18'
-
 # Supported PSEditions
 # CompatiblePSEditions = @()
 
@@ -88,6 +85,10 @@ AliasesToExport = '*'
 
 # List of all files packaged with this module
 # FileList = @()
+
+# Version number of this module.
+ModuleVersion = '0.9.22'
+
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
