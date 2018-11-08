@@ -6,6 +6,8 @@
 .EXAMPLE
     PS C:\> Get-ALAppOrder -Path .\
     Read all app.json from the subfolders and sort the app objects
+.Parameter ContainerName
+    Name of the container to use to get info from .App file
 .Parameter Path
     Folder in whcih the app.json will be searched. If no app.json is found, all *.app packages will be used.
 .Parameter Recurse
@@ -25,6 +27,8 @@
 function Get-ALAppOrder
 {
     Param(
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $ContainerName,
         #Path to the repository
         $Path='.\',
         [switch]$Recurse
@@ -90,7 +94,7 @@ function Get-ALAppOrder
         Param(
             $AppFile
         )
-        $AppInfo = Get-NAVAppInfo -Path $AppFile
+        $AppInfo = Get-NavContainerAppInfoFile -AppPath $AppFile -ContainerName $ContainerName
         $AppJson = New-Object -TypeName PSObject
         $AppJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppInfo.Name
         $AppJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppInfo.Publisher
@@ -101,7 +105,9 @@ function Get-ALAppOrder
             $AppDepJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppDep.Name
             $AppDepJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppDep.MinVersion
             $AppDepJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppDep.Publisher
-            $AppDeps += $AppDepJson
+            if ($AppDep.Name) {
+                $AppDeps += $AppDepJson
+            }
         }
         $AppJson | Add-Member -MemberType NoteProperty -Name "dependencies" -Value $AppDeps
         $AppJson | Add-Member -MemberType NoteProperty -Name "AppPath" -Value $AppFile

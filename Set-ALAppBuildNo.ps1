@@ -9,6 +9,8 @@
     Read the config for the repo and update the build no.
 .Parameter RepoPath
     Path to the repository - will be mapped as c:\app into the container
+.Parameter UpdateDevOpsBuildNo
+    If set, version in the Build Pipeline name will be updated for Azure DevOps build pipeline
 #>
 function Set-ALAppBuildNo
 {
@@ -18,7 +20,8 @@ function Set-ALAppBuildNo
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $AppName='',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $TestAppName=''
+        $TestAppName='',
+        [switch]$UpdateDevOpsBuildNo
     )
     function Get-NoOfDaysSince20000101
     {
@@ -42,6 +45,9 @@ function Set-ALAppBuildNo
             $AppSetup.version = $NewVersion
             $AppSetup | ConvertTo-Json -Depth 5 -Compress | Set-Content -Path $App.FullName -Encoding UTF8
             #(Get-Content -Path $App.FullName -Encoding UTF8) -replace ""
+            if ($UpdateDevOpsBuildNo -and ($AppSetup.name -eq $AppName)) {
+                write-host "##vso[build.updatebuildnumber]$NewVersion"
+            }
         }
     }
 }
