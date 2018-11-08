@@ -8,6 +8,8 @@
     Read all app.json from the subfolders and sort the app objects
 .Parameter Path
     Folder in whcih the app.json will be searched. If no app.json is found, all *.app packages will be used.
+.Parameter Recurse
+    Will search for files recursively
 .OUTPUTS
     Array of App objects having these members:
         name
@@ -24,7 +26,8 @@ function Get-ALAppOrder
 {
     Param(
         #Path to the repository
-        $Path='.\'
+        $Path='.\',
+        [switch]$Recurse
     )
     function ConvertTo-ALAppsInfo
     {
@@ -110,7 +113,7 @@ function Get-ALAppOrder
         $Apps = ConvertTo-ALAppsInfo -Files $AppConfigs
     } else {
         $Apps = @{}
-        $AppFiles = Get-ChildItem -Path $Path -Filter *.app
+        $AppFiles = Get-ChildItem -Path $Path -Filter *.app -Recurse:$Recurse
         foreach ($AppFile in $AppFiles) {
             #$App = Get-NAVAppInfo -Path $AppFile.FullName
             $App = Get-AppJsonFromApp -AppFile $AppFile.FullName

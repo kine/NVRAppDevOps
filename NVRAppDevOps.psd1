@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.23'
+ModuleVersion = '0.9.24'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,8 +109,12 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.24
+- Added Recurse parameter for Get-ALAppOrder to be able to find app files in subfolders
+
 0.9.19-0.9.23
-        
+- Bug hunting fixes for Compile script
+
 0.9.18
 - Fixed Compile-ALAppTree in container support
 - Added flag to skip import of test toolkit in Init-ALEnvironment
