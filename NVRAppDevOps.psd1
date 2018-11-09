@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.32'
+ModuleVersion = '0.9.34'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.27-0.9.34
+- Fixed bugs connected to Container usage to get app info needed for Get-ALAppOrder function running in release pipeline
+
 0.9.26
 - Using container to get info about App file in Get-ALAppOrder to support release pipeline
 

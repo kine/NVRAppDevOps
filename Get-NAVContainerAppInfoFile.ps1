@@ -19,8 +19,7 @@ function Get-NavContainerAppInfoFile {
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $AppPath
     )
-
-    $containerPath = Get-NavContainerPath -containerName $ContainerName -path $AppPath
+    $containerPath = Get-NavContainerPath -containerName $ContainerName -path $AppPath -throw
     #$args = @{"Path" = $containerPath}
 
     $session = Get-NavContainerSession -containerName $ContainerName -silent
