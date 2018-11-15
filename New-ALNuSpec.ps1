@@ -20,14 +20,15 @@ function New-ALNuSpec
         $description='',
         $copyright='',
         $tags='',
-        $AppDependencies
+        $AppDependencies,
+        $IdPrefix #Will be used before AppName and all Dependency names
     )
     $nuspec =@()
     $xmltext = @"
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
     <metadata>
-        <id>$id</id>
+        <id>$IdPrefix$id</id>
         <version>$AppVersion</version>
         <authors>$authors</authors>
         <owners>$owners</owners>
@@ -57,10 +58,13 @@ function New-ALNuSpec
     foreach($Dep in $AppDependencies) {
         $depXml = $nuspec.CreateElement('dependency','http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd')
         $attr = $nuspec.CreateAttribute("id")
-        $attr.Value = $Dep.name
+        $attr.Value = "$IdPrefix$($Dep.name)"
         $depXml.Attributes.Append($attr) | out-null
         $attr = $nuspec.CreateAttribute("version")
         $attr.Value = $Dep.version
+        if ($Dep.MinVersion) {
+            $attr.Value = $Dep.MinVersion
+        }
         $depXml.Attributes.Append($attr) | out-null
         $nuspec.package.metadata.SelectSingleNode("./*[name()='dependencies']").AppendChild($depXml)
     }

@@ -8,7 +8,8 @@ function Install-ALNugetPackage
         $ApiKey,
         $SourceUrl,
         $DependencyVersion='Highest',
-        $TargetPath
+        $TargetPath,
+        $IdPrefix #Will be used before AppName and all Dependency names
     )
     #$sources = Get-PackageSource | Where-Object {$_.Name -eq $Source}
     #if (-not $sources) {
@@ -22,8 +23,10 @@ function Install-ALNugetPackage
         Remove-Item $TempFolder -Force | Out-Null
     }
     New-Item -Path $TempFolder -ItemType directory -Force | Out-Null
-    Write-Verbose "Installing package from source to $TempFolder..."
-    nuget.exe install -Source "$Source" -Version $Version -OutputDirectory $TempFolder -NoCache "$PackageName"
+    Write-Host "Installing package '$IdPrefix$PackageName' from '$Source' to $TempFolder..."
+    nuget.exe install -Source "$Source" -Version $Version -OutputDirectory $TempFolder -NoCache "$IdPrefix$PackageName"
+    Write-Host "Moving app files from $TempFolder to $TargetPath..."
     Get-ChildItem -Path $TempFolder -Filter *.app -Recurse | Copy-Item -Destination $TargetPath -Container -Force | Out-Null
+    Write-Host "Removing folder $TempFolder..."
     Remove-Item $TempFolder -Force -Recurse | Out-Null
 }

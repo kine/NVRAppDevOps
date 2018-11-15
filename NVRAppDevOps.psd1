@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.34'
+ModuleVersion = '0.9.37'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,12 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.36-0.9.37
+- Added package id prefix support for install-alnugetpackage and New-ALNuSpec
+
+0.9.35
+- Added support for Version attribute in dependencies when creating nuspec file
+
 0.9.27-0.9.34
 - Fixed bugs connected to Container usage to get app info needed for Get-ALAppOrder function running in release pipeline
 
