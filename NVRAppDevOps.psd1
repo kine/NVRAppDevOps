@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.37'
+ModuleVersion = '0.9.40'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.38
+- Fixing bug in Compile-ALProjectTree to support NavUserPassword
+
 0.9.36-0.9.37
 - Added package id prefix support for install-alnugetpackage and New-ALNuSpec
 
