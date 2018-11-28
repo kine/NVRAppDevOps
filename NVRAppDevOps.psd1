@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.42'
+ModuleVersion = '0.9.44'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,12 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.44
+- Fixedmissing & in Sign-ALApp
+
+0.9.43
+- Fixed missing } in Compile-ALProjectTree
+
 0.9.42
 - Fixed Compile-ALProjectTree
 - Sign in container in Compile-ALProjectTree
