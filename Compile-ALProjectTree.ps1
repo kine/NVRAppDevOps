@@ -93,3 +93,4 @@ function Compile-ALProjectTree
             }
         }
     }
+}
