@@ -9,9 +9,11 @@
 .Parameter ContainerName
     Name of the container to use to get info from .App file
 .Parameter Path
-    Folder in whcih the app.json will be searched. If no app.json is found, all *.app packages will be used.
+    Folder in which the app.json will be searched. If no app.json is found, all *.app packages will be used.
 .Parameter Recurse
     Will search for files recursively
+.Parameter AppCollection
+    Array of app.json files you want to compile.
 .OUTPUTS
     Array of App objects having these members:
         name
@@ -27,12 +29,18 @@
 function Get-ALAppOrder
 {
     Param(
+
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $ContainerName,
         #Path to the repository
+        [Parameter(ParameterSetName="Path")]
         $Path='.\',
-        [switch]$Recurse
+        [switch]$Recurse,
+        #Array of Files you want to use
+        [Parameter(ValueFromPipelineByPropertyName=$True,ParameterSetName="Collection")]
+        [Array]$AppCollection
     )
+
     function ConvertTo-ALAppsInfo
     {
         Param(
@@ -46,6 +54,7 @@ function Get-ALAppOrder
         }
         return $result
     }
+
     function Get-ALBuildOrder
     {
         Param(
@@ -65,7 +74,7 @@ function Get-ALAppOrder
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'name' -Value $Dependency.name
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'version' -Value $Dependency.version
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'AppPath' -Value ""
-                            
+
                             if (-not $AppsCompiled.ContainsKey($Dependency.name)) {
                                 $AppsCompiled.Add($Dependency.name,$NewApp)
                                 $AppsToAdd.Add($Dependency.name,$NewApp)
@@ -89,6 +98,7 @@ function Get-ALAppOrder
         } while ($Apps.Count -ne $AppsCompiled.Count)
         return $AppsOrdered
     }
+
     function Get-AppJsonFromApp
     {
         Param(
@@ -113,10 +123,15 @@ function Get-ALAppOrder
         return $AppJson
     }
 
-    $AppConfigs = Get-ChildItem -Path $Path -Filter App.json -Recurse
-    if ($AppConfigs) {
+    if($Path) {
+        $AppConfigs = Get-ChildItem -Path $Path -Filter App.json -Recurse
         $Apps = ConvertTo-ALAppsInfo -Files $AppConfigs
-    } else {
+    }
+    else {
+        $Apps = $AppCollection
+    }
+
+    if(-not $Apps) {
         $Apps = @{}
         $AppFiles = Get-ChildItem -Path $Path -Filter *.app -Recurse:$Recurse
         foreach ($AppFile in $AppFiles) {
@@ -127,6 +142,7 @@ function Get-ALAppOrder
             }
         }
     }
+
     $AppsOrdered = Get-ALBuildOrder -Apps $Apps
     Write-Output $AppsOrdered
 }
