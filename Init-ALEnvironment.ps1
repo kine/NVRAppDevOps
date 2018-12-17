@@ -59,7 +59,18 @@ function Init-ALEnvironment
         $inclTestToolkit = $False
     }
     if ($Build -ne 'true') {
-        $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $Username
+        if ($Password) {
+            Write-Host "Using passed password"
+            $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
+            $User = $Username
+            $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
+        } else {
+            if ($Auth -eq 'Windows') {
+                $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $Username
+            } else {
+                $credentials = Get-Credential -Message "Enter password you want to use" -UserName $Username
+            }
+        }
         $myscripts = @(@{'MainLoop.ps1' = 'while ($true) { start-sleep -seconds 10 }'})
 
         New-NavContainer -accept_eula `
