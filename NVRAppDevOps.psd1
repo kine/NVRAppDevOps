@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.44'
+ModuleVersion = '0.9.45'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,12 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.45
+- Added different password dialogs in Init-ALEnvironment based on Authentication method
+- Added new parameters to Publish-AlApp and Publish-AlAppTree
+- Fix from @MJECloud regarding singing the app when NavUserPassword authentication used
+- Added possibility to pass array with app.json files to process in Get-ALAppOrder (@MJECloud)
+
 0.9.44
 - Fixedmissing & in Sign-ALApp
 
