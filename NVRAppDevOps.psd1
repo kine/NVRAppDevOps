@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.45'
+ModuleVersion = '0.9.46'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.46
+- Running under Build agent on Azure DevOps but no output formated bug fixed (@MJECloud)
+
 0.9.45
 - Added different password dialogs in Init-ALEnvironment based on Authentication method
 - Added new parameters to Publish-AlApp and Publish-AlAppTree
