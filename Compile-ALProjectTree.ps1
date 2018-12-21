@@ -64,13 +64,13 @@ function Compile-ALProjectTree
             $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
             $User = $Username
             $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
-            if ($env:TFS_BUILD) {
+            if ($env:TF_BUILD) {
                 Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps -credential $credentials| Out-Null
             } else {
                 Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath  -credential $credentials | Out-Null
             }
         } else {
-            if ($env:TFS_BUILD) {
+            if ($env:TF_BUILD) {
                 Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps | Out-Null
             } else {
                 Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath | Out-Null
