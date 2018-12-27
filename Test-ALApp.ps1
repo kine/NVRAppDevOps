@@ -9,6 +9,7 @@ function Test-ALApp
         $TestCodeunitId,
         [Parameter(Mandatory=$true)]
         $TrxFile,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Password='',
         [switch]$ErrorOnFailedTest
     )
