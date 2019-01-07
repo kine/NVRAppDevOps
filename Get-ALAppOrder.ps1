@@ -28,6 +28,7 @@
 #>
 function Get-ALAppOrder
 {
+    [CMDLetBinding(DefaultParameterSetName="Path")]
     Param(
 
         [Parameter(ValueFromPipelineByPropertyName=$True)]
