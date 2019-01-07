@@ -53,6 +53,11 @@ function Init-ALEnvironment
         [switch]$SkipImportTestSuite
 
     )
+    if ($env:TF_BUILD) {
+        Write-Host "TF_BUILD set, running under agent, enforcing Build flag"
+        $Build = 'true'
+    }
+
     Write-Host "Build is $Build"
     $inclTestToolkit = $True
     if ($SkipImportTestSuite) {
