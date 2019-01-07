@@ -43,6 +43,7 @@ function Init-ALEnvironment
         [ValidateSet('Windows', 'NavUserPassword')]
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Auth='Windows',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
         $RAM='4GB',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         [String]$DockerHost,
