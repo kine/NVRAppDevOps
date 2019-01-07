@@ -109,6 +109,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.47        
+- Fixed Get-ALAppOrder bug with default parameter set
+- Added possibility to pass password and RAM through pipeline
+
 0.9.46
 - Running under Build agent on Azure DevOps but no output formated bug fixed (@MJECloud)
 
