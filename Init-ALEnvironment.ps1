@@ -22,6 +22,8 @@
     Size of RAM for the container (e.g. '4GB')
 .Parameter SkipImportTestSuite
     Will not import test suite and it could be imported later through separate command
+.Parameter optionalParameters
+    Array of optional Parameters for the container creation
 #>
 function Init-ALEnvironment
 {
@@ -43,6 +45,7 @@ function Init-ALEnvironment
         [ValidateSet('Windows', 'NavUserPassword')]
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Auth='Windows',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
         $RAM='4GB',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         [String]$DockerHost,
@@ -50,8 +53,9 @@ function Init-ALEnvironment
         [PSCredential]$DockerHostCred,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         [bool]$DockerHostSSL,
-        [switch]$SkipImportTestSuite
-
+        [switch]$SkipImportTestSuite,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $optionalParameters
     )
     if ($env:TF_BUILD) {
         Write-Host "TF_BUILD set, running under agent, enforcing Build flag"
@@ -78,6 +82,13 @@ function Init-ALEnvironment
         }
         $myscripts = @(@{'MainLoop.ps1' = 'while ($true) { start-sleep -seconds 10 }'})
 
+        $additionalParameters = @("--volume ""$($RepoPath):C:\app""",
+            '-e CustomNavSettings=ServicesUseNTLMAuthentication=true'
+        )
+        if($optionalParameters) {
+            $additionalParameters += $optionalParameters
+        }
+
         New-NavContainer -accept_eula `
                         -accept_outdated `
                         -containerName $ContainerName `
@@ -91,12 +102,12 @@ function Init-ALEnvironment
                         -includeTestToolkit:$inclTestToolkit `
                         -shortcuts "Desktop" `
                         -auth $Auth `
-                        -additionalParameters @("--volume ""$($RepoPath):C:\app""",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true') `
+                        -additionalParameters $additionalParameters `
                         -memoryLimit $RAM `
                         -assignPremiumPlan `
                         -updateHosts `
                         -useBestContainerOS `
-                        -myScripts $myscripts 
+                        -myScripts $myscripts
 
     } else {
         if ((-not $Password) -or ($Password -eq '')) {
@@ -108,6 +119,17 @@ function Init-ALEnvironment
         }
         $User = $Username
         $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
+
+        $additionalParameters = @("--volume ""$($RepoPath):C:\app""",
+            '-e CustomNavSettings=ServicesUseNTLMAuthentication=true',
+            '-e usessl=N',
+            '-e webclient=N',
+            '-e httpsite=N'
+        )
+        if($optionalParameters) {
+            $additionalParameters += $optionalParameters
+        }
+
         New-NavContainer -accept_eula `
             -accept_outdated `
             -containerName $ContainerName `
@@ -120,15 +142,15 @@ function Init-ALEnvironment
             -includeCSide `
             -alwaysPull `
             -includeTestToolkit:$inclTestToolkit `
-            -additionalParameters @("--volume ""$($RepoPath):C:\app""",'-e CustomNavSettings=ServicesUseNTLMAuthentication=true','-e usessl=N','-e webclient=N','-e httpsite=N') `
+            -additionalParameters $additionalParameters `
             -memoryLimit $RAM `
             -assignPremiumPlan `
             -shortcuts "None" `
             -useBestContainerOS `
             -updateHosts
 
-    #        -myScripts @{"SetupWebClient.ps1"=''} 
-    #    -memoryLimit 4GB 
+    #        -myScripts @{"SetupWebClient.ps1"=''}
+    #    -memoryLimit 4GB
     }
 
     if ($Build -eq '') {
