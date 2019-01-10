@@ -1,5 +1,5 @@
 function Read-ALConfiguration
-{    
+{
     Param(
         #Path to the repository
         $Path='.\',
@@ -55,7 +55,8 @@ function Read-ALConfiguration
                             -RAM $RAM `
                             -DockerHost $DockerHost `
                             -DockerHostSSL $DockerHostSSL `
-                            -DockerHostCred $DockerHostCred
+                            -DockerHostCred $DockerHostCred `
+                            -optionalParameters $optionalParameters
 
     Write-Output $Configuration
 }

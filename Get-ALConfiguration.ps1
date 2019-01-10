@@ -1,4 +1,4 @@
-function Get-ALConfiguration 
+function Get-ALConfiguration
 {
     Param(
         $ContainerName,
@@ -27,11 +27,12 @@ function Get-ALConfiguration
         $RAM='4GB',
         [String]$DockerHost,
         [PSCredential]$DockerHostCred,
-        [bool]$DockerHostSSL
+        [bool]$DockerHostSSL,
+        $optionalParameters
 
     )
 
-    function Get-ResultPath 
+    function Get-ResultPath
     {
         param(
             $Path,
@@ -75,8 +76,9 @@ function Get-ALConfiguration
     $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHostCred' -Value $DockerHostCred
     $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHostSSL' -Value $DockerHostSSL
     $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHostPathMap' -Value $PathMap
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'optionalParameters' -Value $optionalParameters
 
-    
+
 
     Write-Output $Configuration
 }
