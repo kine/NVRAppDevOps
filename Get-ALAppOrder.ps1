@@ -39,7 +39,7 @@ function Get-ALAppOrder
         [switch]$Recurse,
         #Array of Files you want to use
         [Parameter(ValueFromPipelineByPropertyName=$True,ParameterSetName="Collection")]
-        [Array]$AppCollection
+        [Hashtable]$AppCollection
     )
 
     function ConvertTo-ALAppsInfo
@@ -124,12 +124,12 @@ function Get-ALAppOrder
         return $AppJson
     }
 
-    if($Path) {
-        $AppConfigs = Get-ChildItem -Path $Path -Filter App.json -Recurse
-        $Apps = ConvertTo-ALAppsInfo -Files $AppConfigs
+    if($AppCollection) {
+        $Apps = $AppCollection
     }
     else {
-        $Apps = $AppCollection
+        $AppConfigs = Get-ChildItem -Path $Path -Filter App.json -Recurse
+        $Apps = ConvertTo-ALAppsInfo -Files $AppConfigs
     }
 
     if(-not $Apps) {
