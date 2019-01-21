@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.49'
+ModuleVersion = '0.9.50'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.50
+- Fixed Nuget package creation when App name has spaces
+- Added webservice for Automated tests into creating the environment (before the test app must register the webservices)
+
 0.9.48..0.9.49
 - Fixed Get-ALAppOrder bug when no AppCollection passed and no app.json exists
 
