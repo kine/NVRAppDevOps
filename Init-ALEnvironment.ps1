@@ -161,5 +161,10 @@ function Init-ALEnvironment
         Write-Host 'Installing vsix package'
         code --install-extension $vsixExt
     }
-
+    
+    $session = Get-NavContainerSession -containerName $ContainerName -silent
+    Invoke-Command -Session $session -ScriptBlock {
+        New-NAVWebService  -ServerInstance NAV -ServiceName CALTestResults -ObjectType Page -ObjectId 130405 -Published $True
+        New-NAVWebService  -ServerInstance NAV -ServiceName CALCodeCoverageMap -ObjectType Page -ObjectId 130408 -Published $True 
+    }
 }
