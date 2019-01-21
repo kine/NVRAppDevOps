@@ -129,7 +129,9 @@ function Get-ALAppOrder
     }
     else {
         $AppConfigs = Get-ChildItem -Path $Path -Filter App.json -Recurse
-        $Apps = ConvertTo-ALAppsInfo -Files $AppConfigs
+        if ($AppConfigs) {
+            $Apps = ConvertTo-ALAppsInfo -Files $AppConfigs
+        }
     }
 
     if(-not $Apps) {
