@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.47'
+ModuleVersion = '0.9.48'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.48
+- Fixed Get-ALAppOrder bug when no AppCollection passed and no app.json exists
+
 0.9.47        
 - Fixed Get-ALAppOrder bug with default parameter set
 - Added possibility to pass password and RAM through pipeline
