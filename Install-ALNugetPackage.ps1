@@ -23,8 +23,8 @@ function Install-ALNugetPackage
         Remove-Item $TempFolder -Force | Out-Null
     }
     New-Item -Path $TempFolder -ItemType directory -Force | Out-Null
-    Write-Host "Installing package '$IdPrefix$PackageName' from '$Source' to $TempFolder..."
-    nuget.exe install -Source "$Source" -Version $Version -OutputDirectory $TempFolder -NoCache "$IdPrefix$PackageName"
+    Write-Host "Installing package '$IdPrefix$(Format-AppNameForNuget $PackageName)' from '$Source' to $TempFolder..."
+    nuget.exe install -Source "$Source" -Version $Version -OutputDirectory $TempFolder -NoCache "$IdPrefix$(Format-AppNameForNuget $PackageName)"
     Write-Host "Moving app files from $TempFolder to $TargetPath..."
     Get-ChildItem -Path $TempFolder -Filter *.app -Recurse | Copy-Item -Destination $TargetPath -Container -Force | Out-Null
     Write-Host "Removing folder $TempFolder..."
