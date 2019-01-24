@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.51'
+ModuleVersion = '0.9.52'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.52
+- Added support for downloading missing dependencies when publishing app tree through using AppDownloadScript parameter
+
 0.9.51
 - Added support for downloading missing dependencies when compiling app tree through using AppDownloadScript parameter
 - Fixed bug when Test webservices were published even when test toolkit was not imported (thus objects published are not present)
