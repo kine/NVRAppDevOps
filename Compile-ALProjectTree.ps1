@@ -49,48 +49,55 @@ function Compile-ALProjectTree
         $Username=$env:USERNAME,
         [ValidateSet('Windows', 'NavUserPassword')]
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $Auth='Windows'
+        $Auth='Windows',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $AppDownloadScript
+
 
     )
     if (-not $PackagesPath) {
         $PackagesPath = Get-Location
     }
     foreach ($App in $OrderedApps) {
-        Write-Host "**** Compiling $($App.name) ****"
-        $AppPath = Split-Path -Path $App.AppPath
-        $AppFileName = (Join-Path $PackagesPath "$($App.publisher)_$($App.name)_$($App.version).app")
+        if ($App.AppPath) {
+            Write-Host "**** Compiling $($App.name) ****"
+            $AppPath = Split-Path -Path $App.AppPath
+            $AppFileName = (Join-Path $PackagesPath "$($App.publisher)_$($App.name)_$($App.version).app")
 
-        if ($Auth -eq 'NavUserPassword') {
-            $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
-            $User = $Username
-            $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
-            if ($env:TF_BUILD) {
-                Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps -credential $credentials| Out-Null
-            } else {
-                Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath  -credential $credentials | Out-Null
-            }
-        } else {
-            if ($env:TF_BUILD) {
-                Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps | Out-Null
-            } else {
-                Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath | Out-Null
-            }
-        }
-
-        if ($CertPath) {
-            if ($CertPwd) {
-                Write-Host "Signing the app with $CertPath and password inside container..."
-                #& $SignTool sign /f $CertPath /p $CertPwd /t http://timestamp.verisign.com/scripts/timestamp.dll $AppFileName
-                Sign-NAVContainerApp -containerName $ContainerName -appFile $AppFileName -pfxFile $CertPath -pfxPassword (ConvertTo-SecureString -String $CertPwd -AsPlainText -Force)
-            } else {
-                if (Test-Path "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\SignTool.exe") {
-                    $SignTool = (get-item "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\SignTool.exe").FullName
+            if ($Auth -eq 'NavUserPassword') {
+                $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
+                $User = $Username
+                $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
+                if ($env:TF_BUILD) {
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps -credential $credentials| Out-Null
                 } else {
-                    throw "Couldn't find SignTool.exe, please install Windows SDK from https://go.microsoft.com/fwlink/p/?LinkID=2023014"
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath  -credential $credentials | Out-Null
                 }
-                Write-Host "Signing the app with $CertPath without password (account permissions inside certificate used)..."
-                & $SignTool sign /f $CertPath /t http://timestamp.verisign.com/scripts/timestamp.dll $AppFileName
+            } else {
+                if ($env:TF_BUILD) {
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps | Out-Null
+                } else {
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath | Out-Null
+                }
             }
+
+            if ($CertPath) {
+                if ($CertPwd) {
+                    Write-Host "Signing the app with $CertPath and password inside container..."
+                    #& $SignTool sign /f $CertPath /p $CertPwd /t http://timestamp.verisign.com/scripts/timestamp.dll $AppFileName
+                    Sign-NAVContainerApp -containerName $ContainerName -appFile $AppFileName -pfxFile $CertPath -pfxPassword (ConvertTo-SecureString -String $CertPwd -AsPlainText -Force)
+                } else {
+                    if (Test-Path "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\SignTool.exe") {
+                        $SignTool = (get-item "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\SignTool.exe").FullName
+                    } else {
+                        throw "Couldn't find SignTool.exe, please install Windows SDK from https://go.microsoft.com/fwlink/p/?LinkID=2023014"
+                    }
+                    Write-Host "Signing the app with $CertPath without password (account permissions inside certificate used)..."
+                    & $SignTool sign /f $CertPath /t http://timestamp.verisign.com/scripts/timestamp.dll $AppFileName
+                }
+            }
+        } else { #App not found, download
+            Download-ALApp -name $App.name -publisher $App.publisher -version $App.version -targetPath $PackagesPath -AppDownloadScript $AppDownloadScript
         }
     }
 }
