@@ -5,8 +5,9 @@ function Install-ALAppTree
         $ContainerName=$env:ContainerName,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $AppName=$env:RELEASE_DEFINITIONNAME,
-        $OrderedApps
-
+        $OrderedApps,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $AppDownloadScript
     )
 
     for ($i=$OrderedApps.Count;$i -gt 0;$i--) {

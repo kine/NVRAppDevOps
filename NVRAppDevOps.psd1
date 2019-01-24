@@ -109,6 +109,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.51
+- Added support for downloading missing dependencies when compiling app tree through using AppDownloadScript parameter
+- Fixed bug when Test webservices were published even when test toolkit was not imported (thus objects published are not present)
+
 0.9.50
 - Fixed Nuget package creation when App name has spaces
 - Added webservice for Automated tests into creating the environment (before the test app must register the webservices)

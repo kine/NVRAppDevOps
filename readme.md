@@ -35,8 +35,12 @@ For list of commands use:
 You can use YAML templates from https://github.com/kine/MSDYN365BC_Yaml to create your Pipelines using this PowerShell module.
 Template for AL App using this is prepared here:https://github.com/kine/MSDyn365BC_AppTemplate
 
-## Hosted Docker
+## Download of missing dependencies
+When you use cmdlet Compile-AlProjectTree and you set the parameter $AppDownloadScript, when the app will find dependency, which could not be fullfilled by compiling some app in the subfolders (and it is not Microsoft app), content of $AppDownloadScript will be called with object including these properties:
 
-If you are using hosted Docker (e.g. on your local Hyper-V VM with Windows 2016), you can use command like `Set-ALDockerHostFolder` to setup the environment for you.
+-name - name of the App missing
+-publisher - publisher of the App missing
+-version - minimum required version of the App
+-path - path to store the .App file
 
-Set-ALDockerHostFolder - this command will create shared folder on the host and map it locally as new drive. You than can place the source code there and use the VSCode extension `NaverticAL` with them. This folder is mapped into the docker container automatically and container can do things like compilation directly over the source code.
+Result of the script should be the correct .App file in the path. This App will be then used to "compile" depending apps in the folder structure.
