@@ -74,6 +74,7 @@ function Get-ALAppOrder
                             $NewApp=New-Object -TypeName PSObject
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'name' -Value $Dependency.name
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'version' -Value $Dependency.version
+                            $NewApp | Add-Member -MemberType NoteProperty -Name 'publisher' -Value $Dependency.publisher
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'AppPath' -Value ""
 
                             if (-not $AppsCompiled.ContainsKey($Dependency.name)) {
@@ -115,8 +116,8 @@ function Get-ALAppOrder
         foreach ($AppDep in $AppInfo.Dependencies) {
             $AppDepJson = New-Object -TypeName PSObject
             $AppDepJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppDep.Name
-            $AppDepJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppDep.MinVersion
             $AppDepJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppDep.Publisher
+            $AppDepJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppDep.MinVersion
             $AppDeps += $AppDepJson
         }
         $AppJson | Add-Member -MemberType NoteProperty -Name "dependencies" -Value $AppDeps
