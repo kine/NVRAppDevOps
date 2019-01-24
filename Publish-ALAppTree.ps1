@@ -11,7 +11,9 @@ function Publish-ALAppTree
       [string]$syncMode = 'Development',
       [ValidateSet('Global','Tenant')]
       [Parameter(ValueFromPipelineByPropertyName=$True)]
-      [string]$scope = 'Tenant' 
+      [string]$scope = 'Tenant',
+      [Parameter(ValueFromPipelineByPropertyName=$True)]
+      $AppDownloadScript
   )
   if (-not $PackagesPath) {
     $PackagesPath = Get-Location
@@ -22,6 +24,13 @@ function Publish-ALAppTree
       $AppFile = $App.AppPath
     } else {
       $AppFile = (Get-ChildItem -Path $PackagesPath -Filter "$($App.publisher)_$($App.name)_*.app" | Select-Object -First 1).FullName
+    }
+    if (-not $AppFile) {
+      Write-Host "App $($App.name) from $($App.publisher) not found."
+      if ($AppDownloadScript) {
+        Write-Host "Trying to download..."
+        Download-ALApp -name $App.name -publisher $App.publisher -version $App.version -targetPath $PackagesPath -AppDownloadScript $AppDownloadScript
+      }
     }
     if ($SkipVerification -eq 'true') {
       Publish-NavContainerApp -containerName $ContainerName -appFile $AppFile -SkipVerification -sync -install -syncMode $syncMode -scope $scope
