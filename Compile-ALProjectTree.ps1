@@ -26,10 +26,10 @@
     Path where resulting .app files will be stored and which includes dependencies necessary for compiling the apps.    
 
  .Parameter EnableCodeCop
-  Add this switch to Enable CodeCop to run
+    Add this switch to Enable CodeCop to run
 
  .Parameter Failon
-  Specify if you want Compilation to fail on Error or Warning (Works only if running under Azure DevOps pipeline - $env:TF_BUILD is true)
+    Specify if you want Compilation to fail on Error or Warning (Works only if running under Azure DevOps pipeline - $env:TF_BUILD is true)
 
 #>
 function Compile-ALProjectTree 
