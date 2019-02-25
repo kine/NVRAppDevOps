@@ -44,3 +44,50 @@ When you use cmdlet Compile-AlProjectTree and you set the parameter $AppDownload
 -path - path to store the .App file
 
 Result of the script should be the correct .App file in the path. This App will be then used to "compile" depending apps in the folder structure.
+
+## Settings
+Settings could be stored and read from two types of file:
+-Scripts\Settings.ps1 script in the repository setting variables with appropriate values
+-*.json file having default sections with at least one value "ContainerName"
+
+## Settings in .JSON file
+File with the settings could be placed anywhere inside the repository. If no parameter SettingsFileName is passed to Read-ALConfiguration cmdlet, all .JSON files will be read and if there is value "default.ContainerName", they will be taken as settings file for this module. If there are multiple files like that, all of them will be processed and values from the last wins. If SettingsFileName is passed, this will be used together with Path parameter to create path for the settings file. 
+
+Structure of the JSON:
+-first level - Profiles (at least one must be "default")
+-second level - values for the profile
+
+Example:
+{
+    "default":{
+        "Name": "Default Settings",
+        "ContainerName": "BC",
+        "ImageName": "microsoft/bcsandbox"
+    },
+    "master":{
+        "ImageName": "bcinsider.azurecr.io/bcsandbox-master"
+    }
+}
+
+When non-default profile is selected, first all default profiles values are processed and then the specific profile values, overwriting the default one. It means the profile could have values only which are different from default.
+
+Supported values for the settings:
+-ContainerName
+-ImageName
+-LicenseFile
+-VsixPath
+-AppJSON
+-TestAppJSON
+-AppFile
+-TestAppFile
+-RepoPath
+-AppPath
+-TestAppPath
+-Build
+-Password
+-ClientPath
+-AppDownloadScript
+-Auth
+-Username
+-RAM
+-optionalParameters

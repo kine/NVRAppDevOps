@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.52'
+ModuleVersion = '0.9.53'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.53
+- Added support for CodeCop in Compile-ALProjectTree
+- Added support for reading Configuration from JSON file with multiple profiles support
+
 0.9.52
 - Added support for downloading missing dependencies when publishing app tree through using AppDownloadScript parameter
 
