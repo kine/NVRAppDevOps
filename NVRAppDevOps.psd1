@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.53'
+ModuleVersion = '0.9.54'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.54
+- Added cmdlet Run-ALTestInContainer to use the new function to run tests in container from navcontainerhelper module
+
 0.9.53
 - Added support for CodeCop in Compile-ALProjectTree
 - Added support for reading Configuration from JSON file with multiple profiles support
