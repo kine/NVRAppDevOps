@@ -2,7 +2,7 @@
  .Synopsis
   Run a test suite in a container
  .Description
- 
+
  .Parameter containerName
   Name of the container in which you want to run a test suite
  .Parameter tenant
@@ -21,7 +21,7 @@
 function Run-ALTestInContainer
 {
     param(
-        [Parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$True)]
+        [Parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$True)]
         $ContainerName=$env:ContainerName,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Password='',

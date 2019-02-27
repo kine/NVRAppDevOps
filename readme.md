@@ -29,13 +29,14 @@ To init environment:
 For list of commands use:
 
     Get-Command -module NVRAppDevOps
-    
+
 ## CI/CD using
 
-You can use YAML templates from https://github.com/kine/MSDYN365BC_Yaml to create your Pipelines using this PowerShell module.
-Template for AL App using this is prepared here:https://github.com/kine/MSDyn365BC_AppTemplate
+You can use YAML templates from <https://github.com/kine/MSDYN365BC_Yaml> to create your Pipelines using this PowerShell module.
+Template for AL App using this is prepared here:<https://github.com/kine/MSDyn365BC_AppTemplate>
 
 ## Download of missing dependencies
+
 When you use cmdlet Compile-AlProjectTree and you set the parameter $AppDownloadScript, when the app will find dependency, which could not be fullfilled by compiling some app in the subfolders (and it is not Microsoft app), content of $AppDownloadScript will be called with object including these properties:
 
 -name - name of the App missing
@@ -46,12 +47,14 @@ When you use cmdlet Compile-AlProjectTree and you set the parameter $AppDownload
 Result of the script should be the correct .App file in the path. This App will be then used to "compile" depending apps in the folder structure.
 
 ## Settings
+
 Settings could be stored and read from two types of file:
 -Scripts\Settings.ps1 script in the repository setting variables with appropriate values
 -*.json file having default sections with at least one value "ContainerName"
 
 ## Settings in .JSON file
-File with the settings could be placed anywhere inside the repository. If no parameter SettingsFileName is passed to Read-ALConfiguration cmdlet, all .JSON files will be read and if there is value "default.ContainerName", they will be taken as settings file for this module. If there are multiple files like that, all of them will be processed and values from the last wins. If SettingsFileName is passed, this will be used together with Path parameter to create path for the settings file. 
+
+File with the settings could be placed anywhere inside the repository. If no parameter SettingsFileName is passed to Read-ALConfiguration cmdlet, all .JSON files will be read and if there is value "default.ContainerName", they will be taken as settings file for this module. If there are multiple files like that, all of them will be processed and values from the last wins. If SettingsFileName is passed, this will be used together with Path parameter to create path for the settings file.
 
 Structure of the JSON:
 -first level - Profiles (at least one must be "default")
