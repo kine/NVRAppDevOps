@@ -20,6 +20,13 @@ function Read-ALConfiguration
     }
     Read-ALJsonConfiguration -Path $Path -SettingsFileName $SettingsFileName -Profile $Profile
 
+    if ($EnableSymbolLoading -eq '') {
+        $EnableSymbolLoading = $true
+    }
+    if ($CreateTestWebServices -eq '') {
+        $CreateTestWebServices = $true
+    }
+    
     $ClientPath = Get-ALDesktopClientPath -ContainerName $ContainerName
     $Configuration = Get-ALConfiguration `
                             -ContainerName $ContainerName `
