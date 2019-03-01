@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.55'
+ModuleVersion = '0.9.56'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.56
+- Fixed missing username parameter in Run-ALTestInContainer
+        
 0.9.55
 - Added parameters CreateTestWebServices and EnableSymbolLoading through which you can disable these two things
 
