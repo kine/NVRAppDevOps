@@ -55,7 +55,12 @@ function Init-ALEnvironment
         [bool]$DockerHostSSL,
         [switch]$SkipImportTestSuite,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $optionalParameters
+        $optionalParameters,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $EnableSymbolLoading=$true,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $CreateTestWebServices=$true
+
     )
     if ($env:TF_BUILD) {
         Write-Host "TF_BUILD set, running under agent, enforcing Build flag"
@@ -96,7 +101,7 @@ function Init-ALEnvironment
                         -licenseFile $LicenseFile `
                         -Credential $credentials `
                         -doNotExportObjectsToText `
-                        -enableSymbolLoading `
+                        -enableSymbolLoading:$EnableSymbolLoading `
                         -includeCSide `
                         -alwaysPull `
                         -includeTestToolkit:$inclTestToolkit `
@@ -137,7 +142,7 @@ function Init-ALEnvironment
             -licenseFile $LicenseFile `
             -Credential $credentials `
             -auth $Auth `
-            -enableSymbolLoading `
+            -enableSymbolLoading:$EnableSymbolLoading `
             -doNotExportObjectsToText `
             -includeCSide `
             -alwaysPull `
@@ -162,7 +167,7 @@ function Init-ALEnvironment
         code --install-extension $vsixExt
     }
     
-    if ($inclTestToolkit) {
+    if ($inclTestToolkit -and $CreateTestWebServices) {
         Write-Host 'Publishing CALTestResult (PAG130405) and CALCodeCoverageMap (PAG130408) Webservices'
         $session = Get-NavContainerSession -containerName $ContainerName -silent
         Invoke-Command -Session $session -ScriptBlock {

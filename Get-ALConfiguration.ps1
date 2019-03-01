@@ -28,7 +28,9 @@ function Get-ALConfiguration
         [String]$DockerHost,
         [PSCredential]$DockerHostCred,
         [bool]$DockerHostSSL,
-        $optionalParameters
+        $optionalParameters,
+        $EnableSymbolLoading=$true,
+        $CreateTestWebServices=$true
 
     )
 
@@ -77,6 +79,8 @@ function Get-ALConfiguration
     $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHostSSL' -Value $DockerHostSSL
     $Configuration | Add-Member -MemberType NoteProperty -Name 'DockerHostPathMap' -Value $PathMap
     $Configuration | Add-Member -MemberType NoteProperty -Name 'optionalParameters' -Value $optionalParameters
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'EnableSymbolLoading' -Value $EnableSymbolLoading
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'CreateTestWebServices' -Value $CreateTestWebServices
 
 
 

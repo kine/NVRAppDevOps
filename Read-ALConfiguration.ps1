@@ -46,7 +46,9 @@ function Read-ALConfiguration
                             -Auth $Auth `
                             -Username $Username `
                             -RAM $RAM `
-                            -optionalParameters $optionalParameters
+                            -optionalParameters $optionalParameters `
+                            -EnableSymbolLoading $EnableSymbolLoading `
+                            -CreateTestWebServices $CreateTestWebServices
 
     Write-Output $Configuration
 }
