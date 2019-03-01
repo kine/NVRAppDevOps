@@ -24,6 +24,8 @@ function Run-ALTestInContainer
         [Parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$True)]
         $ContainerName=$env:ContainerName,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $Username=$env:USERNAME,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Password='',
         [ValidateSet('Windows', 'NavUserPassword')]
         [Parameter(ValueFromPipelineByPropertyName=$True)]
