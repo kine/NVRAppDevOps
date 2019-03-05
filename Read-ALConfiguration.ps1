@@ -11,14 +11,16 @@ function Read-ALConfiguration
         [ValidateSet('Windows', 'NavUserPassword')]
         $Auth='Windows',
         $Profile='default',
-        $SettingsFileName=''
+        $SettingsFileName='',
+        $ExcludePath='*\Dependencies\*'
+
     )
     $SettingsScript = (Join-Path $Path 'Scripts\Settings.ps1')
     if (Test-Path $SettingsScript) {
         Write-Host "Running $SettingsScript ..."
         . (Join-Path $Path 'Scripts\Settings.ps1')
     }
-    Read-ALJsonConfiguration -Path $Path -SettingsFileName $SettingsFileName -Profile $Profile
+    Read-ALJsonConfiguration -Path $Path -SettingsFileName $SettingsFileName -Profile $Profile -ExcludePath $ExcludePath
 
     if ($EnableSymbolLoading -eq $null) {
         $EnableSymbolLoading = $true

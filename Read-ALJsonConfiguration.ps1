@@ -4,6 +4,14 @@
 .DESCRIPTION
     Read all *.json files in the folder tree and if it includes configuration, it will set the paamtes as variables
     to be used in Get-ALConfiguration cmdlet
+.Parameter Path
+    Path where to read the settigs
+.Parameter SettingsFileName
+    Path or file name from which JSON settings will be read
+.Parameter ExcludePath
+    Path to exclude when searching for settings (e.g. dependency subfolder)
+.Parameter Profile
+    Name of the profile to read the settings for
 
     This cmdlet is used internally inside Read-ALConfiguration cmdlet
 #>
@@ -14,6 +22,7 @@ function Read-ALJsonConfiguration
         #Path to the repository
         $Path='.\',
         $SettingsFileName,
+        $ExcludePath='*\Dependencies\*',
         $Profile='default'
     )
 
@@ -51,8 +60,7 @@ function Read-ALJsonConfiguration
     if ($SettingsFileName) {
         $Path = Join-Path $Path $SettingsFileName
     }
-    $JsonList = Get-ChildItem -Path $Path -Recurse -Filter *.json
-
+    $JsonList = Get-ChildItem -Path $Path -Recurse -Filter *.json | Where-Object {$_.FullName -notlike $ExcludePath}
     foreach($JsonFile in $JsonList) {
         Push-Location
         try {
