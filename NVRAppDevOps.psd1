@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.57'
+ModuleVersion = '0.9.58'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.58
+- Add Exclude into JSON setting search to be able to exclude Dependencies subfolder from the search
+        
 0.9.57
 - Enable web client when creating container under CI/CD to be able to run tests from container
 
