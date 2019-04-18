@@ -167,8 +167,7 @@ function Init-ALEnvironment
     
     if ($inclTestToolkit -and $CreateTestWebServices) {
         Write-Host 'Publishing CALTestResult (PAG130405) and CALCodeCoverageMap (PAG130408) Webservices'
-        $session = Get-NavContainerSession -containerName $ContainerName -silent
-        Invoke-Command -Session $session -ScriptBlock {
+        Invoke-ScriptInNavContainer -containerName $ContainerName -scriptblock {
             New-NAVWebService  -ServerInstance NAV -ServiceName CALTestResults -ObjectType Page -ObjectId 130405 -Published $True
             New-NAVWebService  -ServerInstance NAV -ServiceName CALCodeCoverageMap -ObjectType Page -ObjectId 130408 -Published $True 
         }
