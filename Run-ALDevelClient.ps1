@@ -8,10 +8,8 @@ function Run-ALDevelClient
     )
 
     $params = @()
-    $session = Get-NavContainerSession -containerName $containerName -silent
-    $databaseName = Invoke-Command -Session $session `
+    $databaseName = Invoke-ScriptInNavContainer -containerName $ContainerName `
                    -ScriptBlock {$config = Get-NAVServerConfiguration -ServerInstance NAV -AsXml;$config.Configuration.appSettings.SelectSingleNode('./add[@key=''DatabaseName'']').value}
-    Remove-NavContainerSession -containerName $containerName
    
     $params += @("database=`"$databaseName`",servername=`"$ContainerName`",ID=`"$ContainerName`",generatesymbolreference=1")
     $ClientExe = Join-Path -Path $ClientPath 'finsql.exe'

@@ -11,10 +11,8 @@ function Read-ALTestResult
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Auth='Windows'
     )
-    $session = Get-NavContainerSession -containerName $ContainerName -silent
-    $CompanyName = Invoke-Command -Session $session `
-                   -ScriptBlock {(Get-NAVCompany -ServerInstance NAV | Select-object -First 1).CompanyName}
-    Remove-NavContainerSession -containerName $ContainerName
+    $CompanyName = Invoke-ScriptInNavContainer -containerName $ContainerName `
+                    -scriptblock {(Get-NAVCompany -ServerInstance NAV | Select-object -First 1).CompanyName} 
     Write-Host "Company name = '$CompanyName'"
 
     if ((-not $Password) -or ($Password -eq '')) {
