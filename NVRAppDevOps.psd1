@@ -109,6 +109,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.60
+- Add functions for GET/POST/PATCH with Business Central API using OAuth2, Upload-PerTenantApp function
+
 0.9.59
 - Fixed script invocation in container when non-admin user used (Thanks @ernestasju!)
 
