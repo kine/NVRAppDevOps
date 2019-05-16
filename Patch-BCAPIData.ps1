@@ -44,6 +44,7 @@ function Patch-BCAPIData
         'Content-Type' = $ContentType
         'If-Match' = $eTag
     }
+    Write-Verbose "PATCH $Uri"
     $Result = Invoke-RestMethod -Method Patch -Uri $Uri -Headers $Headers -Body $Body
     return $Result.value
 

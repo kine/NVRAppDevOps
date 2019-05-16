@@ -36,6 +36,7 @@ function Get-BCAPIData
     $Headers = @{
         Authorization = $OAuthToken.token_type + " " + $OAuthToken.access_token
     }
+    Write-Verbose "GET $Uri"
     $Result = Invoke-RestMethod -Method Get -Uri $Uri -Headers $Headers
     return $Result.value
 

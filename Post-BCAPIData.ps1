@@ -42,6 +42,7 @@ function Post-BCAPIData
         Authorization = $OAuthToken.token_type + " " + $OAuthToken.access_token
         'Content-Type' = $ContentType
     }
+    Write-Verbose "POST $Uri"
     $Result = Invoke-RestMethod -Method Post -Uri $Uri -Headers $Headers -Body $Body
     return $Result.value
 
