@@ -31,13 +31,14 @@ function Patch-BCAPIData
         $Body,
         $ContentType='application/octet-stream',
         $eTag='*',
+        $APIVersion = 'v1.0',
         $Environment = ''
     )
     if ($Environment -ne '') {
         $Tenant = $Tenant + '/' + $Environment
     }
 
-    $Uri = "https://api.businesscentral.dynamics.com/v1.0/$Tenant/$APIURI/$Query"
+    $Uri = "https://api.businesscentral.dynamics.com/$APIVersion/$Tenant/$APIURI/$Query"
     $Headers = @{
         Authorization = $OAuthToken.token_type + " " + $OAuthToken.access_token
         'Content-Type' = $ContentType

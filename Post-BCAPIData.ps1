@@ -30,13 +30,14 @@ function Post-BCAPIData
         [parameter(Mandatory = $true)]
         $Body,
         $ContentType='application/json',
+        $APIVersion = 'v1.0',
         $Environment
     )
     if ($Environment -ne '') {
         $Tenant = $Tenant + '/' + $Environment
     }
 
-    $Uri = "https://api.businesscentral.dynamics.com/v1.0/$Tenant/$APIURI/$Query"
+    $Uri = "https://api.businesscentral.dynamics.com/$APIVersion/$Tenant/$APIURI/$Query"
     $Headers = @{
         Authorization = $OAuthToken.token_type + " " + $OAuthToken.access_token
         'Content-Type' = $ContentType
