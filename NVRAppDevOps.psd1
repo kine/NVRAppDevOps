@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.61'
+ModuleVersion = '0.9.62'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.62
+- Add APIVersion into Upload-PerTenantApp function to support named sandboxes
+
 0.9.61
 - Add APIVersion to Get/Post/Patch-BCAPIData to support v2.0 and other versions for BC v14.0. Use the v2.0 for usage with named sandboxes in BC v14!        
 
