@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.64'
+ModuleVersion = '0.9.65'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.65
+- Fixed usage of isolation during Build processes
+
 0.9.64
 - Added parameter Isolation to override the isolation level (e.g. when falling back to Hyper-V because differrent build no. of OS and container)
 

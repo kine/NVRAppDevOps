@@ -142,6 +142,7 @@ function Init-ALEnvironment
             -containerName $ContainerName `
             -imageName $ImageName `
             -licenseFile $LicenseFile `
+            -isolation $Isolation `
             -Credential $credentials `
             -auth $Auth `
             -enableSymbolLoading:$EnableSymbolLoading `
