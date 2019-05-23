@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.62'
+ModuleVersion = '0.9.63'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.63
+- Add Verbose to BCAPIData functions to show called URL
+        
 0.9.62
 - Add APIVersion into Upload-PerTenantApp function to support named sandboxes
 
