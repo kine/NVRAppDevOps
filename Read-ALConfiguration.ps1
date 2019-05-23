@@ -35,6 +35,7 @@ function Read-ALConfiguration
                             -ImageName $ImageName `
                             -LicenseFile $LicenseFile `
                             -VsixPath $VsixPath `
+                            -Isolation $Isolation `
                             -PlatformVersion $AppJSON.platform `
                             -AppVersion $AppJSON.version `
                             -TestAppVersion $TestAppJSON.version `
