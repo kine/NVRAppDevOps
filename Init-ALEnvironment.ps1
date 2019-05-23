@@ -34,6 +34,9 @@ function Init-ALEnvironment
         $ImageName,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $LicenseFile,
+        [ValidateSet('','process','hyperv')]
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $Isolation,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Build='',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
@@ -99,6 +102,7 @@ function Init-ALEnvironment
                         -containerName $ContainerName `
                         -imageName $ImageName `
                         -licenseFile $LicenseFile `
+                        -isolation $Isolation `
                         -Credential $credentials `
                         -doNotExportObjectsToText `
                         -enableSymbolLoading:$EnableSymbolLoading `
