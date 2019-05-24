@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.65'
+ModuleVersion = '0.9.66'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.66
+- Fixed usage of isolation during Build processes
+- Add WaitForResult switch to Upload-PerTenantApp cmdlet to wait till the publishing is done
+
 0.9.65
 - Fixed usage of isolation during Build processes
 
