@@ -5,6 +5,7 @@ function Get-ALConfiguration
         $ImageName,
         $LicenseFile,
         $VsixPath,
+        $Isolation,
         $AppVersion,
         $PlatformVersion,
         $TestAppVersion,
@@ -55,6 +56,7 @@ function Get-ALConfiguration
     $Configuration | Add-Member -MemberType NoteProperty -Name 'ImageName' -Value $ImageName
     $Configuration | Add-Member -MemberType NoteProperty -Name 'LicenseFile' -Value $LicenseFile
     $Configuration | Add-Member -MemberType NoteProperty -Name 'VsixPath' -Value (Get-ResultPath -Path $VsixPath -PathMap $PathMap)
+    $Configuration | Add-Member -MemberType NoteProperty -Nmae 'Isolation' -Value $Isolation
     $Configuration | Add-Member -MemberType NoteProperty -Name 'PlatformVersion' -Value $PlatformVersion
     $Configuration | Add-Member -MemberType NoteProperty -Name 'AppVersion' -Value $AppVersion
     $Configuration | Add-Member -MemberType NoteProperty -Name 'TestAppVersion' -Value $TestAppVersion
