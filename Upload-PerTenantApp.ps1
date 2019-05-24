@@ -11,7 +11,9 @@ function Upload-PerTenantApp
         $APIUri = 'api/microsoft/automation/beta',
         $APIVersion = 'v1.0',
         $AppPath,
-        $Environment
+        $Environment,
+        [Switch]
+        $WaitForResult
     )
 
     #Get token
@@ -26,5 +28,13 @@ function Upload-PerTenantApp
     Write-Host "Getting uploading extension to company $CompanyID ($CompanyName)..."
     $AppContent = [IO.File]::ReadAllBytes($AppPath)
     $Result = Patch-BCAPIData -OAuthToken $Token -Tenant $Tenant -APIUri $APIUri -Query "companies($CompanyID)/extensionUpload(0)/content" -Body $AppContent -Environment $Environment -APIVersion $APIVersion
+
+    if ($WaitForResult) {
+        do {
+            Start-Sleep -Seconds 10
+            $Status = Get-ALAppPublicationStatus -AppId $AppId -AppSecret $AppSecret -Credentials $Credentials -Tenant $Tenant -APIUri $APIUri -APIVersion $APIVersion -Token $Token -Environment $Environment -CompanyID $CompanyID
+
+        } while ($Status.status -eq 'InProgress')
+    }
     return $Result
 }
