@@ -28,7 +28,9 @@ function Read-ALConfiguration
     if ($CreateTestWebServices -eq $null) {
         $CreateTestWebServices = $true
     }
-
+    if ($Isolation -eq $null) {
+        $Isolation = ''
+    }
     $ClientPath = Get-ALDesktopClientPath -ContainerName $ContainerName
     $Configuration = Get-ALConfiguration `
                             -ContainerName $ContainerName `

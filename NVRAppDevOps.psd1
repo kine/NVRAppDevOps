@@ -87,7 +87,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.67'
+ModuleVersion = '0.9.68'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +109,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+
+0.9.68
+- Isolation parameter is null fixed
+
 0.9.67
 - Fixed Isolation parameter
 
