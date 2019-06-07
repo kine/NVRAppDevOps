@@ -6,14 +6,18 @@ function Publish-ALAppTree
       $SkipVerification=$env:SKIPVERIFICATION,
       $OrderedApps,
       $PackagesPath,
-      [ValidateSet('Add','Clean','Development')]
+      [ValidateSet('Add','Clean','Development','ForceSync')]
       [Parameter(ValueFromPipelineByPropertyName=$True)]
       [string]$syncMode = 'Development',
       [ValidateSet('Global','Tenant')]
       [Parameter(ValueFromPipelineByPropertyName=$True)]
       [string]$scope = 'Tenant',
       [Parameter(ValueFromPipelineByPropertyName=$True)]
-      $AppDownloadScript
+      $AppDownloadScript,
+      [Parameter(ValueFromPipelineByPropertyName=$True)]
+      [switch]$useDevEndpoint,
+      [Parameter(ValueFromPipelineByPropertyName=$True)]
+      [string]$Tenant="default"
   )
   if (-not $PackagesPath) {
     $PackagesPath = Get-Location
@@ -32,10 +36,6 @@ function Publish-ALAppTree
         Download-ALApp -name $App.name -publisher $App.publisher -version $App.version -targetPath $PackagesPath -AppDownloadScript $AppDownloadScript
       }
     }
-    if ($SkipVerification -eq 'true') {
-      Publish-NavContainerApp -containerName $ContainerName -appFile $AppFile -SkipVerification -sync -install -syncMode $syncMode -scope $scope
-    } else {
-      Publish-NavContainerApp -containerName $ContainerName -appFile $AppFile -sync -install -syncMode $syncMode -scope $scope
-    }
+    Publish-NavContainerApp -containerName $ContainerName -appFile $AppFile -SkipVerification:$SkipVerification -sync -install -syncMode $syncMode -scope $scope -tenant $Tenant -useDevEndpoint:$useDevEndpoint
   }
 }

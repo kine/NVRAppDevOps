@@ -48,7 +48,9 @@ Description = 'cmdlets for DevOps for Business Central'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @('navcontainerhelper')
+RequiredModules = @(
+    @{ModuleName='navcontainerhelper';ModuleVersion='0.6.1.2';Guid='ae60837a-fa30-4e28-a5ef-b8cd4cf6640a'}
+    )
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
@@ -87,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.69'
+ModuleVersion = '0.9.70'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -109,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+
+0.9.70
+- Add parameters useDevEndpoint and tenant and ForceSync mode to Publish-ALAppTree
 
 0.9.69
 - Set-ALAppBuildNo extended with new parameters and return the version as a result
