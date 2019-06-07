@@ -36,6 +36,8 @@ function Publish-ALAppTree
         Download-ALApp -name $App.name -publisher $App.publisher -version $App.version -targetPath $PackagesPath -AppDownloadScript $AppDownloadScript
       }
     }
+
+    $SkipVerification = [boolean]$SkipVerification
     Publish-NavContainerApp -containerName $ContainerName -appFile $AppFile -SkipVerification:$SkipVerification -sync -install -syncMode $syncMode -scope $scope -tenant $Tenant -useDevEndpoint:$useDevEndpoint
   }
 }

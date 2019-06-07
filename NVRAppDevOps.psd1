@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.71'
+ModuleVersion = '0.9.72'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+
+0.9.72
+- Fixed SkipVerification flag error "Cannot process argument transformation on parameter 'skipVerification'. Cannot convert value"
 
 0.9.71
 - Fixed bug when Azure DevOps build no. was not updated in Set-ALAppBuildNo
