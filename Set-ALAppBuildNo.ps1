@@ -73,11 +73,12 @@ function Set-ALAppBuildNo
             $AppSetup | ConvertTo-Json -Depth 5 -Compress | Set-Content -Path $App.FullName -Encoding UTF8
             if (-not $ReturnVersion) {
                 $ReturnVersion = $NewVersion
-            }
-            #(Get-Content -Path $App.FullName -Encoding UTF8) -replace ""
-            if ($UpdateDevOpsBuildNo -and ($AppSetup.name -eq $AppName)) {
-                write-host "Updating build pipeline no. to $NewVersion"
-                write-host "##vso[build.updatebuildnumber]$NewVersion"
+
+                #(Get-Content -Path $App.FullName -Encoding UTF8) -replace ""
+                if ($UpdateDevOpsBuildNo) {
+                    write-host "Updating build pipeline no. to $NewVersion"
+                    write-host "##vso[build.updatebuildnumber]$NewVersion"
+                }
             }
         }
     }
