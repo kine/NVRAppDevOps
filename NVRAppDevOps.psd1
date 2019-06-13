@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.72'
+ModuleVersion = '0.9.73'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+
+0.9.73
+- Added DependencyFormat to New-ALNuSpec which by default format the dependencies in format Publisher_AppName
 
 0.9.72
 - Fixed SkipVerification flag error "Cannot process argument transformation on parameter 'skipVerification'. Cannot convert value"

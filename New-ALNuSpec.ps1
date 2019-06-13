@@ -21,7 +21,8 @@ function New-ALNuSpec
         $copyright='',
         $tags='',
         $AppDependencies,
-        $IdPrefix #Will be used before AppName and all Dependency names
+        $IdPrefix, #Will be used before AppName and all Dependency names
+        $DependencyFormat='$($Dep.publisher)_$($Dep.name)'
     )
     $nuspec =@()
     $xmltext = @"
@@ -58,7 +59,7 @@ function New-ALNuSpec
     foreach($Dep in $AppDependencies) {
         $depXml = $nuspec.CreateElement('dependency','http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd')
         $attr = $nuspec.CreateAttribute("id")
-        $attr.Value = "$IdPrefix$(Format-AppNameForNuget $Dep.name)"
+        $attr.Value = "$IdPrefix$(Format-AppNameForNuget $ExecutionContext.InvokeCommand.ExpandString($DependencyFormat))"
         $depXml.Attributes.Append($attr) | out-null
         $attr = $nuspec.CreateAttribute("version")
         $attr.Value = $Dep.version
