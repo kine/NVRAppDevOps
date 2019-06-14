@@ -65,7 +65,7 @@ function Run-ALTestInContainer
             Write-Host 'Using fixed password and NavUserPassword authentication'
             $PWord = ConvertTo-SecureString -String 'Pass@word1' -AsPlainText -Force
         } else {
-            Write-Host "Using passed password and Windows authentication"
+            Write-Host "Using passed password and $Auth authentication"
             $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
         }
         $User = $Username
