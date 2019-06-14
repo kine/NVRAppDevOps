@@ -14,7 +14,7 @@
     Name of the container to use during compilation to get alc.exe etc.
 
 .Parameter CertPath
-    Path to certificate for signing the apps. If not defined, apps will not be signed    
+    Path to certificate for signing the apps. If not defined, apps will not be signed
 
 .Parameter CertPwd
     Password for the signing certificate
@@ -23,7 +23,7 @@
     Array of Apps Info objects in order of compilation. You can use Get-ALAppOrder function to get it
 
 .Parameter PackagesPath
-    Path where resulting .app files will be stored and which includes dependencies necessary for compiling the apps.    
+    Path where resulting .app files will be stored and which includes dependencies necessary for compiling the apps.
 
  .Parameter EnableCodeCop
     Add this switch to Enable CodeCop to run
@@ -32,7 +32,7 @@
     Specify if you want Compilation to fail on Error or Warning (Works only if running under Azure DevOps pipeline - $env:TF_BUILD is true)
 
 #>
-function Compile-ALProjectTree 
+function Compile-ALProjectTree
 {
     Param (
         [Parameter(ValueFromPipelineByPropertyName=$True)]
@@ -50,8 +50,15 @@ function Compile-ALProjectTree
         [ValidateSet('Windows', 'NavUserPassword')]
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Auth='Windows',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
         [bool]$EnableCodeCop=$True,
-        [ValidateSet('none','error','warning')] 
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [bool]$EnableAppSourceCop=$True,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [bool]$EnablePerTenantExtensionCop=$True,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [bool]$EnableUICop=$True,
+        [ValidateSet('none','error','warning')]
         [string]$FailOn = 'error',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $AppDownloadScript
@@ -72,15 +79,15 @@ function Compile-ALProjectTree
                 $User = $Username
                 $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
                 if ($env:TF_BUILD) {
-                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps -credential $credentials -EnableCodeCop:$EnableCodeCop -FailOn $FailOn | Out-Null
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps -credential $credentials -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn | Out-Null
                 } else {
-                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath  -credential $credentials -EnableCodeCop:$EnableCodeCop -FailOn $FailOn | Out-Null
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath  -credential $credentials -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn | Out-Null
                 }
             } else {
                 if ($env:TF_BUILD) {
-                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps  -EnableCodeCop:$EnableCodeCop -FailOn $FailOn | Out-Null
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps  -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn | Out-Null
                 } else {
-                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -EnableCodeCop:$EnableCodeCop -FailOn $FailOn | Out-Null
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn | Out-Null
                 }
             }
 
