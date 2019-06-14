@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.73'
+ModuleVersion = '0.9.74'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,11 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+
+0.9.74
+- Added parameters to choose CodeCops on Compile-ALProjectTree (thanks MJECloud)
+- Small fixes of messages
+- Change of dependency name format in New-ALNuSpec - by default set to $($Dep.publisher)_$($Dep.name) but could be changed by parameter
 
 0.9.73
 - Added DependencyFormat to New-ALNuSpec which by default format the dependencies in format Publisher_AppName
