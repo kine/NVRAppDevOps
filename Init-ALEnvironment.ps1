@@ -62,7 +62,9 @@ function Init-ALEnvironment
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $EnableSymbolLoading=$true,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $CreateTestWebServices=$true
+        $CreateTestWebServices=$true,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $customScripts
 
     )
     if ($env:TF_BUILD) {
@@ -88,7 +90,12 @@ function Init-ALEnvironment
                 $credentials = Get-Credential -Message "Enter password you want to use" -UserName $Username
             }
         }
+
         $myscripts = @(@{'MainLoop.ps1' = 'while ($true) { start-sleep -seconds 10 }'})
+
+        if($customScripts) {
+            $myscripts += $customScripts
+        }
 
         $additionalParameters = @("--volume ""$($RepoPath):C:\app""",
             '-e CustomNavSettings=ServicesUseNTLMAuthentication=true'
@@ -129,6 +136,10 @@ function Init-ALEnvironment
         $User = $Username
         $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
 
+        if($customScripts) {
+            $myscripts = @($customScripts)
+        }
+
         $additionalParameters = @("--volume ""$($RepoPath):C:\app""",
             '-e CustomNavSettings=ServicesUseNTLMAuthentication=true',
             '-e usessl=N'
@@ -155,7 +166,8 @@ function Init-ALEnvironment
             -assignPremiumPlan `
             -shortcuts "None" `
             -useBestContainerOS `
-            -updateHosts
+            -updateHosts `
+            -myScripts $myscripts
 
     #        -myScripts @{"SetupWebClient.ps1"=''}
     #    -memoryLimit 4GB
