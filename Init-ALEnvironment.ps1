@@ -64,7 +64,7 @@ function Init-ALEnvironment
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $CreateTestWebServices=$true,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $customScripts
+        $customScripts=''
 
     )
     if ($env:TF_BUILD) {
