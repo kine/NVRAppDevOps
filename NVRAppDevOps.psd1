@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.74'
+ModuleVersion = '0.9.75'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+
+0.9.75
+- Added myScripts parameter to Init-ALEnvironment (thanks MaxBelohoubek)
 
 0.9.74
 - Added parameters to choose CodeCops on Compile-ALProjectTree (thanks MJECloud)
