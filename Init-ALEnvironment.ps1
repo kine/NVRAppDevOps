@@ -149,8 +149,7 @@ function Init-ALEnvironment
         }
 
         $additionalParameters = @("--volume ""$($RepoPath):C:\app""",
-            '-e CustomNavSettings=ServicesUseNTLMAuthentication=true',
-            '-e usessl=N'
+            '-e CustomNavSettings=ServicesUseNTLMAuthentication=true'
         )
 
         if($useSSL -eq 'true') {
