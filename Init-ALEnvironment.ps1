@@ -64,8 +64,9 @@ function Init-ALEnvironment
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $CreateTestWebServices=$true,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $customScripts
-
+        $customScripts,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $useSSL
     )
     if ($env:TF_BUILD) {
         Write-Host "TF_BUILD set, running under agent, enforcing Build flag"
@@ -100,6 +101,11 @@ function Init-ALEnvironment
         $additionalParameters = @("--volume ""$($RepoPath):C:\app""",
             '-e CustomNavSettings=ServicesUseNTLMAuthentication=true'
         )
+
+        if($useSSL -eq 'true') {
+            $additionalParameters += "--env useSSL=Y"
+        }
+
         if($optionalParameters) {
             $additionalParameters += $optionalParameters
         }
@@ -143,9 +149,16 @@ function Init-ALEnvironment
         }
 
         $additionalParameters = @("--volume ""$($RepoPath):C:\app""",
-            '-e CustomNavSettings=ServicesUseNTLMAuthentication=true',
-            '-e usessl=N'
+            '-e CustomNavSettings=ServicesUseNTLMAuthentication=true'
         )
+
+        if($useSSL -eq 'true') {
+            $additionalParameters += "--env useSSL=Y"
+        }
+        else {
+            $additionalParameters += "--env useSSL=N"
+        }
+
         if($optionalParameters) {
             $additionalParameters += $optionalParameters
         }
