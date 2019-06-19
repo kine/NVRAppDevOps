@@ -9,6 +9,7 @@ function Install-ALNugetPackage
         $SourceUrl,
         $DependencyVersion='Highest',
         $TargetPath,
+        $Key,
         $IdPrefix #Will be used before AppName and all Dependency names
     )
     #$sources = Get-PackageSource | Where-Object {$_.Name -eq $Source}
@@ -21,6 +22,10 @@ function Install-ALNugetPackage
             Write-Host "Source already exists"
         } else {
             nuget.exe sources Add -Name "$Source" -Source "$SourceUrl"
+        }
+        if ($Key) {
+            Write-Host "Udpate source key"
+            nuget.exe source update -Name "$Source" -Username 'user' -Password $Key -StorePasswordInClearText
         }
     }
     $TempFolder = Join-Path $env:TEMP 'ALNugetApps'
