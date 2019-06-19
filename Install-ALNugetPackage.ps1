@@ -16,7 +16,12 @@ function Install-ALNugetPackage
         #Write-Host "Adding nuget source..."
         #Write-Verbose "nuget.exe sources Add -Name `"$Source`" -Source `"$SourceUrl`""
     if ($SourceUrl) {
-        nuget.exe sources Add -Name "$Source" -Source "$SourceUrl"
+        $exists = nuget.exe sources list -Format short | Where-Object {$_ -like "*$($SourceUrl)"}
+        if ($exists) {
+            Write-Host "Source already exists"
+        } else {
+            nuget.exe sources Add -Name "$Source" -Source "$SourceUrl"
+        }
     }
     $TempFolder = Join-Path $env:TEMP 'ALNugetApps'
     if (Test-Path $TempFolder) {
