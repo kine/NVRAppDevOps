@@ -38,10 +38,15 @@ function Download-ALAppFromNuget
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $SourceUrl = '',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $Key = ''
+        $Key = '',
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [switch]$LatestVersion
 
     )
     $DependencyFormat='$($publisher)_$($name)'
     $packageName = Format-AppNameForNuget -Name ($ExecutionContext.InvokeCommand.ExpandString($DependencyFormat))
+    if ($LatestVersion) {
+        $version = ''
+    }
     Install-ALNugetPackage -PackageName $packageName -Version $version -TargetPath $path -IdPrefix "" -Source $Source -SourceUrl $SourceUrl -Key $Key
 }

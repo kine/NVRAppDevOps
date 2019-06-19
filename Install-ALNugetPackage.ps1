@@ -24,7 +24,7 @@ function Install-ALNugetPackage
             nuget.exe sources Add -Name "$Source" -Source "$SourceUrl"
         }
         if ($Key) {
-            Write-Host "Udpate source key"
+            Write-Host "Update source key"
             nuget.exe source update -Name "$Source" -Username 'user' -Password $Key -StorePasswordInClearText
         }
     }
@@ -34,10 +34,18 @@ function Install-ALNugetPackage
     }
     New-Item -Path $TempFolder -ItemType directory -Force | Out-Null
     Write-Host "Installing package '$IdPrefix$(Format-AppNameForNuget $PackageName)' from '$Source' to $TargetPath..."
-    if ($Source) {
-        nuget.exe install -Source "$Source" -Version $Version -OutputDirectory $TempFolder -NoCache "$IdPrefix$(Format-AppNameForNuget $PackageName)"
+    if ($Version) {
+        if ($Source) {
+            nuget.exe install -Source "$Source" -Version $Version -OutputDirectory $TempFolder -NoCache -DependencyVersion $DependencyVersion "$IdPrefix$(Format-AppNameForNuget $PackageName)"
+        } else {
+            nuget.exe install -Version $Version -OutputDirectory $TempFolder -NoCache -DependencyVersion $DependencyVersion "$IdPrefix$(Format-AppNameForNuget $PackageName)"
+        }
     } else {
-        nuget.exe install -Version $Version -OutputDirectory $TempFolder -NoCache "$IdPrefix$(Format-AppNameForNuget $PackageName)"
+        if ($Source) {
+            nuget.exe install -Source "$Source" -OutputDirectory $TempFolder -NoCache -DependencyVersion $DependencyVersion "$IdPrefix$(Format-AppNameForNuget $PackageName)"
+        } else {
+            nuget.exe install -OutputDirectory $TempFolder -NoCache -DependencyVersion $DependencyVersion "$IdPrefix$(Format-AppNameForNuget $PackageName)"
+        }
     }
     Write-Host "Moving app files from $TempFolder to $TargetPath..."
     Get-ChildItem -Path $TempFolder -Filter *.app -Recurse | Copy-Item -Destination $TargetPath -Container -Force | Out-Null
