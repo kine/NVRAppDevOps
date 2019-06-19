@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.81'
+ModuleVersion = '0.9.82'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+
+0.9.82
+- Add parameter to support ssl (thanks MaxBelohoubek)
 
 0.9.81
 - Add parameter to install latest nuget package version instead specific version
