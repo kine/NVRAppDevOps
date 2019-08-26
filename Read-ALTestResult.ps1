@@ -14,6 +14,7 @@ function Read-ALTestResult
     $CompanyName = Invoke-ScriptInNavContainer -containerName $ContainerName `
                     -scriptblock {(Get-NAVCompany -ServerInstance NAV | Select-object -First 1).CompanyName} 
     Write-Host "Company name = '$CompanyName'"
+    $CompanyName = [uri]::EscapeDataString($CompanyName)
 
     if ((-not $Password) -or ($Password -eq '')) {
         $proxy = New-WebServiceProxy -Uri "http://$($ContainerName):7047/NAV/WS/$($CompanyName)/Page/CALTestResults" -Class WS -Namespace NVRAppDevOps -UseDefaultCredential

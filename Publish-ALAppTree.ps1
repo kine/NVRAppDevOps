@@ -27,7 +27,7 @@ function Publish-ALAppTree
     if ($App.AppPath -like '*.app') {
       $AppFile = $App.AppPath
     } else {
-      $AppFile = (Get-ChildItem -Path $PackagesPath -Filter "$($App.publisher)_$($App.name)_*.app" | Select-Object -First 1).FullName
+      $AppFile = (Get-ChildItem -Path $PackagesPath -Filter "$($App.publisher.replace('/',''))_$($App.name.replace('/',''))_*.app" | Select-Object -First 1).FullName
     }
     if (-not $AppFile) {
       Write-Host "App $($App.name) from $($App.publisher) not found."
