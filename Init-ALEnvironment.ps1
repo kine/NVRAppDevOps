@@ -58,6 +58,8 @@ function Init-ALEnvironment
         [bool]$DockerHostSSL,
         [switch]$SkipImportTestSuite,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [bool]$IncludeCSide=$true,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
         $optionalParameters,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $EnableSymbolLoading=$true,
@@ -119,7 +121,7 @@ function Init-ALEnvironment
                         -Credential $credentials `
                         -doNotExportObjectsToText `
                         -enableSymbolLoading:$EnableSymbolLoading `
-                        -includeCSide `
+                        -includeCSide:$IncludeCSide `
                         -alwaysPull `
                         -includeTestToolkit:$inclTestToolkit `
                         -shortcuts "Desktop" `
@@ -173,7 +175,7 @@ function Init-ALEnvironment
             -auth $Auth `
             -enableSymbolLoading:$EnableSymbolLoading `
             -doNotExportObjectsToText `
-            -includeCSide `
+            -includeCSide:$IncludeCSide `
             -alwaysPull `
             -includeTestToolkit:$inclTestToolkit `
             -additionalParameters $additionalParameters `

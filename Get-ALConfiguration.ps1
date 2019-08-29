@@ -29,6 +29,7 @@ function Get-ALConfiguration
         [String]$DockerHost,
         [PSCredential]$DockerHostCred,
         [bool]$DockerHostSSL,
+        [bool]$IncludeCSide=$true,
         $optionalParameters,
         $EnableSymbolLoading=$true,
         $CreateTestWebServices=$true
@@ -83,6 +84,7 @@ function Get-ALConfiguration
     $Configuration | Add-Member -MemberType NoteProperty -Name 'optionalParameters' -Value $optionalParameters
     $Configuration | Add-Member -MemberType NoteProperty -Name 'EnableSymbolLoading' -Value $EnableSymbolLoading
     $Configuration | Add-Member -MemberType NoteProperty -Name 'CreateTestWebServices' -Value $CreateTestWebServices
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'IncludeCSide' -Value $IncludeCSide
 
 
 
