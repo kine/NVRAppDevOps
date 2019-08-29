@@ -57,6 +57,7 @@ function Init-ALEnvironment
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         [bool]$DockerHostSSL,
         [switch]$SkipImportTestSuite,
+        [switch]$SkipIncludeCSide,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $optionalParameters,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
@@ -77,6 +78,10 @@ function Init-ALEnvironment
     $inclTestToolkit = $True
     if ($SkipImportTestSuite) {
         $inclTestToolkit = $False
+    }
+    $inclCSide = $True
+    if ($SkipIncludeCSide) {
+        $inclCSide = $False
     }
     if ($Build -ne 'true') {
         if ($Password) {
@@ -119,7 +124,7 @@ function Init-ALEnvironment
                         -Credential $credentials `
                         -doNotExportObjectsToText `
                         -enableSymbolLoading:$EnableSymbolLoading `
-                        -includeCSide `
+                        -includeCSide:$inclCSide `
                         -alwaysPull `
                         -includeTestToolkit:$inclTestToolkit `
                         -shortcuts "Desktop" `
