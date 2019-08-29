@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.83'
+ModuleVersion = '0.9.84'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,8 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.84
+- Add parameter IncludeCSide (true by default if not set) for using in Init-ALEnvironment for v15.x containers
 
 0.9.83
 - Fixes from kfuglsang around file path and company name in URL
