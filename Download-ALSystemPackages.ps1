@@ -68,6 +68,8 @@ function Download-ALSystemPackages
         $TargetFile = Join-Path -Path $DownloadFolder -ChildPath "$($Publisher)_$($AppName)_$($AppVersion).app"
 
         if ($Force -or (-not (Test-path $TargetFile))) {
+            $ServerConfig = Get-NavContainerServerConfiguration -ContainerName $ContainerName
+
             if ($Authentication -eq 'NavUserPassword') {
                 $PasswordTemplate = "$($Credential.UserName):$($Credential.GetNetworkCredential().Password)"
                 $PasswordBytes = [System.Text.Encoding]::Default.GetBytes($PasswordTemplate)
@@ -75,7 +77,7 @@ function Download-ALSystemPackages
                 
                 $null = Invoke-RestMethod `
                             -Method get `
-                            -Uri "http://$($ContainerName):7049/nav/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
+                            -Uri "http://$($ContainerName):7049/$($ServerConfig.ServerInstance)/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
                             -Headers @{ "Authorization" = "Basic $EncodedText"} `
                             -OutFile $TargetFile `
                             -TimeoutSec 600 -Verbose
@@ -84,14 +86,14 @@ function Download-ALSystemPackages
                 if ($UseDefaultCred) {
                     $null = Invoke-RestMethod `
                             -Method get `
-                            -Uri "http://$($ContainerName):7049/nav/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
+                            -Uri "http://$($ContainerName):7049/$($ServerConfig.ServerInstance)/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
                             -UseDefaultCredentials `
                             -OutFile $TargetFile `
                             -TimeoutSec 600 -Verbose
                 } else {
                     $null = Invoke-RestMethod `
                             -Method get `
-                            -Uri "http://$($ContainerName):7049/nav/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
+                            -Uri "http://$($ContainerName):7049/$($ServerConfig.ServerInstance)/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
                             -Credential $Credential `
                             -OutFile $TargetFile `
                             -TimeoutSec 600 -Verbose

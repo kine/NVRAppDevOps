@@ -59,7 +59,8 @@ function Download-ALPackages
         )
 
         $TargetFile = Join-Path -Path $DownloadFolder -ChildPath "$($Publisher)_$($AppName)_$($AppVersion).app"
-
+        $ServerConfig = Get-NavContainerServerConfiguration -ContainerName $ContainerName
+        
         if ($Authentication -eq 'NavUserPassword') {
             $PasswordTemplate = "$($Credential.UserName):$($Credential.GetNetworkCredential().Password)"
             $PasswordBytes = [System.Text.Encoding]::Default.GetBytes($PasswordTemplate)
@@ -67,7 +68,7 @@ function Download-ALPackages
             
             $null = Invoke-RestMethod `
                         -Method get `
-                        -Uri "http://$($ContainerName):7049/nav/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
+                        -Uri "http://$($ContainerName):7049/$(ServerConfig.ServerInstance)/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
                         -Headers @{ "Authorization" = "Basic $EncodedText"} `
                         -OutFile $TargetFile `
                         -TimeoutSec 600 -Verbose
@@ -75,7 +76,7 @@ function Download-ALPackages
         }  else {
             $null = Invoke-RestMethod `
                         -Method get `
-                        -Uri "http://$($ContainerName):7049/nav/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
+                        -Uri "http://$($ContainerName):7049/$(ServerConfig.ServerInstance)/dev/packages?publisher=$($Publisher)&appName=$($AppName)&versionText=$($AppVersion)&tenant=default" `
                         -Credential $Credential `
                         -OutFile $TargetFile `
                         -TimeoutSec 600 -Verbose
