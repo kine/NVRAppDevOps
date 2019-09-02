@@ -20,8 +20,12 @@ function Read-ALConfiguration
         Write-Host "Running $SettingsScript ..."
         . (Join-Path $Path 'Scripts\Settings.ps1')
     }
+
     Read-ALJsonConfiguration -Path $Path -SettingsFileName $SettingsFileName -Profile $Profile -ExcludePath $ExcludePath
 
+    if ($IncludeCSide -eq $null) {
+        $IncludeCSide = $true
+    }
     if ($EnableSymbolLoading -eq $null) {
         $EnableSymbolLoading = $true
     }
@@ -60,7 +64,8 @@ function Read-ALConfiguration
                             -RAM $RAM `
                             -optionalParameters $optionalParameters `
                             -EnableSymbolLoading $EnableSymbolLoading `
-                            -CreateTestWebServices $CreateTestWebServices
+                            -CreateTestWebServices $CreateTestWebServices `
+                            -IncludeCSide $IncludeCSide
 
     Write-Output $Configuration
 }
