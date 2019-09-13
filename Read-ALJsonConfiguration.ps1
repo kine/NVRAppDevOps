@@ -53,7 +53,11 @@ function Read-ALJsonConfiguration
         $Config = $JSon.$Profile
         foreach($Property in ($Config | Get-Member -MemberType NoteProperty)) {
             Write-Verbose "Creating global variable $($Property.Name) with value $($Config.$($Property.Name))"
-            New-Variable -Name $Property.Name -Value (Get-ValueForConfig $Config.$($Property.Name)) -Visibility Public -Scope Global -Force
+            if (Get-Variable -Name $Property.Name -ErrorAction SilentlyContinue) {
+                Set-Variable -Name $Property.Name -Value (Get-ValueForConfig $Config.$($Property.Name)) -Visibility Public -Scope Global -Force
+            } else {
+                New-Variable -Name $Property.Name -Value (Get-ValueForConfig $Config.$($Property.Name)) -Visibility Public -Scope Global -Force
+            }
         }
     }
 
