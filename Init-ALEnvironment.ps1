@@ -175,7 +175,6 @@ function Init-ALEnvironment
             -enableSymbolLoading:$EnableSymbolLoading `
             -doNotExportObjectsToText `
             -includeCSide:$IncludeCSide `
-            -alwaysPull `
             -includeTestToolkit:$inclTestToolkit `
             -additionalParameters $additionalParameters `
             -memoryLimit $RAM `
