@@ -112,7 +112,7 @@ function Init-ALEnvironment {
         if ($optionalParameters) {
             $additionalParameters += $optionalParameters
         }
-        if (Get-ContainerImageCurrentness -Image $ImageName) {
+        if (-not (Get-ContainerImageCurrentness -Image $ImageName)) {
             docker pull $ImageName
         }
         New-NavContainer -accept_eula `
@@ -169,7 +169,7 @@ function Init-ALEnvironment {
         if ($optionalParameters) {
             $additionalParameters += $optionalParameters
         }
-        if (Get-ContainerImageCurrentness -Image $ImageName) {
+        if (-not (Get-ContainerImageCurrentness -Image $ImageName)) {
             docker pull $ImageName
         }
         New-NavContainer -accept_eula `
