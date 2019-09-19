@@ -122,7 +122,6 @@ function Init-ALEnvironment
                         -doNotExportObjectsToText `
                         -enableSymbolLoading:$EnableSymbolLoading `
                         -includeCSide:$IncludeCSide `
-                        -alwaysPull `
                         -includeTestToolkit:$inclTestToolkit `
                         -shortcuts "Desktop" `
                         -auth $Auth `
