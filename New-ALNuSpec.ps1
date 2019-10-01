@@ -57,17 +57,19 @@ function New-ALNuSpec
 "@
     $nuspec =[System.Xml.XmlDocument]$xmltext
     foreach($Dep in $AppDependencies) {
-        $depXml = $nuspec.CreateElement('dependency','http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd')
-        $attr = $nuspec.CreateAttribute("id")
-        $attr.Value = "$IdPrefix$(Format-AppNameForNuget $ExecutionContext.InvokeCommand.ExpandString($DependencyFormat))"
-        $depXml.Attributes.Append($attr) | out-null
-        $attr = $nuspec.CreateAttribute("version")
-        $attr.Value = $Dep.version
-        if ($Dep.MinVersion) {
-            $attr.Value = $Dep.MinVersion
+        if ($Dep.publisher -ne 'Microsoft') {
+            $depXml = $nuspec.CreateElement('dependency','http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd')
+            $attr = $nuspec.CreateAttribute("id")
+            $attr.Value = "$IdPrefix$(Format-AppNameForNuget $ExecutionContext.InvokeCommand.ExpandString($DependencyFormat))"
+            $depXml.Attributes.Append($attr) | out-null
+            $attr = $nuspec.CreateAttribute("version")
+            $attr.Value = $Dep.version
+            if ($Dep.MinVersion) {
+                $attr.Value = $Dep.MinVersion
+            }
+            $depXml.Attributes.Append($attr) | out-null
+            $nuspec.package.metadata.SelectSingleNode("./*[name()='dependencies']").AppendChild($depXml)
         }
-        $depXml.Attributes.Append($attr) | out-null
-        $nuspec.package.metadata.SelectSingleNode("./*[name()='dependencies']").AppendChild($depXml)
     }
     $nuspec.Save($NuspecFileName)
 }

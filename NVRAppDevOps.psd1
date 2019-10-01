@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.86'
+ModuleVersion = '0.9.87'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.87
+- Fix NuSpec creatinon for BC v15.x - now ignoring Microsoft dependencies
+
 0.9.86
 - Fixed Read-ALConfiguration ignoring Auth and other parameters from .json config
 
