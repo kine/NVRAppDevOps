@@ -25,49 +25,48 @@
 .Parameter optionalParameters
     Array of optional Parameters for the container creation
 #>
-function Init-ALEnvironment
-{
+function Init-ALEnvironment {
     Param (
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $ContainerName,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $ImageName,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $LicenseFile,
-        [ValidateSet('','process','hyperv')]
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [ValidateSet('', 'process', 'hyperv')]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $Isolation,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $Build='',
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $Password='',
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $RepoPath='',
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $Username=$env:USERNAME,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $Build = '',
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $Password = '',
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $RepoPath = '',
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $Username = $env:USERNAME,
         [ValidateSet('Windows', 'NavUserPassword')]
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $Auth='Windows',
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $RAM='4GB',
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $Auth = 'Windows',
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $RAM = '4GB',
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         [String]$DockerHost,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         [PSCredential]$DockerHostCred,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         [bool]$DockerHostSSL,
         [switch]$SkipImportTestSuite,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
-        [bool]$IncludeCSide=$true,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [bool]$IncludeCSide = $true,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $optionalParameters,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $EnableSymbolLoading=$true,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $CreateTestWebServices=$true,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $EnableSymbolLoading = $true,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $CreateTestWebServices = $true,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $customScripts,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $useSSL
     )
     if ($env:TF_BUILD) {
@@ -85,18 +84,20 @@ function Init-ALEnvironment
             Write-Host "Using passed password"
             $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
             $User = $Username
-            $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
-        } else {
+            $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $PWord
+        }
+        else {
             if ($Auth -eq 'Windows') {
                 $credentials = Get-Credential -Message "Enter your WINDOWS password!!!" -UserName $Username
-            } else {
+            }
+            else {
                 $credentials = Get-Credential -Message "Enter password you want to use" -UserName $Username
             }
         }
 
-        $myscripts = @(@{'MainLoop.ps1' = 'while ($true) { start-sleep -seconds 10 }'})
+        $myscripts = @(@{'MainLoop.ps1' = 'while ($true) { start-sleep -seconds 10 }' })
 
-        if($customScripts) {
+        if ($customScripts) {
             $myscripts += $customScripts
         }
 
@@ -104,49 +105,53 @@ function Init-ALEnvironment
             '-e CustomNavSettings=ServicesUseNTLMAuthentication=true'
         )
 
-        if($useSSL -eq 'true') {
+        if ($useSSL -eq 'true') {
             $additionalParameters += "--env useSSL=Y"
         }
 
-        if($optionalParameters) {
+        if ($optionalParameters) {
             $additionalParameters += $optionalParameters
         }
-
+        if (-not (Get-ContainerImageCurrentness -Image $ImageName)) {
+            docker pull $ImageName
+        }
         New-NavContainer -accept_eula `
-                        -accept_outdated `
-                        -containerName $ContainerName `
-                        -imageName $ImageName `
-                        -licenseFile $LicenseFile `
-                        -isolation $Isolation `
-                        -Credential $credentials `
-                        -doNotExportObjectsToText `
-                        -enableSymbolLoading:$EnableSymbolLoading `
-                        -includeCSide:$IncludeCSide `
-                        -alwaysPull `
-                        -includeTestToolkit:$inclTestToolkit `
-                        -shortcuts "Desktop" `
-                        -auth $Auth `
-                        -additionalParameters $additionalParameters `
-                        -memoryLimit $RAM `
-                        -assignPremiumPlan `
-                        -updateHosts `
-                        -useBestContainerOS `
-                        -myScripts $myscripts
+            -accept_outdated `
+            -containerName $ContainerName `
+            -imageName $ImageName `
+            -licenseFile $LicenseFile `
+            -isolation $Isolation `
+            -Credential $credentials `
+            -doNotExportObjectsToText `
+            -enableSymbolLoading:$EnableSymbolLoading `
+            -includeCSide:$IncludeCSide `
+            -includeTestToolkit:$inclTestToolkit `
+            -shortcuts "Desktop" `
+            -auth $Auth `
+            -additionalParameters $additionalParameters `
+            -memoryLimit $RAM `
+            -assignPremiumPlan `
+            -updateHosts `
+            -useBestContainerOS `
+            -myScripts $myscripts
 
-    } else {
+    }
+    else {
         if ((-not $Password) -or ($Password -eq '')) {
             Write-Host 'Using fixed password and NavUserPassword authentication'
             $PWord = ConvertTo-SecureString -String 'Pass@word1' -AsPlainText -Force
-        } else {
+        }
+        else {
             Write-Host "Using passed password and $Auth authentication"
             $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
         }
         $User = $Username
-        $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
+        $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $PWord
 
-        if($customScripts) {
+        if ($customScripts) {
             $myscripts = @($customScripts)
-        } else {
+        }
+        else {
             $myscripts = @()
         }
 
@@ -154,17 +159,19 @@ function Init-ALEnvironment
             '-e CustomNavSettings=ServicesUseNTLMAuthentication=true'
         )
 
-        if($useSSL -eq 'true') {
+        if ($useSSL -eq 'true') {
             $additionalParameters += "--env useSSL=Y"
         }
         else {
             $additionalParameters += "--env useSSL=N"
         }
 
-        if($optionalParameters) {
+        if ($optionalParameters) {
             $additionalParameters += $optionalParameters
         }
-
+        if (-not (Get-ContainerImageCurrentness -Image $ImageName)) {
+            docker pull $ImageName
+        }
         New-NavContainer -accept_eula `
             -accept_outdated `
             -containerName $ContainerName `
@@ -176,7 +183,6 @@ function Init-ALEnvironment
             -enableSymbolLoading:$EnableSymbolLoading `
             -doNotExportObjectsToText `
             -includeCSide:$IncludeCSide `
-            -alwaysPull `
             -includeTestToolkit:$inclTestToolkit `
             -additionalParameters $additionalParameters `
             -memoryLimit $RAM `
@@ -186,13 +192,13 @@ function Init-ALEnvironment
             -updateHosts `
             -myScripts $myscripts
 
-    #        -myScripts @{"SetupWebClient.ps1"=''}
-    #    -memoryLimit 4GB
+        #        -myScripts @{"SetupWebClient.ps1"=''}
+        #    -memoryLimit 4GB
     }
 
     if ($Build -eq '') {
         Write-Host 'Extracting VSIX'
-        docker exec -t $ContainerName PowerShell.exe -Command {$targetDir = "c:\run\my\alc"; $vsix = (Get-ChildItem "c:\run\*.vsix" -Recurse | Select-Object -First 1);Add-Type -AssemblyName System.IO.Compression.FileSystem;[System.IO.Compression.ZipFile]::ExtractToDirectory($vsix.FullName, $targetDir) ;Write-Host "$vsix";copy-item $vsix "c:\run\my"}
+        docker exec -t $ContainerName PowerShell.exe -Command { $targetDir = "c:\run\my\alc"; $vsix = (Get-ChildItem "c:\run\*.vsix" -Recurse | Select-Object -First 1); Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory($vsix.FullName, $targetDir) ; Write-Host "$vsix"; copy-item $vsix "c:\run\my" }
 
         $vsixExt = (Get-ChildItem "C:\ProgramData\NavContainerHelper\Extensions\$ContainerName\" -Filter *.vsix).FullName
         Write-Host 'Installing vsix package'
