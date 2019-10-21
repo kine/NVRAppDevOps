@@ -3,22 +3,10 @@
     Get currentness of a local container image
 .Description
     Gets the installed version of a local image 
-.Parameter ImageName
-    The image name
-.Parameter ImageTag
-    The image version
 .Parameter Image
     The complete image with image name and version
-.Parameter Registry
-    If you don't want to use the mcr.microsoft.com registry specify with this parameter
 .Example
-    Get-ContainerImageCurrentness -Image "businesscentral/sandbox:ltsc2019"
-.Example
-    Get-ContainerImageCurrentness -Image "businesscentral/sandbox:ltsc2019" -Registry "mcr.microsoft.com"
-.Example
-    Get-ContainerImageCurrentness -ImageName "businesscentral/sandbox" -ImageTag "ltsc2019"
-.Example
-    Get-ContainerImageCurrentness -ImageName "businesscentral/sandbox" -ImageTag "ltsc2019" -Registry "mcr.microsoft.com"
+    Get-ContainerImageCurrentness -Image "mcr.microsoft.com/businesscentral/sandbox:ltsc2019"
 #>
 function Get-ContainerImageCurrentness {
     Param(
