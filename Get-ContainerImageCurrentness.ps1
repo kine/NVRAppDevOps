@@ -29,16 +29,13 @@ function Get-ContainerImageCurrentness {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $Image,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        $Registry
+        $Registry = "mcr.microsoft.com"
     )
     $localImageIsLatest = $True;
     if (($Image -eq "") -or ($Image -eq $null)) {
         if ((($ImageName -eq "") -or ($ImageName -eq $null)) -and (($ImageTag -eq "") -or ($ImageTag -eq $null))) {
             Write-Error "You need to either specify the Image or the ImageName and the ImageTag"
         }
-        if (-not $Registry) {
-            $Registry = "mcr.microsoft.com"
-        } 
         $Image = $Registry + "/" + $ImageName + ":" + $ImageTag
     }
     else {
