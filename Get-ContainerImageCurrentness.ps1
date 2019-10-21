@@ -45,7 +45,9 @@ function Get-ContainerImageCurrentness {
         $result = $matches.Matches.Groups[2].Value.Split(':');
         $ImageName = $result[0];
         $ImageTag = $result[1];
-        $Registry = $matches.Matches.Groups[1].Value.Split(':').TrimEnd('/');
+        if (-not $Registry) {
+            $Registry = $matches.Matches.Groups[1].Value.Split(':').TrimEnd('/');
+        }
         $Image = $Registry + "/" + $ImageName + ":" + $ImageTag
     }
     try {
