@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.88'
+ModuleVersion = '0.9.89'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.89
+- Fixed function Get-ContainerImageCurrentness to parse repository automatically from Image parameter
+
 0.9.88
 - Pull image only if newer available (Thanks to Sven Niehus)
 - Added license file
