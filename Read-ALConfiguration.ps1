@@ -52,6 +52,9 @@ function Read-ALConfiguration {
     if ($Isolation -eq $null) {
         $Isolation = ''
     }
+    if ($TestLibraryOnly -eq $null) {
+        $TestLibraryOnly = $false
+    }
     $ClientPath = Get-ALDesktopClientPath -ContainerName $ContainerName
     $Configuration = Get-ALConfiguration `
         -ContainerName $ContainerName `
@@ -82,7 +85,8 @@ function Read-ALConfiguration {
         -optionalParameters $optionalParameters `
         -EnableSymbolLoading $EnableSymbolLoading `
         -CreateTestWebServices $CreateTestWebServices `
-        -IncludeCSide $IncludeCSide
+        -IncludeCSide $IncludeCSide `
+        -TestLibraryOnly $TestLibraryOnly
 
     Write-Output $Configuration
 }

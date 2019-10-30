@@ -32,7 +32,8 @@ function Get-ALConfiguration
         [bool]$IncludeCSide=$true,
         $optionalParameters,
         $EnableSymbolLoading=$true,
-        $CreateTestWebServices=$true
+        $CreateTestWebServices=$true,
+        $TestLibraryOnly=$false
 
     )
 
@@ -85,7 +86,8 @@ function Get-ALConfiguration
     $Configuration | Add-Member -MemberType NoteProperty -Name 'EnableSymbolLoading' -Value $EnableSymbolLoading
     $Configuration | Add-Member -MemberType NoteProperty -Name 'CreateTestWebServices' -Value $CreateTestWebServices
     $Configuration | Add-Member -MemberType NoteProperty -Name 'IncludeCSide' -Value $IncludeCSide
-
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'TestLibraryOnly' -Value $TestLibraryOnly
+    
 
 
     Write-Output $Configuration

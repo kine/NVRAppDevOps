@@ -15,6 +15,8 @@
   Credentials of the NAV SUPER user if using NavUserPassword authentication
  .Parameter AzureDevOps
   Generate Azure DevOps Pipeline compatible output. This setting determines the severity of errors.
+ .Parameter AppID
+  Run all tests defined in app with this AppID (adding tests to test suite is not needed) 
  .Example
   Run-ALTestInContainer -ContatinerName test
 #>
@@ -40,7 +42,11 @@ function Run-ALTestInContainer
         [ValidateSet('no','error','warning')]
         [string] $AzureDevOps = 'no',
         [Parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$True)]
-        [switch] $detailed
+        [switch]$detailed,
+        [Parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$True)]
+        [switch]$restartContainerAndRetry,
+        [Parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$True)]
+        [string]$extensionId=''
     )
     if ($env:TF_BUILD) {
         Write-Host "TF_BUILD set, running under agent, enforcing Build flag"
@@ -73,6 +79,6 @@ function Run-ALTestInContainer
     }
 
     Write-Host "Running tests in container through navcontainerhelper..."
-    Run-TestsInNavContainer -containerName $ContainerName -tenant $tenant -credential $credentials -testSuite $testSuite -XUnitResultFileName $XUnitResultFileName -AzureDevOps $AzureDevOps -detailed:$detailed
-    
+    Run-TestsInNavContainer -containerName $ContainerName -tenant $tenant -credential $credentials -testSuite $testSuite -XUnitResultFileName $XUnitResultFileName -AzureDevOps $AzureDevOps -detailed:$detailed -restartContainerAndRetry:$restartContainerAndRetry -extensionId $extensionId
+        
 }

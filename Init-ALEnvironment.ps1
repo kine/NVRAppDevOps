@@ -57,6 +57,8 @@ function Init-ALEnvironment {
         [bool]$DockerHostSSL,
         [switch]$SkipImportTestSuite,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [switch]$TestLibraryOnly,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         [bool]$IncludeCSide = $true,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $optionalParameters,
@@ -79,6 +81,7 @@ function Init-ALEnvironment {
     if ($SkipImportTestSuite) {
         $inclTestToolkit = $False
     }
+    $includeTestLibrariesOnly = (-not $inclTestToolkit) -or $TestLibraryOnly
     if ($Build -ne 'true') {
         if ($Password) {
             Write-Host "Using passed password"
@@ -126,6 +129,7 @@ function Init-ALEnvironment {
             -enableSymbolLoading:$EnableSymbolLoading `
             -includeCSide:$IncludeCSide `
             -includeTestToolkit:$inclTestToolkit `
+            -includeTestLibrariesOnly:$includeTestLibrariesOnly `
             -shortcuts "Desktop" `
             -auth $Auth `
             -additionalParameters $additionalParameters `
@@ -184,6 +188,7 @@ function Init-ALEnvironment {
             -doNotExportObjectsToText `
             -includeCSide:$IncludeCSide `
             -includeTestToolkit:$inclTestToolkit `
+            -includeTestLibrariesOnly:$includeTestLibrariesOnly `
             -additionalParameters $additionalParameters `
             -memoryLimit $RAM `
             -assignPremiumPlan `
