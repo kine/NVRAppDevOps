@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.91'
+ModuleVersion = '0.9.92'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.92
+- companyName parameter added to Run-ALTestInContainer
+
 0.9.91
 - TestLibraryOnly parameter added for configuration to import only test libraries when needed
 - Support for extensionId and restartContainerAndRetry parameters when running tests in container

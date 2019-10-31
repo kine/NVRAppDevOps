@@ -46,7 +46,9 @@ function Run-ALTestInContainer
         [Parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$True)]
         [switch]$restartContainerAndRetry,
         [Parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$True)]
-        [string]$extensionId=''
+        [string]$extensionId='',
+        [Parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$True)]
+        [string]$companyName=''
     )
     if ($env:TF_BUILD) {
         Write-Host "TF_BUILD set, running under agent, enforcing Build flag"
@@ -79,6 +81,16 @@ function Run-ALTestInContainer
     }
 
     Write-Host "Running tests in container through navcontainerhelper..."
-    Run-TestsInNavContainer -containerName $ContainerName -tenant $tenant -credential $credentials -testSuite $testSuite -XUnitResultFileName $XUnitResultFileName -AzureDevOps $AzureDevOps -detailed:$detailed -restartContainerAndRetry:$restartContainerAndRetry -extensionId $extensionId
+    Run-TestsInNavContainer `
+        -containerName $ContainerName `
+        -tenant $tenant `
+        -credential $credentials `
+        -testSuite $testSuite `
+        -XUnitResultFileName $XUnitResultFileName `
+        -AzureDevOps $AzureDevOps `
+        -detailed:$detailed `
+        -restartContainerAndRetry:$restartContainerAndRetry `
+        -extensionId $extensionId `
+        -companyName $companyName
         
 }
