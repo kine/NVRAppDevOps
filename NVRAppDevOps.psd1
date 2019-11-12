@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.92'
+ModuleVersion = '0.9.93'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.93
+- Remove warnings from Get-ContainerImageCurrentenss because the results are not reliable
+
 0.9.92
 - companyName parameter added to Run-ALTestInContainer
 
