@@ -24,6 +24,9 @@ function Get-ContainerImageCurrentness {
         $Registry = $matches.Matches.Groups[1].Value.Split('/')[0];
         $ImageName = $result[0];
         $ImageTag = $result[1];
+        if ($ImageTag -eq '') {
+            $ImageTag = 'latest'
+        }
         $Image = $Registry + "/" + $ImageName + ":" + $ImageTag;
         try {
             $manifestUri = "https://$Registry/v2/$ImageName/manifests/$ImageTag";
@@ -31,23 +34,29 @@ function Get-ContainerImageCurrentness {
             $manifestContent = [System.Text.Encoding]::ASCII.GetString($manifestWebRequest.RawContentStream.ToArray());
             $manifestJsonObj = $manifestContent | ConvertFrom-Json;
             $manifestHistory = $manifestJsonObj.history;
+            try {
+                $localImageInspectJson = docker inspect $Image;
+                $localImageInspectObj = $localImageInspectJson | ConvertFrom-Json;
+                $localImageCreated = $localImageInspectObj.Created;
 
-            $localImageInspectJson = docker inspect $Image;
-            $localImageInspectObj = $localImageInspectJson | ConvertFrom-Json;
-            $localImageCreated = $localImageInspectObj.Created;
     
-            for ($i = 1; $i -lt $manifestHistory.length; $i++) {
-                $manifestCompatibility = $manifestHistory[$i].v1Compatibility | ConvertFrom-Json;
-                $manifestCompatibilityCreated = [DateTime]$manifestCompatibility.created;
-                $ts = New-TimeSpan -Start $localImageCreated -End $manifestCompatibilityCreated;
-                if ($ts.Hours -ge 1) {
-                    $localImageIsLatest = $false;
+                for ($i = 1; $i -lt $manifestHistory.length; $i++) {
+                    $manifestCompatibility = $manifestHistory[$i].v1Compatibility | ConvertFrom-Json;
+                    $manifestCompatibilityCreated = [DateTime]$manifestCompatibility.created;
+                    $ts = New-TimeSpan -Start $localImageCreated -End $manifestCompatibilityCreated;
+                    if ($ts.Hours -ge 1) {
+                        $localImageIsLatest = $false;
+                    }
                 }
+            } catch 
+            {
+                $localImageIsLatest = $false
+                Write-Host "The image $Image could not be found locally, pulling";
             }
         }
         catch {
             $localImageIsLatest = $false
-            Write-Warning "The image $Image could not be found locally";
+            Write-Host "Cannot read data about the image from server, rather pulling";
         }
         finally {        
             if ($localImageIsLatest) {
