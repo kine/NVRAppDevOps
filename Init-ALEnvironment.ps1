@@ -216,8 +216,9 @@ function Init-ALEnvironment {
         $ServerConfig = Get-NavContainerServerConfiguration -ContainerName $ContainerName
 
         Invoke-ScriptInNavContainer -containerName $ContainerName -scriptblock {
-            New-NAVWebService -ServerInstance $ServerConfig.ServerInstance -ServiceName CALTestResults -ObjectType Page -ObjectId 130405 -Published $True
-            New-NAVWebService -ServerInstance $ServerConfig.ServerInstance -ServiceName CALCodeCoverageMap -ObjectType Page -ObjectId 130408 -Published $True 
-        }
+            Param($serverInstance)
+            New-NAVWebService -ServerInstance $serverInstance -ServiceName CALTestResults -ObjectType Page -ObjectId 130405 -Published $True
+            New-NAVWebService -ServerInstance $serverInstance -ServiceName CALCodeCoverageMap -ObjectType Page -ObjectId 130408 -Published $True 
+        } -argumentList $ServerConfig.ServerInstance
     }
 }
