@@ -48,7 +48,9 @@ function Run-ALTestInContainer
         [Parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$True)]
         [string]$extensionId='',
         [Parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$True)]
-        [string]$companyName=''
+        [string]$companyName='',
+        [Parameter(Mandatory=$false,ValueFromPipelineByPropertyName=$True)]
+        [switch]$returnTrueIfAllPassed
     )
     if ($env:TF_BUILD) {
         Write-Host "TF_BUILD set, running under agent, enforcing Build flag"
@@ -91,6 +93,7 @@ function Run-ALTestInContainer
         -detailed:$detailed `
         -restartContainerAndRetry:$restartContainerAndRetry `
         -extensionId $extensionId `
-        -companyName $companyName
+        -companyName $companyName `
+        -returnTrueIfAllPassed:$returnTrueIfAllPassed
         
 }

@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.94'
+ModuleVersion = '0.9.95'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.95
+- Add returnTrueIfAllPassed to Run-ALTestInContainer
+
 0.9.94
 - Fix Test webservice creation in Init-ALEnvironment for pre-BC15 versions (thanks kfuglsang)
 
