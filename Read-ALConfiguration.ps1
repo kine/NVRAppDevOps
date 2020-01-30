@@ -86,7 +86,8 @@ function Read-ALConfiguration {
         -EnableSymbolLoading $EnableSymbolLoading `
         -CreateTestWebServices $CreateTestWebServices `
         -IncludeCSide $IncludeCSide `
-        -TestLibraryOnly $TestLibraryOnly
+        -TestLibraryOnly $TestLibraryOnly `
+        -CustomScripts $CustomScripts
 
     Write-Output $Configuration
 }
