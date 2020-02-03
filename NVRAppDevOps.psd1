@@ -24,7 +24,7 @@ Author = 'Kamil Sacek'
 CompanyName = 'NAVERTICA a.s.'
 
 # Copyright statement for this module
-Copyright = '(c) 2018 Kamil Sacek'
+Copyright = '(c) 2018-2020 Kamil Sacek'
 
 # Description of the functionality provided by this module
 Description = 'cmdlets for DevOps for Business Central'
@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.95'
+ModuleVersion = '0.9.96'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.96
+- Add CustomScripts parameter support for config commands (Thanks Koubek)
+
 0.9.95
 - Add returnTrueIfAllPassed to Run-ALTestInContainer
 
