@@ -51,7 +51,9 @@ function Get-ALAppOrder
         foreach ($F in $Files) {
             $AppJson = Get-Content -Path $F.FullName | ConvertFrom-Json
             $AppJson | Add-Member -MemberType NoteProperty -Name "AppPath" -Value $F.FullName
-            $result.Add($AppJson.name,$AppJson)
+            if (-not $result.ContainsKey($AppJson.name)) {
+                $result.Add($AppJson.name,$AppJson)
+            }
         }
         return $result
     }
@@ -89,12 +91,16 @@ function Get-ALAppOrder
                     }
                     if ($DependencyOk) {
                         $AppsOrdered += $App.Value
-                        $AppsCompiled.Add($App.Value.name,$App.Value)
+                        if (-not $AppsCompiled.ContainsKey($App.Value.name)) {
+                            $AppsCompiled.Add($App.Value.name,$App.Value)
+                        }
                     }
                 }
             }
             foreach ($App in $AppsToAdd.GetEnumerator()) {
-                $Apps.Add($App.Value.name,$App.Value)
+                if (-not $Apps.ContainsKey($App.Value.name)) {
+                    $Apps.Add($App.Value.name,$App.Value)
+                }
             }
             $AppsToAdd =@{}
         } while ($Apps.Count -ne $AppsCompiled.Count)
@@ -142,7 +148,9 @@ function Get-ALAppOrder
             #$App = Get-NAVAppInfo -Path $AppFile.FullName
             $App = Get-AppJsonFromApp -AppFile $AppFile.FullName -ContainerName $ContainerName
             if ($App.publisher -ne 'Microsoft') {
-                $Apps.Add($App.name,$App)
+                if (-not $Apps.ContainsKey($App.name)) {
+                    $Apps.Add($App.name,$App)
+                }
             }
         }
     }
