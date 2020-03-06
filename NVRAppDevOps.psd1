@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.96'
+ModuleVersion = '0.9.97'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+0.9.97
+- Fixed "Exception calling "Add" with "2" argument(s): "Item has already been added. Key in dictionary:"
+
 0.9.96
 - Add CustomScripts parameter support for config commands (Thanks Koubek)
 
