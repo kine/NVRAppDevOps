@@ -24,6 +24,8 @@
     Will not import test suite and it could be imported later through separate command
 .Parameter optionalParameters
     Array of optional Parameters for the container creation
+.Parameter useBestContainerOS
+    Propagated as useBestContainerOS flag for the New-NAVContainer cmdlet
 #>
 function Init-ALEnvironment {
     Param (
@@ -69,7 +71,9 @@ function Init-ALEnvironment {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $customScripts,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        $useSSL
+        $useSSL,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $useBestContainerOS=$true
     )
     if ($env:TF_BUILD) {
         Write-Host "TF_BUILD set, running under agent, enforcing Build flag"
@@ -136,7 +140,7 @@ function Init-ALEnvironment {
             -memoryLimit $RAM `
             -assignPremiumPlan `
             -updateHosts `
-            -useBestContainerOS `
+            -useBestContainerOS:$useBestContainerOS `
             -myScripts $myscripts
 
     }
@@ -193,7 +197,7 @@ function Init-ALEnvironment {
             -memoryLimit $RAM `
             -assignPremiumPlan `
             -shortcuts "None" `
-            -useBestContainerOS `
+            -useBestContainerOS:$useBestContainerOS `
             -updateHosts `
             -myScripts $myscripts
 
