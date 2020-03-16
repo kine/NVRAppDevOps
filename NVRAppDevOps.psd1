@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '0.9.98'
+ModuleVersion = '1.0.0'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+1.0.0
+- Add function Add-ArtifactView to add view to Azure DevOps artifact
+- Decided to make it v1.0.0 because already using it for long time and seems without issues
+        
 0.9.98
 - Add useBestContainerOS parameter into init-alenvironment
 
