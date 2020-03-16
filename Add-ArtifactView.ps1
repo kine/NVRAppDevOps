@@ -55,7 +55,7 @@ function Add-ArtifactView
     $HeaderPatch = @{"Authorization" = "Basic "+$Token; "content-type" = "application/json-patch+json"}
   } else {
     Write-Verbose -Message 'OAuth authorization used'
-    $HeaderPatch = @{"Authorization" = $OAuthToken; "content-type" = "application/json-patch+json"}
+    $HeaderPatch = @{"Authorization" = "Bearer "+$OAuthToken; "content-type" = "application/json-patch+json"}
   }
   $tfsCollectionUri = "https://pkgs.dev.azure.com/$accountName"
 
