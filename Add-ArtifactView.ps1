@@ -36,7 +36,7 @@ function Add-ArtifactView
     [string]$packageVersion,
     [Parameter(Mandatory=$True,ValueFromPipelineByPropertyName=$True)]
     [string]$packageQuality,
-    [Parameter(Mandatory=$True,ValueFromPipelineByPropertyName=$True)]
+    [Parameter(ValueFromPipelineByPropertyName=$True)]
     [string]$PAT,
     [Parameter(ValueFromPipelineByPropertyName=$True)]
     [string]$packageType='nuget',
