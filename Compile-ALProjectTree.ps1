@@ -89,7 +89,7 @@ function Compile-ALProjectTree
                 } else {
                     $NewRulesetFile = $RulesetFile
                 }
-                Write-Host "Using ruleset path $NewRulesetFile"
+                Write-Host "Using ruleset path $RulesetFile $NewRulesetFile ($([System.IO.Path]::IsPathRooted($RulesetFile)))"
             } else {
 
             }
