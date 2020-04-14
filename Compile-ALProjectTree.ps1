@@ -83,11 +83,15 @@ function Compile-ALProjectTree
             Write-Host "**** Compiling $($App.name) ****"
             $AppPath = Split-Path -Path $App.AppPath
             $AppFileName = (Join-Path $PackagesPath "$($App.publisher)_$($App.name)_$($App.version).app")
-            if (-not [System.IO.Path]::IsPathRooted($RulesetFile)) {
-                $NewRulesetFile = (Join-Path $AppPath $RulesetFile)
+            if ($RulesetFile) {
+                if (-not [System.IO.Path]::IsPathRooted($RulesetFile)) {
+                    $NewRulesetFile = (Join-Path $AppPath $RulesetFile)
+                } else {
+                    $NewRulesetFile = $RulesetFile
+                }
                 Write-Host "Using ruleset path $NewRulesetFile"
             } else {
-                $NewRulesetFile = $RulesetFile
+
             }
             if ($Auth -eq 'NavUserPassword') {
                 $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
