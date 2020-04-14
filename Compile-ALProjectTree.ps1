@@ -83,21 +83,26 @@ function Compile-ALProjectTree
             Write-Host "**** Compiling $($App.name) ****"
             $AppPath = Split-Path -Path $App.AppPath
             $AppFileName = (Join-Path $PackagesPath "$($App.publisher)_$($App.name)_$($App.version).app")
-
+            if (-not [System.IO.Path]::IsPathRooted($RulesetFile)) {
+                $NewRulesetFile = (Join-Path $AppPath $RulesetFile)
+                Write-Host "Using ruleset path $NewRulesetFile"
+            } else {
+                $NewRulesetFile = $RulesetFile
+            }
             if ($Auth -eq 'NavUserPassword') {
                 $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
                 $User = $Username
                 $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
                 if ($env:TF_BUILD) {
-                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps -credential $credentials -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn  -rulesetFile $RulesetFile -assemblyProbingPaths $AsmProbingPaths| Out-Null
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps -credential $credentials -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn  -rulesetFile $NewRulesetFile -assemblyProbingPaths $AsmProbingPaths| Out-Null
                 } else {
-                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath  -credential $credentials -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn  -rulesetFile $RulesetFile -assemblyProbingPaths $AsmProbingPaths| Out-Null
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath  -credential $credentials -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn  -rulesetFile $NewRulesetFile -assemblyProbingPaths $AsmProbingPaths| Out-Null
                 }
             } else {
                 if ($env:TF_BUILD) {
-                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps  -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn -rulesetFile $RulesetFile -assemblyProbingPaths $AsmProbingPaths | Out-Null
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps  -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn -rulesetFile $NewRulesetFile -assemblyProbingPaths $AsmProbingPaths | Out-Null
                 } else {
-                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn  -rulesetFile $RulesetFile -assemblyProbingPaths $AsmProbingPaths | Out-Null
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn  -rulesetFile $NewRulesetFile -assemblyProbingPaths $AsmProbingPaths | Out-Null
                 }
             }
 
