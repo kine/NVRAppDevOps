@@ -31,6 +31,12 @@
  .Parameter Failon
     Specify if you want Compilation to fail on Error or Warning (Works only if running under Azure DevOps pipeline - $env:TF_BUILD is true)
 
+.Parameter AsmProbingPaths
+    Specify paths for Assembly probing when using Addins or external libraries
+
+.Parameter RulesetFile
+    File with rulesets to use during compilation
+    
 #>
 function Compile-ALProjectTree
 {
@@ -61,7 +67,11 @@ function Compile-ALProjectTree
         [ValidateSet('none','error','warning')]
         [string]$FailOn = 'error',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        $AppDownloadScript
+        $AppDownloadScript,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $RulesetFile,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $AsmProbingPaths
 
 
     )
@@ -79,15 +89,15 @@ function Compile-ALProjectTree
                 $User = $Username
                 $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
                 if ($env:TF_BUILD) {
-                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps -credential $credentials -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn | Out-Null
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps -credential $credentials -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn  -rulesetFile $RulesetFile -assemblyProbingPaths $AsmProbingPaths| Out-Null
                 } else {
-                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath  -credential $credentials -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn | Out-Null
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath  -credential $credentials -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn  -rulesetFile $RulesetFile -assemblyProbingPaths $AsmProbingPaths| Out-Null
                 }
             } else {
                 if ($env:TF_BUILD) {
-                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps  -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn | Out-Null
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps  -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn -rulesetFile $RulesetFile -assemblyProbingPaths $AsmProbingPaths | Out-Null
                 } else {
-                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn | Out-Null
+                    Compile-AppInNavContainer -containerName $ContainerName -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn  -rulesetFile $RulesetFile -assemblyProbingPaths $AsmProbingPaths | Out-Null
                 }
             }
 
