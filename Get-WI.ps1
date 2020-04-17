@@ -47,7 +47,7 @@ function Get-WI
   if ($WIUrl) {
     $requestUri = "$($WIUrl)?api-version=5.1"
   } else {
-    $requestUri = "https://dev.azure.com/$accountName/$projectName/_apis/wit/wiql?api-version=5.1"
+    $requestUri = "https://dev.azure.com/$accountName/$projectName/_apis/wit/workitems/$($WINo)?api-version=5.1"
   }
   Write-Verbose -Message $requestUri
   $response = Invoke-RestMethod -Uri $requestUri -Method Get -Headers $Header -Verbose

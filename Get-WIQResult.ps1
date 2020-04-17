@@ -17,9 +17,11 @@
 function Get-WIQResult
 {
   param(
-    [Parameter(Mandatory=$True,ValueFromPipelineByPropertyName=$True)]
+    [Parameter(Mandatory=$True,ValueFromPipelineByPropertyName=$True,ParameterSetName='ADOUrl')]
+    [string]$ADOUrl,
+    [Parameter(Mandatory=$True,ValueFromPipelineByPropertyName=$True,ParameterSetName='AccountName')]
     [string]$accountName,
-    [Parameter(Mandatory=$True,ValueFromPipelineByPropertyName=$True)]
+    [Parameter(Mandatory=$True,ValueFromPipelineByPropertyName=$True,ParameterSetName='AccountName')]
     [string]$projectName,
     [Parameter(Mandatory=$True,ValueFromPipelineByPropertyName=$True)]
     [string]$WIQ,
@@ -40,7 +42,12 @@ function Get-WIQResult
     $Header = @{"Authorization" = "Bearer "+$OAuthToken; "content-type" = "application/json"}
   }
 
-  $requestUri = "https://dev.azure.com/$accountName/$projectName/_apis/wit/wiql?api-version=5.1"
+  if ($ADOUrl) {
+    $requestUri = "$($ADOUrl)/_apis/wit/wiql?api-version=5.1"
+  } else {
+    $requestUri = "https://dev.azure.com/$accountName/$projectName/_apis/wit/wiql?api-version=5.1"
+  }
+
   $body= @"
   {
     "query": "$WIQ"
