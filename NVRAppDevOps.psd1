@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '1.0.7'
+ModuleVersion = '1.0.8'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+1.0.8
+- Added Get-WI to get Work Item from Azure DevOps and Get-WIQResult to run WIQL and get the result
+
 1.0.5
 - Add AppPath to RulesetFile path if relative path used
 
