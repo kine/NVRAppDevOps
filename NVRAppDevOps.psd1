@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '1.0.10'
+ModuleVersion = '1.0.11'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+1.0.11
+- Add [bool]alwaysPull parameter to Init-ALEnvironment (default false, was false in older vesions)
+
 1.0.9
 - Add Get-WIFieldDefault to read default value for WI field (default values are not part of the data returned by Get-WI)
 
