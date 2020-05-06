@@ -73,7 +73,9 @@ function Init-ALEnvironment {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $useSSL,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        $useBestContainerOS=$true
+        $useBestContainerOS=$true,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $alwaysPull=$false
     )
     if ($env:TF_BUILD) {
         Write-Host "TF_BUILD set, running under agent, enforcing Build flag"
@@ -141,7 +143,8 @@ function Init-ALEnvironment {
             -assignPremiumPlan `
             -updateHosts `
             -useBestContainerOS:$useBestContainerOS `
-            -myScripts $myscripts
+            -myScripts $myscripts `
+            -alwaysPull:$alwaysPull
 
     }
     else {
@@ -199,7 +202,8 @@ function Init-ALEnvironment {
             -shortcuts "None" `
             -useBestContainerOS:$useBestContainerOS `
             -updateHosts `
-            -myScripts $myscripts
+            -myScripts $myscripts `
+            -alwaysPull:$alwaysPull
 
         #        -myScripts @{"SetupWebClient.ps1"=''}
         #    -memoryLimit 4GB
