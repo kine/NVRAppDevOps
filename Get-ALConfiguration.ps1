@@ -34,7 +34,9 @@ function Get-ALConfiguration
         $EnableSymbolLoading=$true,
         $CreateTestWebServices=$true,
         $TestLibraryOnly=$false,
-        $CustomScripts
+        $CustomScripts,
+        $ArtifactUrl,
+        $UseArtifacts
     )
 
     function Get-ResultPath
@@ -88,6 +90,8 @@ function Get-ALConfiguration
     $Configuration | Add-Member -MemberType NoteProperty -Name 'IncludeCSide' -Value $IncludeCSide
     $Configuration | Add-Member -MemberType NoteProperty -Name 'TestLibraryOnly' -Value $TestLibraryOnly
     $Configuration | Add-Member -MemberType NoteProperty -Name 'CustomScripts' -Value $CustomScripts
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'ArtifactUrl' -Value $ArtifactUrl
+    $Configuration | Add-Member -MemberType NoteProperty -Name 'UseArtifacts' -Value $UseArtifacts
     
 
 

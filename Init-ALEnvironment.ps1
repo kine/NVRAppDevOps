@@ -75,7 +75,12 @@ function Init-ALEnvironment {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $useBestContainerOS=$true,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        $alwaysPull=$false
+        $alwaysPull=$false,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $ArtifactUrl,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $UseArtifacts
+
     )
     if ($env:TF_BUILD) {
         Write-Host "TF_BUILD set, running under agent, enforcing Build flag"
@@ -121,7 +126,7 @@ function Init-ALEnvironment {
         if ($optionalParameters) {
             $additionalParameters += $optionalParameters
         }
-        if (-not (Get-ContainerImageCurrentness -Image $ImageName)) {
+        if ($ImageName -and (-not (Get-ContainerImageCurrentness -Image $ImageName))) {
             docker pull $ImageName
         }
         New-NavContainer -accept_eula `
@@ -144,7 +149,9 @@ function Init-ALEnvironment {
             -updateHosts `
             -useBestContainerOS:$useBestContainerOS `
             -myScripts $myscripts `
-            -alwaysPull:$alwaysPull
+            -alwaysPull:$alwaysPull `
+            -artifactUrl $ArtifactUrl `
+            -useArtifact $UseArtifacts
 
     }
     else {
@@ -203,7 +210,9 @@ function Init-ALEnvironment {
             -useBestContainerOS:$useBestContainerOS `
             -updateHosts `
             -myScripts $myscripts `
-            -alwaysPull:$alwaysPull
+            -alwaysPull:$alwaysPull `
+            -artifactUrl $ArtifactUrl `
+            -useArtifact $UseArtifacts
 
         #        -myScripts @{"SetupWebClient.ps1"=''}
         #    -memoryLimit 4GB

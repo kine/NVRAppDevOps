@@ -87,7 +87,9 @@ function Read-ALConfiguration {
         -CreateTestWebServices $CreateTestWebServices `
         -IncludeCSide $IncludeCSide `
         -TestLibraryOnly $TestLibraryOnly `
-        -CustomScripts $CustomScripts
+        -CustomScripts $CustomScripts `
+        -ArtifactUrl $ArtifactUrl `
+        -UseArtifacts $UseArtifacts
 
     Write-Output $Configuration
 }
