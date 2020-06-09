@@ -49,7 +49,7 @@ Description = 'cmdlets for DevOps for Business Central'
 
 # Modules that must be imported into the global environment prior to importing this module
 RequiredModules = @(
-    @{ModuleName='navcontainerhelper';ModuleVersion='0.6.1.2';Guid='ae60837a-fa30-4e28-a5ef-b8cd4cf6640a'}
+    @{ModuleName='navcontainerhelper';ModuleVersion='0.7.0.0';Guid='ae60837a-fa30-4e28-a5ef-b8cd4cf6640a'}
     )
 
 # Assemblies that must be loaded prior to importing this module
