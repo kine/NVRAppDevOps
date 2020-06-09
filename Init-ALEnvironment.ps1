@@ -189,8 +189,10 @@ function Init-ALEnvironment {
         if ($optionalParameters) {
             $additionalParameters += $optionalParameters
         }
-        if (-not (Get-ContainerImageCurrentness -Image $ImageName)) {
-            docker pull $ImageName
+        if (-not $ArtifactUrl -and (-not $UseArtifacts)) {
+            if (-not (Get-ContainerImageCurrentness -Image $ImageName)) {
+                docker pull $ImageName
+            }
         }
         New-NavContainer -accept_eula `
             -accept_outdated `
