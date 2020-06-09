@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '1.0.11'
+ModuleVersion = '1.1.0'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+1.1.0
+- Artifacts support (preview)
+
 1.0.11
 - Add [bool]alwaysPull parameter to Init-ALEnvironment (default false, was false in older vesions)
 
