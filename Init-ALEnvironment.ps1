@@ -77,9 +77,7 @@ function Init-ALEnvironment {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $alwaysPull=$false,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        $ArtifactUrl,
-        [Parameter(ValueFromPipelineByPropertyName = $True)]
-        $UseArtifacts
+        $ArtifactUrl
 
     )
     if ($env:TF_BUILD) {
@@ -126,7 +124,7 @@ function Init-ALEnvironment {
         if ($optionalParameters) {
             $additionalParameters += $optionalParameters
         }
-        if (-not $ArtifactUrl -and (-not $UseArtifacts)) {
+        if (-not $ArtifactUrl) {
             if (-not (Get-ContainerImageCurrentness -Image $ImageName)) {
                 docker pull $ImageName
             }
@@ -152,8 +150,7 @@ function Init-ALEnvironment {
             -useBestContainerOS:$useBestContainerOS `
             -myScripts $myscripts `
             -alwaysPull:$alwaysPull `
-            -artifactUrl $ArtifactUrl `
-            -useArtifact $UseArtifacts
+            -artifactUrl $ArtifactUrl 
 
     }
     else {
@@ -189,7 +186,7 @@ function Init-ALEnvironment {
         if ($optionalParameters) {
             $additionalParameters += $optionalParameters
         }
-        if (-not $ArtifactUrl -and (-not $UseArtifacts)) {
+        if (-not $ArtifactUrl) {
             if (-not (Get-ContainerImageCurrentness -Image $ImageName)) {
                 docker pull $ImageName
             }
@@ -215,8 +212,7 @@ function Init-ALEnvironment {
             -updateHosts `
             -myScripts $myscripts `
             -alwaysPull:$alwaysPull `
-            -artifactUrl $ArtifactUrl `
-            -useArtifact $UseArtifacts
+            -artifactUrl $ArtifactUrl 
 
         #        -myScripts @{"SetupWebClient.ps1"=''}
         #    -memoryLimit 4GB

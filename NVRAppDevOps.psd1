@@ -49,7 +49,7 @@ Description = 'cmdlets for DevOps for Business Central'
 
 # Modules that must be imported into the global environment prior to importing this module
 RequiredModules = @(
-    @{ModuleName='navcontainerhelper';ModuleVersion='0.7.0.0';Guid='ae60837a-fa30-4e28-a5ef-b8cd4cf6640a'}
+    @{ModuleName='navcontainerhelper';ModuleVersion='0.7.0.7';Guid='ae60837a-fa30-4e28-a5ef-b8cd4cf6640a'}
     )
 
 # Assemblies that must be loaded prior to importing this module
@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '1.1.3'
+ModuleVersion = '1.1.4'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.

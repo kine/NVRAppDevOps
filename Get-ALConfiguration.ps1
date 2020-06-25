@@ -35,8 +35,7 @@ function Get-ALConfiguration
         $CreateTestWebServices=$true,
         $TestLibraryOnly=$false,
         $CustomScripts,
-        $ArtifactUrl,
-        $UseArtifacts
+        $ArtifactUrl
     )
 
     function Get-ResultPath
@@ -91,7 +90,6 @@ function Get-ALConfiguration
     $Configuration | Add-Member -MemberType NoteProperty -Name 'TestLibraryOnly' -Value $TestLibraryOnly
     $Configuration | Add-Member -MemberType NoteProperty -Name 'CustomScripts' -Value $CustomScripts
     $Configuration | Add-Member -MemberType NoteProperty -Name 'ArtifactUrl' -Value $ArtifactUrl
-    $Configuration | Add-Member -MemberType NoteProperty -Name 'UseArtifacts' -Value $UseArtifacts
     
 
 
