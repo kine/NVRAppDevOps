@@ -88,8 +88,7 @@ function Read-ALConfiguration {
         -IncludeCSide $IncludeCSide `
         -TestLibraryOnly $TestLibraryOnly `
         -CustomScripts $CustomScripts `
-        -ArtifactUrl $ArtifactUrl `
-        -UseArtifacts $UseArtifacts
+        -ArtifactUrl $ArtifactUrl
 
     Write-Output $Configuration
 }
