@@ -45,7 +45,13 @@ function Get-WI
   }
 
   if ($WIUrl) {
-    $requestUri = "$($WIUrl)?api-version=5.1"
+    if (-not $WIUrl.Contains("api-version")) {
+      if ($WIUrl.Contains("?")) {
+        $requestUri = "$($WIUrl)&api-version=5.1"
+      } else {
+        $requestUri = "$($WIUrl)?api-version=5.1"
+      }
+    }
   } else {
     $requestUri = "https://dev.azure.com/$accountName/$projectName/_apis/wit/workitems/$($WINo)?api-version=5.1"
   }
