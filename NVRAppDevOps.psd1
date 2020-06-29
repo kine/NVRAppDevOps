@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '1.1.4'
+ModuleVersion = '1.1.5'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,10 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+1.1.1-1.1.5
+- ArtifactUrl support - see https://freddysblog.com/
+- Get-WI double api-version bug fix
+
 1.1.0
 - Artifacts support (preview)
 
