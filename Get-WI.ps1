@@ -13,6 +13,8 @@
     Number of the Work Item
 .Parameter WIUrl
     URL of the Work Item
+.Parameter Expand
+    Value for API parameter $expand (None, Relations, Fields, Links, All)
 .OUTPUTS
     return work item data
 #>
@@ -30,7 +32,10 @@ function Get-WI
     [Parameter(ValueFromPipelineByPropertyName=$True)]
     [string]$PAT,
     [Parameter(ValueFromPipelineByPropertyName=$True)]
-    [string]$OAuthToken=''
+    [string]$OAuthToken='',
+    [Parameter(ValueFromPipelineByPropertyName=$True)]
+    [ValidateSet('None', 'Relations', 'Fields', 'Links', 'All')]
+    $Expand='None'
   )
   
   $ErrorActionPreference = "Stop"
@@ -57,6 +62,9 @@ function Get-WI
   } else {
     $requestUri = "https://dev.azure.com/$accountName/$projectName/_apis/wit/workitems/$($WINo)?api-version=5.1"
   }
+
+  $requestUri += "&`$expand=$($Expand)"
+  
   Write-Verbose -Message $requestUri
   $response = Invoke-RestMethod -Uri $requestUri -Method Get -Headers $Header -Verbose
   Return $response
