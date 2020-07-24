@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '1.1.7'
+ModuleVersion = '1.1.8'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+1.1.8
+- Add Get-BatchWI to get multiple WIs in one call
+
 1.1.7
 - Add Expand parameter to Get-WI
 
