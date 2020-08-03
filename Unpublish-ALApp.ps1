@@ -9,7 +9,7 @@ function Unpublish-ALApp
         $AppFile
     )
 
-    $dockerapp = Get-NavContainerAppInfo -containerName $ContainerName | where-object {$_.Name -eq $AppName}
+    $dockerapp = Get-BcContainerAppInfo -containerName $ContainerName | where-object {$_.Name -eq $AppName}
     $app = $AppFile #Get-ChildItem $env:AGENT_RELEASEDIRECTORY -Recurse -Filter *.app | Select-Object -Last 1
     if ($app) {
         if ((-not $dockerapp) -or $app.FullName.Contains($dockerapp.Version)) {
@@ -18,7 +18,7 @@ function Unpublish-ALApp
         }
         if ($dockerapp) {
             Write-Host "Unpublishing version $($dockerapp.Version)"
-            Unpublish-NavContainerApp -containerName $ContainerName -appName $AppName -uninstall
+            Unpublish-BcContainerApp -containerName $ContainerName -appName $AppName -uninstall
         } else {
             Write-Host "No installed version found $dockerapp"
         }

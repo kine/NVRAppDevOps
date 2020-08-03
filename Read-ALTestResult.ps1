@@ -11,8 +11,8 @@ function Read-ALTestResult
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Auth='Windows'
     )
-    $ServerConfig = Get-NavContainerServerConfiguration -ContainerName $ContainerName
-    $CompanyName = Invoke-ScriptInNavContainer -containerName $ContainerName `
+    $ServerConfig = Get-BcContainerServerConfiguration -ContainerName $ContainerName
+    $CompanyName = Invoke-ScriptInBcContainer -containerName $ContainerName `
                     -scriptblock {(Get-NAVCompany -ServerInstance $ServerConfig.ServerInstance | Select-object -First 1).CompanyName} 
     Write-Host "Company name = '$CompanyName'"
     $CompanyName = [uri]::EscapeDataString($CompanyName)

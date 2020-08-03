@@ -7,5 +7,5 @@ function Sync-ALApp
         $AppName=$env:RELEASE_DEFINITIONNAME
     )
 
-    Sync-NavContainerApp -containerName $ContainerName -appName $AppName
+    Sync-BcContainerApp -containerName $ContainerName -appName $AppName
 }

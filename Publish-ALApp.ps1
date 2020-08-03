@@ -15,8 +15,8 @@ function Publish-ALApp
   )
 
   if ($SkipVerification -eq 'true') {
-    Publish-NavContainerApp -containerName $ContainerName -appFile $AppFile -SkipVerification -syncMode $syncMode -scope $scope
+    Publish-BcContainerApp -containerName $ContainerName -appFile $AppFile -SkipVerification -syncMode $syncMode -scope $scope
   } else {
-    Publish-NavContainerApp -containerName $ContainerName -appFile $AppFile -syncMode $syncMode -scope $scope
+    Publish-BcContainerApp -containerName $ContainerName -appFile $AppFile -syncMode $syncMode -scope $scope
   }
 }

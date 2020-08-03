@@ -19,10 +19,10 @@ function Get-NavContainerAppInfoFile {
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $AppPath
     )
-    $containerPath = Get-NavContainerPath -containerName $ContainerName -path $AppPath -throw
+    $containerPath = Get-BcContainerPath -containerName $ContainerName -path $AppPath -throw
     #$args = @{"Path" = $containerPath}
 
-    Invoke-ScriptInNavContainer -containerName $ContainerName -scriptblock { Param($Path)
+    Invoke-ScriptInBcContainer -containerName $ContainerName -scriptblock { Param($Path)
         Get-NavAppInfo -Path $Path | ConvertTo-Json -Depth 2
     } -argumentList $containerPath | ConvertFrom-Json
 }

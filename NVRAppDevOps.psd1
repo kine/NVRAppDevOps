@@ -49,7 +49,7 @@ Description = 'cmdlets for DevOps for Business Central'
 
 # Modules that must be imported into the global environment prior to importing this module
 RequiredModules = @(
-    @{ModuleName='navcontainerhelper';ModuleVersion='0.7.0.7';Guid='ae60837a-fa30-4e28-a5ef-b8cd4cf6640a'}
+    @{ModuleName='bccontainerhelper';ModuleVersion='1.0.0';Guid='8e034fbc-8c30-446d-bbc3-5b3be5392491'}
     )
 
 # Assemblies that must be loaded prior to importing this module
@@ -89,7 +89,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '1.1.8'
+ModuleVersion = '2.0.0'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -111,6 +111,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+2.0.0
+- Changed dependency on bccontainerhelper
+
 1.1.8
 - Add Get-BatchWI to get multiple WIs in one call
 

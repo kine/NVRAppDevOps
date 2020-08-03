@@ -11,6 +11,6 @@ function Install-ALAppTree
     )
 
     for ($i=$OrderedApps.Count;$i -gt 0;$i--) {
-        Install-NavContainerApp -containerName $ContainerName -appName $OrderedApps[$i-1].name
+        Install-BcContainerApp -containerName $ContainerName -appName $OrderedApps[$i-1].name
     }
 }

@@ -129,7 +129,7 @@ function Init-ALEnvironment {
                 docker pull $ImageName
             }
         }
-        New-NavContainer -accept_eula `
+        New-BcContainer -accept_eula `
             -accept_outdated `
             -containerName $ContainerName `
             -imageName $ImageName `
@@ -191,7 +191,7 @@ function Init-ALEnvironment {
                 docker pull $ImageName
             }
         }
-        New-NavContainer -accept_eula `
+        New-BcContainer -accept_eula `
             -accept_outdated `
             -containerName $ContainerName `
             -imageName $ImageName `
@@ -222,7 +222,7 @@ function Init-ALEnvironment {
         Write-Host 'Extracting VSIX'
         docker exec -t $ContainerName PowerShell.exe -Command { $targetDir = "c:\run\my\alc"; $vsix = (Get-ChildItem "c:\run\*.vsix" -Recurse | Select-Object -First 1); Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory($vsix.FullName, $targetDir) ; Write-Host "$vsix"; copy-item $vsix "c:\run\my" }
 
-        $vsixExt = (Get-ChildItem "C:\ProgramData\NavContainerHelper\Extensions\$ContainerName\" -Filter *.vsix).FullName
+        $vsixExt = (Get-ChildItem "C:\ProgramData\BcContainerHelper\Extensions\$ContainerName\" -Filter *.vsix).FullName
         Write-Host 'Installing vsix package'
         code --install-extension $vsixExt
     }
@@ -230,9 +230,9 @@ function Init-ALEnvironment {
     if ($inclTestToolkit -and $CreateTestWebServices) {
         Write-Host 'Publishing CALTestResult (PAG130405) and CALCodeCoverageMap (PAG130408) Webservices'
 
-        $ServerConfig = Get-NavContainerServerConfiguration -ContainerName $ContainerName
+        $ServerConfig = Get-BcContainerServerConfiguration -ContainerName $ContainerName
 
-        Invoke-ScriptInNavContainer -containerName $ContainerName -scriptblock {
+        Invoke-ScriptInBcContainer -containerName $ContainerName -scriptblock {
             Param($serverInstance)
             New-NAVWebService -ServerInstance $serverInstance -ServiceName CALTestResults -ObjectType Page -ObjectId 130405 -Published $True
             New-NAVWebService -ServerInstance $serverInstance -ServiceName CALCodeCoverageMap -ObjectType Page -ObjectId 130408 -Published $True 

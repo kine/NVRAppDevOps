@@ -10,7 +10,7 @@ function Invoke-ALTestInsideContainer
         [string] $TestResultsFile
 
     )
-    $testResultFileName = "C:\ProgramData\NavContainerHelper\Test Results.xml"
-    Invoke-NavContainerCodeunit -containerName $ContainerName -Codeunitid $TestCodeunitId -Argument $testResultFileName -MethodName "RunTests"
+    $testResultFileName = "C:\ProgramData\BcContainerHelper\Test Results.xml"
+    Invoke-BcContainerCodeunit -containerName $ContainerName -Codeunitid $TestCodeunitId -Argument $testResultFileName -MethodName "RunTests"
     (Get-Content -Path $testResultFileName -Raw | Convert-CALTestOutputToAzureDevOps).Save($testResultsFile)
 }

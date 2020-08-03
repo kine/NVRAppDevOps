@@ -114,7 +114,7 @@ function Get-ALAppOrder
             $ContainerName
         )
         $AppDeps = @()
-        $AppInfo = Get-NavContainerAppInfoFile -AppPath $AppFile -ContainerName $ContainerName
+        $AppInfo = Get-BcContainerAppInfoFile -AppPath $AppFile -ContainerName $ContainerName
         $AppJson = New-Object -TypeName PSObject
         $AppJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppInfo.Name
         $AppJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppInfo.Publisher
@@ -145,7 +145,6 @@ function Get-ALAppOrder
         $Apps = @{}
         $AppFiles = Get-ChildItem -Path $Path -Filter *.app -Recurse:$Recurse
         foreach ($AppFile in $AppFiles) {
-            #$App = Get-NAVAppInfo -Path $AppFile.FullName
             $App = Get-AppJsonFromApp -AppFile $AppFile.FullName -ContainerName $ContainerName
             if ($App.publisher -ne 'Microsoft') {
                 if (-not $Apps.ContainsKey($App.name)) {

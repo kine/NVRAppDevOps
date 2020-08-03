@@ -82,8 +82,8 @@ function Run-ALTestInContainer
         $credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User,$PWord
     }
 
-    Write-Host "Running tests in container through navcontainerhelper..."
-    Run-TestsInNavContainer `
+    Write-Host "Running tests in container through bccontainerhelper..."
+    Run-TestsInBcContainer `
         -containerName $ContainerName `
         -tenant $tenant `
         -credential $credentials `

@@ -10,6 +10,6 @@ function Uninstall-ALAppTree
     )
 
     for ($i=$OrderedApps.Count;$i -gt 0;$i--) {
-        UnInstall-NavContainerApp -containerName $ContainerName -appName $OrderedApps[$i-1].name
+        UnInstall-BcContainerApp -containerName $ContainerName -appName $OrderedApps[$i-1].name
     }
 }

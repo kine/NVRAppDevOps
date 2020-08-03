@@ -38,6 +38,6 @@ function Publish-ALAppTree
     }
 
     $SkipVerification = [boolean]$SkipVerification
-    Publish-NavContainerApp -containerName $ContainerName -appFile $AppFile -SkipVerification:$SkipVerification -sync -install -syncMode $syncMode -scope $scope -tenant $Tenant -useDevEndpoint:$useDevEndpoint
+    Publish-BcContainerApp -containerName $ContainerName -appFile $AppFile -SkipVerification:$SkipVerification -sync -install -syncMode $syncMode -scope $scope -tenant $Tenant -useDevEndpoint:$useDevEndpoint
   }
 }

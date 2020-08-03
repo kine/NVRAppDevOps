@@ -59,7 +59,7 @@ function Download-ALPackages
         )
 
         $TargetFile = Join-Path -Path $DownloadFolder -ChildPath "$($Publisher)_$($AppName)_$($AppVersion).app"
-        $ServerConfig = Get-NavContainerServerConfiguration -ContainerName $ContainerName
+        $ServerConfig = Get-BcContainerServerConfiguration -ContainerName $ContainerName
         
         if ($Authentication -eq 'NavUserPassword') {
             $PasswordTemplate = "$($Credential.UserName):$($Credential.GetNetworkCredential().Password)"

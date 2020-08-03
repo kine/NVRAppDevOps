@@ -11,5 +11,5 @@ function Remove-ALEnvironment
         [bool]$DockerHostSSL
     )
 
-    Remove-NavContainer -containerName $ContainerName
+    Remove-BcContainer -containerName $ContainerName
 }

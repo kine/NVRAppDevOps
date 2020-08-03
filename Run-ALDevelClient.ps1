@@ -8,7 +8,7 @@ function Run-ALDevelClient
     )
 
     $params = @()
-    $databaseName = Invoke-ScriptInNavContainer -containerName $ContainerName `
+    $databaseName = Invoke-ScriptInBcContainer -containerName $ContainerName `
                    -ScriptBlock {$config = Get-NAVServerConfiguration -ServerInstance NAV -AsXml;$config.Configuration.appSettings.SelectSingleNode('./add[@key=''DatabaseName'']').value}
    
     $params += @("database=`"$databaseName`",servername=`"$ContainerName`",ID=`"$ContainerName`",generatesymbolreference=1")

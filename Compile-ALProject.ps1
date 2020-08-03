@@ -34,7 +34,7 @@ function Compile-ALProject
         $TestApp
     )
 
-    $ALC = (Get-ChildItem "C:\ProgramData\NavContainerHelper\Extensions\$ContainerName\" -Filter alc.exe -Recurse).FullName
+    $ALC = (Get-ChildItem "C:\ProgramData\BcContainerHelper\Extensions\$ContainerName\" -Filter alc.exe -Recurse).FullName
     if (-not $TestApp) {
         Write-Host "Running $ALC for MainApp"
         Push-Location

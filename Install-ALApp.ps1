@@ -7,5 +7,5 @@ function Install-ALApp
         $AppName=$env:RELEASE_DEFINITIONNAME
     )
 
-    Install-NavContainerApp -containerName $ContainerName -appName $AppName
+    Install-BcContainerApp -containerName $ContainerName -appName $AppName
 }

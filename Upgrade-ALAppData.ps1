@@ -9,6 +9,6 @@ function Upgrade-ALAppData
     )
     if ($SameVersionExists -eq 'true') {
     } else {
-        Start-NavContainerAppDataUpgrade -containerName $ContainerName -appName $AppName
+        Start-BcContainerAppDataUpgrade -containerName $ContainerName -appName $AppName
     }
 }
