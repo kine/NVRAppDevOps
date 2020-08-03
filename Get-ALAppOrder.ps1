@@ -114,7 +114,7 @@ function Get-ALAppOrder
             $ContainerName
         )
         $AppDeps = @()
-        $AppInfo = Get-BcContainerAppInfoFile -AppPath $AppFile -ContainerName $ContainerName
+        $AppInfo = Get-NavContainerAppInfoFile -AppPath $AppFile -ContainerName $ContainerName
         $AppJson = New-Object -TypeName PSObject
         $AppJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppInfo.Name
         $AppJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppInfo.Publisher
