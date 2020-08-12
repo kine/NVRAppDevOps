@@ -100,7 +100,7 @@ ModuleVersion = '2.0.0'
 PrivateData = @{
 
     PSData = @{
-        Prerelease = '-alpha1'
+        Prerelease = '-alpha2'
 
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'PSModule'
