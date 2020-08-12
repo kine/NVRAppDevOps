@@ -49,7 +49,11 @@ Description = 'cmdlets for DevOps for Business Central'
 
 # Modules that must be imported into the global environment prior to importing this module
 RequiredModules = @(
-    @{ModuleName='bccontainerhelper';ModuleVersion='1.0.0';Guid='8e034fbc-8c30-446d-bbc3-5b3be5392491'}
+    @{
+        ModuleName='BcContainerHelper'
+        ModuleVersion='1.0.0'
+        Guid='8e034fbc-8c30-446d-bbc3-5b3be5392491'
+    }
     )
 
 # Assemblies that must be loaded prior to importing this module
@@ -96,7 +100,7 @@ ModuleVersion = '2.0.0'
 PrivateData = @{
 
     PSData = @{
-        Prerelease = '-alpha'
+        Prerelease = '-alpha1'
 
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'PSModule'

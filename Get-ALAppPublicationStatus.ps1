@@ -32,7 +32,15 @@ function Get-ALAppPublicationStatus
     #Upload the app
     Write-Host "Getting last publishing status from company $CompanyID..."
     $Result = Get-BCAPIData -OAuthToken $Token -Tenant $Tenant -APIUri $APIUri -Query "companies($CompanyID)/extensionDeploymentStatus" -Environment $Environment -APIVersion $APIVersion
-    $LastStatus = $Result[0]
+    if (-not $Result) {
+        Write-Host "No last status returned. May be a known issue of v16? Returning ok, but, please, check the status manually!"
+        Write-Host "##vso[task.logissue type=warning]No last status returned. May be a known issue of v16? Returning ok, but, please, check the status manually!"
+        $LastStatus= @{Status="Unknown";name="Unknown";publisher="Unknown";appVersion="Unknown"}
+    } else {
+        $LastStatus = $Result[0]
+    }
+    
     Write-Host "Last status: $($LastStatus.name) $($LastStatus.publisher) $($LastStatus.appVersion) $($LastStatus.Status)"
     return $LastStatus
+    }
 }
