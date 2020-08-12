@@ -39,8 +39,7 @@ function Get-ALAppPublicationStatus
     } else {
         $LastStatus = $Result[0]
     }
-    
+
     Write-Host "Last status: $($LastStatus.name) $($LastStatus.publisher) $($LastStatus.appVersion) $($LastStatus.Status)"
     return $LastStatus
-    }
 }
