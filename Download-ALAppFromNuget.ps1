@@ -40,7 +40,10 @@ function Download-ALAppFromNuget
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $Key = '',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
-        [switch]$LatestVersion
+        [switch]$LatestVersion,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [ValidateSet('Lowest','HighestPatch','HighestMinor','Highest','Ignore')]
+        $DependencyVersion = 'Highest'
 
     )
     $DependencyFormat='$($publisher)_$($name)'
@@ -48,5 +51,5 @@ function Download-ALAppFromNuget
     if ($LatestVersion) {
         $version = ''
     }
-    Install-ALNugetPackage -PackageName $packageName -Version $version -TargetPath $path -IdPrefix "" -Source $Source -SourceUrl $SourceUrl -Key $Key
+    Install-ALNugetPackage -PackageName $packageName -Version $version -TargetPath $path -IdPrefix "" -Source $Source -SourceUrl $SourceUrl -Key $Key -DependencyVersion $DependencyVersion
 }
