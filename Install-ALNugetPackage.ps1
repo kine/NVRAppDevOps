@@ -1,4 +1,4 @@
-HighestMinorfunction Install-ALNugetPackage
+function Install-ALNugetPackage
 {
     [CmdletBinding()]
     Param(
