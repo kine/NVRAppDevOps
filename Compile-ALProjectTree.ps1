@@ -126,7 +126,9 @@ function Compile-ALProjectTree
                 }
             }
         } else { #App not found, download
-            Download-ALApp -name $App.name -publisher $App.publisher -version $App.version -targetPath $PackagesPath -AppDownloadScript $AppDownloadScript
+            if ($App.publisher -ne 'Microsoft') {
+                Download-ALApp -name $App.name -publisher $App.publisher -version $App.version -targetPath $PackagesPath -AppDownloadScript $AppDownloadScript
+            }
         }
     }
 }
