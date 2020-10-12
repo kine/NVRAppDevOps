@@ -100,7 +100,7 @@ ModuleVersion = '2.0.0'
 PrivateData = @{
 
     PSData = @{
-        Prerelease = '-alpha7'
+        Prerelease = '-alpha8'
 
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'PSModule'
@@ -116,11 +116,12 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
-       
 2.0.0
 - Changed dependency on bccontainerhelper
 - Add parameter DependencyVersion parameter to Download-ALAppFromNuget
 - If LatestMinor used, list the available versions and select the corect version based on Major
+- do not download Microsoft apps through download script when compiling
+- Add IncludeAppFiles switch to Get-ALAppOrder
 
 1.1.8
 - Add Get-BatchWI to get multiple WIs in one call
