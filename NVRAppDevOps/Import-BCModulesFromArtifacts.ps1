@@ -31,6 +31,7 @@ function Import-BCModulesFromArtifacts
     Import-Module $AppManagementModule.FullName -Global
 
     if ($databaseServer)  {
+        import-module SqlServer
         $smoServer = New-Object Microsoft.SqlServer.Management.Smo.Server $databaseServer
         $Smo = [reflection.assembly]::Load("Microsoft.SqlServer.Smo, Version=$($smoServer.VersionMajor).$($smoServer.VersionMinor).0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91")
         $SmoExtended = [reflection.assembly]::Load("Microsoft.SqlServer.SmoExtended, Version=$($smoServer.VersionMajor).$($smoServer.VersionMinor).0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91")
