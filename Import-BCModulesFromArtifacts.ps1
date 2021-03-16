@@ -15,7 +15,7 @@ function Import-BCModulesFromArtifacts
         $artifactPath
     )
     $ManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\Microsoft.Dynamics.Nav.Management.psm1")
-    $AppManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\Microsoft.Dynamics.Nav.Apps.Management.psm1")
+    $AppManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\Microsoft.Dynamics.Nav.Apps.Management.psd1")
     if (!($ManagementModule)) {
         throw "Unable to locate management module in artifacts"
     }
@@ -24,7 +24,7 @@ function Import-BCModulesFromArtifacts
     }
     
     Write-Host "Importing PowerShell module $($ManagementModule.FullName)"
-    Import-Module $ManagementModule.FullName
+    Import-Module $ManagementModule.FullName -Global
     Write-Host "Importing PowerShell module $($AppManagementModule.FullName)"
-    Import-Module $AppManagementModule.FullName
+    Import-Module $AppManagementModule.FullName -Global
 }
