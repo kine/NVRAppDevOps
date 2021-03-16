@@ -93,7 +93,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '2.0.2'
+ModuleVersion = '2.0.3'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -116,6 +116,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+2.0.3
+- Add support for SQL libraries needed for database manipulation cmdlets as part of Import-BCModulesFromArtifacts
+
 2.0.2
 - Add Import-BCModulesFromArtifacts
 
