@@ -93,14 +93,14 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '2.0.0'
+ModuleVersion = '2.0.1'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
 
     PSData = @{
-        Prerelease = '-alpha8'
+        Prerelease = ''
 
         # Tags applied to this module. These help with module discovery in online galleries.
         Tags = 'PSModule'
@@ -116,6 +116,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+2.0.1
+- Add Import-BCModulesFromArtifacts
+
 2.0.0
 - Changed dependency on bccontainerhelper
 - Add parameter DependencyVersion parameter to Download-ALAppFromNuget
