@@ -32,11 +32,12 @@ function Import-BCModulesFromArtifacts
 
     if ($databaseServer)  {
         import-module SqlServer
-        $smoServer = New-Object Microsoft.SqlServer.Management.Smo.Server $databaseServer
-        $Smo = [reflection.assembly]::Load("Microsoft.SqlServer.Smo, Version=$($smoServer.VersionMajor).$($smoServer.VersionMinor).0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91")
-        $SmoExtended = [reflection.assembly]::Load("Microsoft.SqlServer.SmoExtended, Version=$($smoServer.VersionMajor).$($smoServer.VersionMinor).0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91")
-        $ConnectionInfo = [reflection.assembly]::Load("Microsoft.SqlServer.ConnectionInfo, Version=$($smoServer.VersionMajor).$($smoServer.VersionMinor).0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91")
-        $SqlEnum = [reflection.assembly]::Load("Microsoft.SqlServer.SqlEnum, Version=$($smoServer.VersionMajor).$($smoServer.VersionMinor).0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91")
+        $SqlModule = get-module SqlServer
+        $Path = Split-Path $SqlModule.Path
+        $Smo = [Reflection.Assembly]::LoadFile((Join-Path $Path 'Microsoft.SqlServer.Smo.dll'))
+        $SmoExtended = [Reflection.Assembly]::LoadFile((Join-Path $Path 'Microsoft.SqlServer.SmoExtended.dll'))
+        $ConnectionInfo = [Reflection.Assembly]::LoadFile((Join-Path $Path 'Microsoft.SqlServer.ConnectionInfo.dll'))
+        $SqlEnum = [Reflection.Assembly]::LoadFile((Join-Path $Path 'Microsoft.SqlServer.SqlEnum.dll'))
                 
         $OnAssemblyResolve = [System.ResolveEventHandler] {
             param($sender, $e)
@@ -50,5 +51,5 @@ function Import-BCModulesFromArtifacts
             return $null
         }
         [System.AppDomain]::CurrentDomain.add_AssemblyResolve($OnAssemblyResolve)
-    }
+}
 }
