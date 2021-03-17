@@ -16,40 +16,8 @@ function Import-BCModulesFromArtifacts
         $artifactPath,
         $databaseServer
     )
-    $ManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\Microsoft.Dynamics.Nav.Management.psm1")
-    $AppManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\Microsoft.Dynamics.Nav.Apps.Management.psd1")
-    if (!($ManagementModule)) {
-        throw "Unable to locate management module in artifacts"
-    }
-    if (!($AppManagementModule)) {
-        throw "Unable to locate apps management module in artifacts"
-    }
-    
-    Write-Host "Importing PowerShell module $($ManagementModule.FullName)"
-    Import-Module $ManagementModule.FullName -Global
-    Write-Host "Importing PowerShell module $($AppManagementModule.FullName)"
-    Import-Module $AppManagementModule.FullName -Global
+    $Paths = Get-BCModulePathFromArtifact -artifactPath $artifactPath
 
-    if ($databaseServer)  {
-        import-module SqlServer
-        $SqlModule = get-module SqlServer
-        $Path = Split-Path $SqlModule.Path
-        $Smo = [Reflection.Assembly]::LoadFile((Join-Path $Path 'Microsoft.SqlServer.Smo.dll'))
-        $SmoExtended = [Reflection.Assembly]::LoadFile((Join-Path $Path 'Microsoft.SqlServer.SmoExtended.dll'))
-        $ConnectionInfo = [Reflection.Assembly]::LoadFile((Join-Path $Path 'Microsoft.SqlServer.ConnectionInfo.dll'))
-        $SqlEnum = [Reflection.Assembly]::LoadFile((Join-Path $Path 'Microsoft.SqlServer.SqlEnum.dll'))
-                
-        $OnAssemblyResolve = [System.ResolveEventHandler] {
-            param($sender, $e)
-            if ($e.Name -like "Microsoft.SqlServer.Smo, Version=*, Culture=neutral, PublicKeyToken=89845dcd8080cc91") { return $Smo }
-            if ($e.Name -like "Microsoft.SqlServer.SmoExtended, Version=*, Culture=neutral, PublicKeyToken=89845dcd8080cc91") { return $SmoExtended }
-            if ($e.Name -like "Microsoft.SqlServer.ConnectionInfo, Version=*, Culture=neutral, PublicKeyToken=89845dcd8080cc91") { return $ConnectionInfo }
-            if ($e.Name -like "Microsoft.SqlServer.SqlEnum, Version=*, Culture=neutral, PublicKeyToken=89845dcd8080cc91") { return $SqlEnum }
-            foreach($a in [System.AppDomain]::CurrentDomain.GetAssemblies()) {
-                if ($a.FullName -eq $e.Name) { return $a }
-            }
-            return $null
-        }
-        [System.AppDomain]::CurrentDomain.add_AssemblyResolve($OnAssemblyResolve)
-}
+    Import-Module $Paths -Global
+
 }
