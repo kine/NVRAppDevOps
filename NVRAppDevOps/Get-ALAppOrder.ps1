@@ -8,6 +8,8 @@
     Read all app.json from the subfolders and sort the app objects
 .Parameter ContainerName
     Name of the container to use to get info from .App file
+.Parameter ArtifactUrl
+    Url of artifact to be used to get BC PS modules without using container
 .Parameter Path
     Folder in which the app.json will be searched. If no app.json is found, all *.app packages will be used.
 .Parameter Recurse
@@ -33,6 +35,8 @@ function Get-ALAppOrder
 
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $ContainerName,
+        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        $ArtifactUrl,
         #Path to the repository
         [Parameter(ParameterSetName="Path")]
         $Path='.\',
@@ -112,10 +116,16 @@ function Get-ALAppOrder
     {
         Param(
             $AppFile,
-            $ContainerName
+            $ContainerName,
+            $ArtifactUrl
         )
         $AppDeps = @()
-        $AppInfo = Get-NavContainerAppInfoFile -AppPath $AppFile -ContainerName $ContainerName
+        if ($ArtifactUrl) {
+            Import-Module (Get-BCModulePathFromArtifact -ArtifactUrl $ArtifactUrl)
+            $AppInfo = Get-NavAppInfo -Path $AppFile
+        } else {
+            $AppInfo = Get-NavContainerAppInfoFile -AppPath $AppFile -ContainerName $ContainerName
+        }
         $AppJson = New-Object -TypeName PSObject
         $AppJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppInfo.Name
         $AppJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppInfo.Publisher
@@ -148,7 +158,7 @@ function Get-ALAppOrder
         }
         $AppFiles = Get-ChildItem -Path $Path -Filter *.app -Recurse:$Recurse
         foreach ($AppFile in $AppFiles) {
-            $App = Get-AppJsonFromApp -AppFile $AppFile.FullName -ContainerName $ContainerName
+            $App = Get-AppJsonFromApp -AppFile $AppFile.FullName -ContainerName $ContainerName -ArtifactUrl $ArtifactUrl
             if ($App.publisher -ne 'Microsoft') {
                 if (-not $Apps.ContainsKey($App.name)) {
                     $Apps.Add($App.name,$App)
