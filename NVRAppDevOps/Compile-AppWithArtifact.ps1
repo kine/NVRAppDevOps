@@ -1,10 +1,16 @@
 function Compile-AppWithArtifact
 {
     param(
-        $artifactUrl,
-        $appProjectFolder,
-        $appOutputFolder,
-        $appSymbolsFolder,
+        [parameter(Mandatory=$true)]
+        [string]$alcPath,
+        [parameter(Mandatory=$true)]
+        [string]$artifactUrl,
+        [parameter(Mandatory=$true)]
+        [string]$appProjectFolder,
+        [parameter(Mandatory=$true)]
+        [string]$appOutputFolder,
+        [parameter(Mandatory=$true)]
+        [string]$appSymbolsFolder,
         [switch]$AzureDevOps,
         [switch]$EnableCodeCop,
         [switch]$EnableAppSourceCop,
@@ -12,8 +18,8 @@ function Compile-AppWithArtifact
         [switch]$EnableUICop,
         [ValidateSet('none','error','warning')]
         [string] $FailOn = 'none',
-        $rulesetFile,
-        $assemblyProbingPaths,
+        [string]$rulesetFile,
+        [string]$assemblyProbingPaths,
         [scriptblock] $outputTo = { Param($line) Write-Host $line }
     )
     $startTime = [DateTime]::Now
@@ -44,11 +50,10 @@ function Compile-AppWithArtifact
                 Write-Host "Copying $([System.IO.Path]::GetFileName($_)) "
                 Copy-Item -Path $_ -Destination $appSymbolsFolder -Force
             }
-        } else {
-        }
+        } 
     }
-
     import-module (Get-BCModulePathFromArtifact -artifactPath ((Download-Artifacts -artifactUrl $artifactUrl -includePlatform)[1]))
+
     $MSAppsFiles = Get-ChildItem -Path $AppPath -Filter *.app -Recurse
     $MSApps = @()
     foreach($File in $MSAppsFiles) {
@@ -99,13 +104,12 @@ function Compile-AppWithArtifact
             }
         }
     }
-    $alcPath = Get-ALCompilerFromArtifact -artifactUrl $artifactUrl -TargetPath (Join-Path $env:TEMP 'alc')
-    Push-Location
-    set-location $alcPath
-
     $result = Invoke-Command -ScriptBlock {
         Param($binPath,$appProjectFolder, $appSymbolsFolder, $appOutputFile, $EnableCodeCop, $EnableAppSourceCop, $EnablePerTenantExtensionCop, $EnableUICop, $rulesetFile, $assemblyProbingPaths, $nowarn, $generateReportLayoutParam, $features, $preProcessorSymbols )
 
+        Push-Location
+        set-location $binPath
+   
         #Add-Type -AssemblyName System.IO.Compression.FileSystem
         #Add-Type -AssemblyName System.Text.Encoding
         # Import types needed to invoke the compiler

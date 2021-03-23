@@ -41,9 +41,9 @@
 function Compile-ALProjectTree
 {
     Param (
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName=$True,ParameterSetName='container')]
         $ContainerName,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName=$True,ParameterSetName='artifact')]
         $ArtifactUrl,
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         $CertPath,
@@ -51,12 +51,12 @@ function Compile-ALProjectTree
         $CertPwd,
         $OrderedApps,
         $PackagesPath,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName=$True,ParameterSetName='container')]
         $Password='',
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName=$True,ParameterSetName='container')]
         $Username=$env:USERNAME,
         [ValidateSet('Windows', 'NavUserPassword')]
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName=$True,ParameterSetName='container')]
         $Auth='Windows',
         [Parameter(ValueFromPipelineByPropertyName=$True)]
         [bool]$EnableCodeCop=$True,
@@ -80,6 +80,10 @@ function Compile-ALProjectTree
     if (-not $PackagesPath) {
         $PackagesPath = Get-Location
     }
+    if ($artifactPath) {
+        $alcPath = Get-ALCompilerFromArtifact -artifactUrl $artifactUrl -TargetPath (Join-Path $env:TEMP 'alc')
+    }
+
     foreach ($App in $OrderedApps) {
         if ($App.AppPath) {
             Write-Host "**** Compiling $($App.name) ****"
@@ -96,7 +100,23 @@ function Compile-ALProjectTree
 
             }
             if ($ArtifactUrl) {
-                Compile-AppWithArtifact -artifactUrl -appProjectFolder $AppPath -appOutputFolder $PackagesPath -appSymbolsFolder $PackagesPath -AzureDevOps -EnableCodeCop:$EnableCodeCop -EnableAppSourceCop:$EnableAppSourceCop -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop -EnableUICop:$EnableUICop -FailOn $FailOn  -rulesetFile $NewRulesetFile -assemblyProbingPaths $AsmProbingPaths| Out-Null
+                if (-not $alcPath) {
+                    $alcPath = Get-ALCompilerFromArtifact -artifactUrl $artifactUrl -TargetPath (Join-Path $env:TEMP 'alc')
+                }
+                Compile-AppWithArtifact `
+                    -artifactUrl $artifactUrl `
+                    -appProjectFolder $AppPath `
+                    -appOutputFolder $PackagesPath `
+                    -appSymbolsFolder $PackagesPath `
+                    -AzureDevOps `
+                    -EnableCodeCop:$EnableCodeCop `
+                    -EnableAppSourceCop:$EnableAppSourceCop `
+                    -EnablePerTenantExtensionCop:$EnablePerTenantExtensionCop `
+                    -EnableUICop:$EnableUICop `
+                    -FailOn $FailOn `
+                    -rulesetFile $NewRulesetFile `
+                    -assemblyProbingPaths $AsmProbingPaths `
+                    -alcPath $alcPath | Out-Null
             } else {
                 if ($Auth -eq 'NavUserPassword') {
                     $PWord = ConvertTo-SecureString -String $Password -AsPlainText -Force
