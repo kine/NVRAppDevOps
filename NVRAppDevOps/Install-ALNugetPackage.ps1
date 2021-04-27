@@ -30,7 +30,7 @@ function Install-ALNugetPackage
     }
     $TempFolder = Join-Path $env:TEMP 'ALNugetApps'
     if (Test-Path $TempFolder) {
-        Remove-Item $TempFolder -Force | Out-Null
+        Remove-Item $TempFolder -Force -Recurse | Out-Null
     }
 
     if ($Version -and ($DependencyVersion -eq 'HighestMinor')) {
