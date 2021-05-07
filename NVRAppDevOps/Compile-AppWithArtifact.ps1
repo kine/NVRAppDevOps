@@ -101,7 +101,7 @@ function Compile-AppWithArtifact
 
     Write-Host "Looking for missing MS dependencies"
     foreach($dep in ($dependencies | Where-Object {$_.publisher -like 'Microsoft'})) {
-        $MSAppFile = $MSApps | Where-Object {($_.name -eq $dep.name) -and ($_.publisher -eq $dep.publisher)}
+        $MSAppFile = $MSApps | Where-Object {($_.name -eq $dep.name) -and ($_.publisher -eq $dep.publisher)} | Select-Object -First 1
         if ($MSAppFile) {
             if (-not (Test-Path (Join-Path $appSymbolsFolder (Split-Path $MSAppFile -Leaf)))) {
                 Write-Host "Copying $([System.IO.Path]::GetFileName($MSAppFile.file)) "
