@@ -36,14 +36,19 @@ function Compile-AppWithArtifact
 
     Write-Host 'Copying Microsoft apps from artifact folder'
     $ArtifactPaths = Download-Artifacts -artifactUrl $artifactUrl -includePlatform
-    if (-not (Test-Path (Join-Path $ArtifactPaths[0] 'Applications'))) {
+    if ((-not (Test-Path (Join-Path $ArtifactPaths[0] 'Applications'))
+        -and (-not (Test-Path (Join-Path $ArtifactPaths[0] 'Applications.*'))
+    )) {
         $AppPath = $ArtifactPaths[1]
     } else {
         $AppPath = $ArtifactPaths[0]
     }
     (Join-Path $ArtifactPaths[1] "\ModernDev\program files\Microsoft Dynamics NAV\*\AL Development Environment\System.app"),
+    (Join-Path $AppPath "\Applications.*\Microsoft_Application_*.app"),
     (Join-Path $AppPath "\Applications\Application\Source\Microsoft_Application.app"),
+    (Join-Path $AppPath "\Applications.*\Microsoft_Base Application_*.app"),
     (Join-Path $AppPath "\Applications\BaseApp\Source\Microsoft_Base Application.app"),
+    (Join-Path $AppPath "\Applications.*\Microsoft_System Application_*.app"),
     (Join-Path $AppPath "\Applications\System Application\source\Microsoft_System Application.app")| ForEach-Object {
         if ($_) {
             if (-not (Test-Path (Join-Path $appSymbolsFolder (Split-Path $_ -Leaf)))) {
