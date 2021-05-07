@@ -36,9 +36,7 @@ function Compile-AppWithArtifact
 
     Write-Host 'Copying Microsoft apps from artifact folder'
     $ArtifactPaths = Download-Artifacts -artifactUrl $artifactUrl -includePlatform
-    if ((-not (Test-Path (Join-Path $ArtifactPaths[0] 'Applications'))
-        -and (-not (Test-Path (Join-Path $ArtifactPaths[0] 'Applications.*'))
-    )) {
+    if ((-not (Test-Path (Join-Path $ArtifactPaths[0] 'Applications'))) -and (-not (Test-Path (Join-Path $ArtifactPaths[0] 'Applications.*')))) {
         $AppPath = $ArtifactPaths[1]
     } else {
         $AppPath = $ArtifactPaths[0]
