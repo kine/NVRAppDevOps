@@ -93,7 +93,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '2.0.9'
+ModuleVersion = '2.0.10'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -116,6 +116,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+2.0.10
+- Fixing Microsoft dependencies when sandbox artifact used in Compile-AppWithArtifact.ps1 (localization apps not found bug)
+
 2.0.7
 - Add Compile-AppWithArtifact, Get-ALCompileFromArtifact and parameter artifactUrl into Compile-ALProjectTree and Get-ALAppOrder to
   support compilation without container
