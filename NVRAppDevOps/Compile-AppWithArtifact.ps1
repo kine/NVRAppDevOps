@@ -49,9 +49,11 @@ function Compile-AppWithArtifact
     (Join-Path $AppPath "\Applications.*\Microsoft_System Application_*.app"),
     (Join-Path $AppPath "\Applications\System Application\source\Microsoft_System Application.app")| ForEach-Object {
         if ($_) {
-            if (-not (Test-Path (Join-Path $appSymbolsFolder (Split-Path $_ -Leaf)))) {
-                Write-Host "Copying $([System.IO.Path]::GetFileName($_)) "
-                Copy-Item -Path $_ -Destination $appSymbolsFolder -Force
+            if (Test-Path $_) {
+                if (-not (Test-Path (Join-Path $appSymbolsFolder (Split-Path $_ -Leaf)))) {
+                    Write-Host "Copying $([System.IO.Path]::GetFileName($_)) "
+                    Copy-Item -Path $_ -Destination $appSymbolsFolder -Force
+                }
             }
         } 
     }
