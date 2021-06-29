@@ -93,7 +93,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '2.0.14'
+ModuleVersion = '2.0.15'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -116,6 +116,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+2.0.15
+- Install-ALNugetPackage versionmode Lowest now search for lowest version which is higher or equal to requested version (e.g. requeted 1.2.0.0 will take 1.2.123.0 if lowest)
+
 2.0.14
 - Add Upload-FileToShp function for uploading file to sharepoint
         
