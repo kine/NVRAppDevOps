@@ -42,8 +42,17 @@ function Install-ALNugetPackage
         Write-Host "Latest version for requested $Version is $LatestVersion"
         $Version = $LatestVersion
     }
+    if ($Version -and ($DependencyVersion -eq 'Lowest')) {
+        Write-Host "Listing available versions"
+        $Versions = nuget.exe list -Source "$Source" -AllVersions -NonInteractive "$IdPrefix$(Format-AppNameForNuget $PackageName)" | Where-Object {$_ -like "$IdPrefix$(Format-AppNameForNuget $PackageName) *"}
+        $VersionNos = $versions | foreach-object {[version]$_.Split(' ')[1]}
+        $V = [version]$Version
+        $LatestVersion = $VersionNos | Sort-Object -Ascending | Where-Object {($_.Major -eq $V.Major) -and (($V.Minor -eq 0) -or ($V.Minor -le $_.Minor)) -and (($V.Build -eq 0) -or ($V.Build -le $_.Build))} | Select-Object -First 1
+        Write-Host "Lowest version for requested $Version is $LatestVersion"
+        $Version = $LatestVersion
+    }
     New-Item -Path $TempFolder -ItemType directory -Force | Out-Null
-    Write-Host "Installing package '$IdPrefix$(Format-AppNameForNuget $PackageName)' from '$Source' to $TargetPath..."
+    Write-Host "Installing package '$IdPrefix$(Format-AppNameForNuget $PackageName)' version $($Version) $DependencyVersion from '$Source' to $TargetPath..."
     if ($Version) {
         if ($Source) {
             nuget.exe install -Source "$Source" -Version $Version -OutputDirectory $TempFolder -NoCache -DependencyVersion $DependencyVersion "$IdPrefix$(Format-AppNameForNuget $PackageName)"
