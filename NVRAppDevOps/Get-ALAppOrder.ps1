@@ -162,6 +162,12 @@ function Get-ALAppOrder
             if ($App.publisher -ne 'Microsoft') {
                 if (-not $Apps.ContainsKey($App.name)) {
                     $Apps.Add($App.name,$App)
+                } else {
+                    $OldApp = $Apps[$App.Name]
+                    if (([Version]$App.Version) -gt ([Version]$OldApp.Version)) {
+                        $Apps.Remove($App.name)
+                        $Apps.Add($App.name,$App)
+                    }
                 }
             }
         }
