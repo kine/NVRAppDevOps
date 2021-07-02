@@ -107,7 +107,8 @@ function Get-ALAppOrder
                                     $AppsCompiled.Add($Dependency.name,$NewApp)
                                     $AppsToAdd.Remove($Dependency.name)
                                     $AppsToAdd.Add($Dependency.name,$NewApp)
-                                    $AppsOrdered = $AppsOrdered -replace $OldApp,$NewApp
+                                    #$AppsOrdered = $AppsOrdered -replace $OldApp,$NewApp
+                                    $AppsOrdered.Item($AppsOrdered.IndexOf($OldApp)).version = $Dependency.version
                                 }
                             }
                         } else {
@@ -125,7 +126,8 @@ function Get-ALAppOrder
                                 $AppsCompiled.Add($Dependency.name,$NewApp)
                                 $AppsToAdd.Remove($Dependency.name)
                                 $AppsToAdd.Add($Dependency.name,$NewApp)
-                                $AppsOrdered = $AppsOrdered -replace $OldApp,$NewApp
+                                #$AppsOrdered = $AppsOrdered -replace $OldApp,$NewApp
+                                $AppsOrdered.Item($AppsOrdered.IndexOf($OldApp)).version = $Dependency.version
                             }
                         }
                         if (-not $AppsCompiled.ContainsKey($Dependency.name)) {
