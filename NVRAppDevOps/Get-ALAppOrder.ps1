@@ -62,7 +62,9 @@ function Get-ALAppOrder
             } else {
                 $OldApp = $result[$AppJson.name]
                 Write-Verbose "Adding dependency $($AppJson.Name) $($AppJson.Version) *"
-                if (([Version]$AppJson.Version) -gt ([Version]$OldApp.Version)) {
+                $NewVersion = [Version]$AppJson.Version
+                $OldVersion = [Version]$OldApp.Version
+                if (($NewVersion) -gt ($OldVersion)) {
                     Write-Host "Updating dependency $($OldApp.Version) to $($AppJson.Version) *"
                     $Apps.Remove($AppJson.name)
                     $Apps.Add($AppJson.name,$AppJson)
@@ -111,25 +113,26 @@ function Get-ALAppOrder
                                     $AppsOrdered.Item($AppsOrdered.IndexOf($OldApp)).version = $Dependency.version
                                 }
                             }
-                        } else {
-                            Write-Verbose "?Add dependency $($Dependency.name) $($Dependency.version)"
-                            $NewApp=New-Object -TypeName PSObject
-                            $NewApp | Add-Member -MemberType NoteProperty -Name 'name' -Value $Dependency.name
-                            $NewApp | Add-Member -MemberType NoteProperty -Name 'version' -Value $Dependency.version
-                            $NewApp | Add-Member -MemberType NoteProperty -Name 'publisher' -Value $Dependency.publisher
-                            $NewApp | Add-Member -MemberType NoteProperty -Name 'AppPath' -Value ""
+                        } 
+                        #else {
+                        #     Write-Verbose "?Add dependency $($Dependency.name) $($Dependency.version)"
+                        #     $NewApp=New-Object -TypeName PSObject
+                        #     $NewApp | Add-Member -MemberType NoteProperty -Name 'name' -Value $Dependency.name
+                        #     $NewApp | Add-Member -MemberType NoteProperty -Name 'version' -Value $Dependency.version
+                        #     $NewApp | Add-Member -MemberType NoteProperty -Name 'publisher' -Value $Dependency.publisher
+                        #     $NewApp | Add-Member -MemberType NoteProperty -Name 'AppPath' -Value ""
 
-                            $OldApp = $Apps[$Dependency.name]
-                            if (([Version]$Dependency.version) -gt ([Version]$OldApp.Version)) {
-                                Write-Verbose "Replacing dependency $($OldApp.Name) $($OldApp.Version) $($Dependency.name) $($Dependency.version) "
-                                $AppsCompiled.Remove($Dependency.name)
-                                $AppsCompiled.Add($Dependency.name,$NewApp)
-                                $AppsToAdd.Remove($Dependency.name)
-                                $AppsToAdd.Add($Dependency.name,$NewApp)
-                                #$AppsOrdered = $AppsOrdered -replace $OldApp,$NewApp
-                                $AppsOrdered.Item($AppsOrdered.IndexOf($OldApp)).version = $Dependency.version
-                            }
-                        }
+                        #     $OldApp = $Apps[$Dependency.name]
+                        #     if (([Version]$Dependency.version) -gt ([Version]$OldApp.Version)) {
+                        #         Write-Verbose "Replacing dependency $($OldApp.Name) $($OldApp.Version) $($Dependency.name) $($Dependency.version) "
+                        #         $AppsCompiled.Remove($Dependency.name)
+                        #         $AppsCompiled.Add($Dependency.name,$NewApp)
+                        #         $AppsToAdd.Remove($Dependency.name)
+                        #         $AppsToAdd.Add($Dependency.name,$NewApp)
+                        #         #$AppsOrdered = $AppsOrdered -replace $OldApp,$NewApp
+                        #         $AppsOrdered.Item($AppsOrdered.IndexOf($OldApp)).version = $Dependency.version
+                        #     }
+                        # }
                         if (-not $AppsCompiled.ContainsKey($Dependency.name)) {
                             $DependencyOk = $false
                         }
@@ -206,7 +209,9 @@ function Get-ALAppOrder
                 } else {
                     $OldApp = $Apps[$App.Name]
                     Write-Host "Adding dependency $($App.Name) $($App.Version) *"
-                    if (([Version]$App.Version) -gt ([Version]$OldApp.Version)) {
+                    $NewVersion = [Version]($App.Version)
+                    $OldVersion = [Version]($OldApp.Version)
+                    if (($NewVersion) -gt ($OldVersion)) {
                         Write-Host "Updating dependency $($OldApp.Version) to $($App.Version) *"
                         $Apps.Remove($App.name)
                         $Apps.Add($App.name,$App)
