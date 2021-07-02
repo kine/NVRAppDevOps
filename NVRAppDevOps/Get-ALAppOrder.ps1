@@ -86,6 +86,7 @@ function Get-ALAppOrder
                     #test if all dependencies are compiled
                     $DependencyOk = $true
                     foreach ($Dependency in $App.Value.dependencies) {
+                        Write-Verbose "$($App.Value.Name)->$($Dependency.Name) $($Dependency.version)"
                         if (-not $Apps.Contains($Dependency.name)) {
                             Write-Verbose "Add dependency $($Dependency.name) $($Dependency.version)"
                             $NewApp=New-Object -TypeName PSObject
@@ -98,9 +99,19 @@ function Get-ALAppOrder
                                 $AppsCompiled.Add($Dependency.name,$NewApp)
                                 $AppsToAdd.Add($Dependency.name,$NewApp)
                                 $AppsOrdered += $NewApp
+                            } else {
+                                $OldApp = $AppsCompiled[$Dependency.name]
+                                if (([Version]$Dependency.version) -gt ([Version]$OldApp.Version)) {
+                                    Write-Verbose "Replacing dependency $($OldApp.Name) $($OldApp.Version) $($Dependency.name) $($Dependency.version) "
+                                    $AppsCompiled.Remove($Dependency.name)
+                                    $AppsCompiled.Add($Dependency.name,$NewApp)
+                                    $AppsToAdd.Remove($Dependency.name)
+                                    $AppsToAdd.Add($Dependency.name,$NewApp)
+                                    $AppsOrdered = $AppsOrdered -replace $OldApp,$NewApp
+                                }
                             }
                         } else {
-                            Write-Verbose "Add dependency $($Dependency.name) $($Dependency.version) *"
+                            Write-Verbose "?Add dependency $($Dependency.name) $($Dependency.version)"
                             $NewApp=New-Object -TypeName PSObject
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'name' -Value $Dependency.name
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'version' -Value $Dependency.version
