@@ -206,18 +206,25 @@ function Get-ALAppOrder
                 if (-not $Apps.ContainsKey($App.name)) {
                     Write-Verbose "Adding dependency $($App.Name) $($App.Version)"
                     $Apps.Add($App.name,$App)
-                } 
-                # else {
-                #     $OldApp = $Apps[$App.Name]
-                #     Write-Host "Adding dependency $($App.Name) $($App.Version) *"
-                #     $NewVersion = [Version]($App.Version)
-                #     $OldVersion = [Version]($OldApp.Version)
-                #     if (($NewVersion) -gt ($OldVersion)) {
-                #         Write-Host "Updating dependency $($OldApp.Version) to $($App.Version) *"
-                #         $Apps.Remove($App.name)
-                #         $Apps.Add($App.name,$App)
-                #     }
-                # }
+                } else {
+                    $OldApp = $Apps[$App.Name]
+                    Write-Host "Adding dependency $($App.Name) $($App.Version) *"
+                    if ($App.version.GetType().Name -eq 'PSCustomObject') {
+                        $NewVersion = [version]::new($App.version.Major,$App.version.Minor,$App.version.Build,$App.version.Revision)
+                    } else {
+                        $NewVersion = [version]($App.version)
+                    }
+                    if ($OldApp.version.GetType().Name -eq 'PSCustomObject') {
+                        $OldVersion = [version]::new($OldApp.version.Major,$OldApp.version.Minor,$OldApp.version.Build,$OldApp.version.Revision)
+                    } else {
+                        $OldVersion = [version]($OldApp.version)
+                    }
+                    if (($NewVersion) -gt ($OldVersion)) {
+                        Write-Host "Updating dependency $($OldApp.Version) to $($App.Version) *"
+                        $Apps.Remove($App.name)
+                        $Apps.Add($App.name,$App)
+                    }
+                }
             }
         }
     }
