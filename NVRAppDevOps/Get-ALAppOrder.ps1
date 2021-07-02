@@ -204,19 +204,20 @@ function Get-ALAppOrder
             $App = Get-AppJsonFromApp -AppFile $AppFile.FullName -ContainerName $ContainerName -ArtifactUrl $ArtifactUrl
             if ($App.publisher -ne 'Microsoft') {
                 if (-not $Apps.ContainsKey($App.name)) {
-                    Write-Host "Adding dependency $($App.Name) $($App.Version)"
+                    Write-Verbose "Adding dependency $($App.Name) $($App.Version)"
                     $Apps.Add($App.name,$App)
-                } else {
-                    $OldApp = $Apps[$App.Name]
-                    Write-Host "Adding dependency $($App.Name) $($App.Version) *"
-                    $NewVersion = [Version]($App.Version)
-                    $OldVersion = [Version]($OldApp.Version)
-                    if (($NewVersion) -gt ($OldVersion)) {
-                        Write-Host "Updating dependency $($OldApp.Version) to $($App.Version) *"
-                        $Apps.Remove($App.name)
-                        $Apps.Add($App.name,$App)
-                    }
-                }
+                } 
+                # else {
+                #     $OldApp = $Apps[$App.Name]
+                #     Write-Host "Adding dependency $($App.Name) $($App.Version) *"
+                #     $NewVersion = [Version]($App.Version)
+                #     $OldVersion = [Version]($OldApp.Version)
+                #     if (($NewVersion) -gt ($OldVersion)) {
+                #         Write-Host "Updating dependency $($OldApp.Version) to $($App.Version) *"
+                #         $Apps.Remove($App.name)
+                #         $Apps.Add($App.name,$App)
+                #     }
+                # }
             }
         }
     }
