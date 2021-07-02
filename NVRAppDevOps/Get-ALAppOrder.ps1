@@ -57,7 +57,16 @@ function Get-ALAppOrder
             $AppJson = Get-Content -Path $F.FullName | ConvertFrom-Json
             $AppJson | Add-Member -MemberType NoteProperty -Name "AppPath" -Value $F.FullName
             if (-not $result.ContainsKey($AppJson.name)) {
+                Write-Verbose "Adding dependency $($AppJson.Name) $($AppJson.Version) *"
                 $result.Add($AppJson.name,$AppJson)
+            } else {
+                $OldApp = $result[$AppJson.name]
+                Write-Verbose "Adding dependency $($AppJson.Name) $($AppJson.Version) *"
+                if (([Version]$AppJson.Version) -gt ([Version]$OldApp.Version)) {
+                    Write-Host "Updating dependency $($OldApp.Version) to $($AppJson.Version) *"
+                    $Apps.Remove($AppJson.name)
+                    $Apps.Add($AppJson.name,$AppJson)
+                }
             }
         }
         return $result
