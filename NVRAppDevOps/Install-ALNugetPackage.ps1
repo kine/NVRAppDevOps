@@ -8,6 +8,7 @@ function Install-ALNugetPackage
         $ApiKey,
         $SourceUrl,
         $DependencyVersion='Highest',
+        [switch]$ExactVersion, #do not use DependencyVersion for the main package
         $TargetPath,
         $Key,
         $IdPrefix #Will be used before AppName and all Dependency names
