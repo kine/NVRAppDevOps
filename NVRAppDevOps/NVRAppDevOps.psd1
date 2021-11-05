@@ -93,7 +93,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '2.0.31'
+ModuleVersion = '2.0.32'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -116,6 +116,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+2.0.32
+- Install-ALNugetPackage Add revision version to filter by ExactVersion
+
 2.0.31
 - Install-ALNugetPackage ExactVersion switch to prevent applying DependencyVersion for the main package
 
