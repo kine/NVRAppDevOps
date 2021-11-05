@@ -117,7 +117,7 @@ PrivateData = @{
         # ReleaseNotes of this module
         ReleaseNotes = @'
 2.0.32
-- Install-ALNugetPackage ExactVersion filter debug
+- Install-ALNugetPackage ExactVersion filter bugfix
 
 2.0.31
 - Install-ALNugetPackage ExactVersion switch to prevent applying DependencyVersion for the main package
