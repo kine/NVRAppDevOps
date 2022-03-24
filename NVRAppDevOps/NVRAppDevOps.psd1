@@ -93,7 +93,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '2.0.33'
+ModuleVersion = '2.0.34'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -116,6 +116,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+2.0.34
+- Install-ALNugetPackage HighestMinor for x.y.z.0 will search for x.y.*.* instead x.*.*.*
+        
 2.0.33
 - Install-ALNugetPackage Lowest and HighestMinor search bugfix
 
