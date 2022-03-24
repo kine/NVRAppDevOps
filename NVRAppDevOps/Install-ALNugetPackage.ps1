@@ -40,7 +40,13 @@ function Install-ALNugetPackage
             $Versions = nuget.exe list -Source "$Source" -AllVersions -NonInteractive "$IdPrefix$(Format-AppNameForNuget $PackageName)" | Where-Object {$_ -like "$IdPrefix$(Format-AppNameForNuget $PackageName) *"}
             $VersionNos = $versions | foreach-object {$V=[version]$_.Split(' ')[1];If ($V.Revision -eq -1) {$V = [version]"$($V.Major).$($V.Minor).$($V.Build).0"};$V}
             $V = [version]$Version
-            $LatestVersion = $VersionNos | Sort-Object -Descending | Where-Object {$_.Major -eq $V.Major} | Select-Object -First 1
+            switch ($true) {
+                ($V -like '*.0.0.0') {$M = "$($V.Major).*.*.*";break}
+                ($V -like '*.*.0.0') {$M = "$($V.Major).*.*.*";break}
+                ($V -like '*.*.*.0') {$M = "$($V.Major).$($V.Minor).*.*";break}
+                ($V -like '*.*.*.*') {$M = "$($V.Major).$($V.Minor).$($V.Build).*";break}
+            }
+            $LatestVersion = $VersionNos | Sort-Object -Descending | Where-Object {$_ -like $M} | Select-Object -First 1
             Write-Host "Latest version for requested $Version is $LatestVersion"
             $Version = $LatestVersion
         }
