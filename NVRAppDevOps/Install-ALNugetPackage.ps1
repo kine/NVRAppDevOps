@@ -38,7 +38,7 @@ function Install-ALNugetPackage
         if ($Version -and ($DependencyVersion -eq 'HighestMinor')) {
             Write-Host "Listing available versions"
             $Versions = nuget.exe list -Source "$Source" -AllVersions -NonInteractive "$IdPrefix$(Format-AppNameForNuget $PackageName)" | Where-Object {$_ -like "$IdPrefix$(Format-AppNameForNuget $PackageName) *"}
-            $VersionNos = $versions | foreach-object {[version]$_.Split(' ')[1]}
+            $VersionNos = $versions | foreach-object {$V=[version]$_.Split(' ')[1];If ($V.Revision -eq -1) {$V = [version]"$($V.Major).$($V.Minor).$($V.Build).0"};$V}
             $V = [version]$Version
             $LatestVersion = $VersionNos | Sort-Object -Descending | Where-Object {$_.Major -eq $V.Major} | Select-Object -First 1
             Write-Host "Latest version for requested $Version is $LatestVersion"
@@ -47,7 +47,7 @@ function Install-ALNugetPackage
         if ($Version -and ($DependencyVersion -eq 'Lowest')) {
             Write-Host "Listing available versions"
             $Versions = nuget.exe list -Source "$Source" -AllVersions -NonInteractive "$IdPrefix$(Format-AppNameForNuget $PackageName)" | Where-Object {$_ -like "$IdPrefix$(Format-AppNameForNuget $PackageName) *"}
-            $VersionNos = $versions | foreach-object {[version]$_.Split(' ')[1]}
+            $VersionNos = $versions | foreach-object {$V=[version]$_.Split(' ')[1];If ($V.Revision -eq -1) {$V = [version]"$($V.Major).$($V.Minor).$($V.Build).0"};$V}
             $V = [version]$Version
             switch ($true) {
                 ($V -like '*.0.0.0') {$M = "$($V.Major).*.*.*";break}
