@@ -5,5 +5,5 @@ function Format-AppNameForNuget
         $Name
     )
 
-    return $Name -replace '\s','_'
+    return $Name -replace '\s','_' -replace '&','_'
 }
