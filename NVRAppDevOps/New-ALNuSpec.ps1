@@ -25,7 +25,6 @@ function New-ALNuSpec
         $DependencyFormat='$($Dep.publisher)_$($Dep.name)'
     )
     $nuspec =@()
-    $id = $([Security.SecurityElement]::Escape($id))
     $xmltext = @"
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
