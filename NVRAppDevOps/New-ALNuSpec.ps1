@@ -25,33 +25,34 @@ function New-ALNuSpec
         $DependencyFormat='$($Dep.publisher)_$($Dep.name)'
     )
     $nuspec =@()
+    $id = $([Security.SecurityElement]::Escape($id))
     $xmltext = @"
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
     <metadata>
         <id>$IdPrefix$(Format-AppNameForNuget $id)</id>
         <version>$AppVersion</version>
-        <authors>$authors</authors>
-        <owners>$owners</owners>
+        <authors>$([Security.SecurityElement]::Escape($authors))</authors>
+        <owners>$([Security.SecurityElement]::Escape($owners))</owners>
 "@
     if ($licenseUrl) {
-        $xmltext +="        <licenseUrl>$licenseUrl</licenseUrl>"
+        $xmltext +="        <licenseUrl>$([Security.SecurityElement]::Escape($licenseUrl))</licenseUrl>"
     }
     if ($projectUrl) {
-        $xmltext +="    <projectUrl>$projectUrl</projectUrl>"
+        $xmltext +="    <projectUrl>$([Security.SecurityElement]::Escape($projectUrl))</projectUrl>"
     }
     if ($iconUrl) {
-        $Xmltext +="       <iconUrl>$iconUrl</iconUrl>"
+        $Xmltext +="       <iconUrl>$([Security.SecurityElement]::Escape($iconUrl))</iconUrl>"
     }
     $xmltext +=@"
-        <releaseNotes>$releaseNotes</releaseNotes>
-        <description>$description</description>
-        <copyright>$copyright</copyright>
-        <tags>$tags</tags>
+        <releaseNotes>$([Security.SecurityElement]::Escape($releaseNotes))</releaseNotes>
+        <description>$([Security.SecurityElement]::Escape($description))</description>
+        <copyright>$([Security.SecurityElement]::Escape($copyright))</copyright>
+        <tags>$([Security.SecurityElement]::Escape($tags))</tags>
         <dependencies></dependencies>
     </metadata>
     <files>
-        <file src="$(Split-Path -Leaf $AppFile)" target="" />
+        <file src="$([Security.SecurityElement]::Escape($(Split-Path -Leaf $AppFile)))" target="" />
     </files>
 </package>
 "@
