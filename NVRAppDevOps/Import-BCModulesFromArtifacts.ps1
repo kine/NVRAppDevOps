@@ -18,6 +18,8 @@ function Import-BCModulesFromArtifacts
     )
     $Paths = Get-BCModulePathFromArtifact -artifactPath $artifactPath
 
+    try { [System.IO.File]::WriteAllText((Join-Path $artifactPath 'lastused'), "$([datetime]::UtcNow.Ticks)") } catch {}
+    
     Import-Module $Paths -Global
 
 }
