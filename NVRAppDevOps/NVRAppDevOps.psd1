@@ -93,7 +93,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '2.0.36'
+ModuleVersion = '2.0.38'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -116,9 +116,12 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+2.0.38
+- Update lastused on the artifact when module is imported from it
+
 2.0.36
 - Replace & i nuget package with _
-        
+
 2.0.35
 - Add Escaping of special chars in New-ALNuSpec
 
