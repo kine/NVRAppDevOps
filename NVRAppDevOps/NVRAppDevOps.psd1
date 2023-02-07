@@ -93,7 +93,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '2.0.40'
+ModuleVersion = '2.0.41'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -116,6 +116,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+2.0.41
+- Format-AppNameForNuget now replace / character
+
 2.0.40
 - Fixing regular expression for replacing () characters
         
