@@ -93,7 +93,7 @@ AliasesToExport = '*'
 # FileList = @()
 
 # Version number of this module.
-ModuleVersion = '2.0.42'
+ModuleVersion = '2.0.43'
 
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -116,6 +116,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+2.0.43
+- Fixed support for v21 and older management script location in Get-BCModulePathFromArtifact
+
 2.0.42
 - Add support for v22 management script location in Get-BCModulePathFromArtifact
         

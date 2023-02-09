@@ -18,8 +18,14 @@ function Get-BCModulePathFromArtifact
         $artifactPath,
         $databaseServer
     )
-    $ManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Management.psm1")
-    $AppManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Apps.Management.psd1")
+    $ManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\Microsoft.Dynamics.Nav.Management.psm1")
+    $AppManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\Microsoft.Dynamics.Nav.Apps.Management.psd1")
+    if (-not $ManagementModule) {
+        $ManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Management.psm1")
+    }
+    if (-not $AppManagementModule) {
+        $AppManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Apps.Management.psd1")
+    }
     if (!($ManagementModule)) {
         throw "Unable to locate management module in artifacts"
     }
