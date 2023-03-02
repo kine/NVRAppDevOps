@@ -1,22 +1,21 @@
-function Compile-AppWithArtifact
-{
+function Compile-AppWithArtifact {
     param(
-        [parameter(Mandatory=$true)]
+        [parameter(Mandatory = $true)]
         [string]$alcPath,
-        [parameter(Mandatory=$true)]
+        [parameter(Mandatory = $true)]
         [string]$artifactUrl,
-        [parameter(Mandatory=$true)]
+        [parameter(Mandatory = $true)]
         [string]$appProjectFolder,
-        [parameter(Mandatory=$true)]
+        [parameter(Mandatory = $true)]
         [string]$appOutputFolder,
-        [parameter(Mandatory=$true)]
+        [parameter(Mandatory = $true)]
         [string]$appSymbolsFolder,
         [switch]$AzureDevOps,
         [switch]$EnableCodeCop,
         [switch]$EnableAppSourceCop,
         [switch]$EnablePerTenantExtensionCop,
         [switch]$EnableUICop,
-        [ValidateSet('none','error','warning')]
+        [ValidateSet('none', 'error', 'warning')]
         [string] $FailOn = 'none',
         [string]$rulesetFile,
         [string]$assemblyProbingPaths,
@@ -38,7 +37,8 @@ function Compile-AppWithArtifact
     $ArtifactPaths = Download-Artifacts -artifactUrl $artifactUrl -includePlatform
     if ((-not (Test-Path (Join-Path $ArtifactPaths[0] 'Applications'))) -and (-not (Test-Path (Join-Path $ArtifactPaths[0] 'Applications.*')))) {
         $AppPath = $ArtifactPaths[1]
-    } else {
+    }
+    else {
         $AppPath = $ArtifactPaths[0]
     }
     (Join-Path $ArtifactPaths[1] "\ModernDev\program files\Microsoft Dynamics NAV\*\AL Development Environment\System.app"),
@@ -47,7 +47,7 @@ function Compile-AppWithArtifact
     (Join-Path $AppPath "\Applications.*\Microsoft_Base Application_*.app"),
     (Join-Path $AppPath "\Applications\BaseApp\Source\Microsoft_Base Application.app"),
     (Join-Path $AppPath "\Applications.*\Microsoft_System Application_*.app"),
-    (Join-Path $AppPath "\Applications\System Application\source\Microsoft_System Application.app")| ForEach-Object {
+    (Join-Path $AppPath "\Applications\System Application\source\Microsoft_System Application.app") | ForEach-Object {
         if ($_) {
             if (Test-Path $_) {
                 if (-not (Test-Path (Join-Path $appSymbolsFolder (Split-Path $_ -Leaf)))) {
@@ -61,7 +61,7 @@ function Compile-AppWithArtifact
 
     $MSAppsFiles = Get-ChildItem -Path $AppPath -Filter *.app -Recurse
     $MSApps = @()
-    foreach($File in $MSAppsFiles) {
+    foreach ($File in $MSAppsFiles) {
         $AppInfo = get-navappinfo -Path $File.FullName
         $AppJson = New-Object -TypeName PSObject
         $AppJson | Add-Member -MemberType NoteProperty -Name "id" -Value $AppInfo.id
@@ -74,34 +74,30 @@ function Compile-AppWithArtifact
 
     $dependencies = @()
 
-    if (([bool]($appJsonObject.PSobject.Properties.name -eq "application")) -and $appJsonObject.application)
-    {
+    if (([bool]($appJsonObject.PSobject.Properties.name -eq "application")) -and $appJsonObject.application) {
         $dependencies += @{"publisher" = "Microsoft"; "name" = "Application"; "version" = $appJsonObject.application }
     }
 
-    if (([bool]($appJsonObject.PSobject.Properties.name -eq "platform")) -and $appJsonObject.platform)
-    {
+    if (([bool]($appJsonObject.PSobject.Properties.name -eq "platform")) -and $appJsonObject.platform) {
         $dependencies += @{"publisher" = "Microsoft"; "name" = "System"; "version" = $appJsonObject.platform }
     }
 
-    if (([bool]($appJsonObject.PSobject.Properties.name -eq "test")) -and $appJsonObject.test)
-    {
-        $dependencies +=  @{"publisher" = "Microsoft"; "name" = "Test"; "version" = $appJsonObject.test }
+    if (([bool]($appJsonObject.PSobject.Properties.name -eq "test")) -and $appJsonObject.test) {
+        $dependencies += @{"publisher" = "Microsoft"; "name" = "Test"; "version" = $appJsonObject.test }
         if (([bool]($customConfig.PSobject.Properties.name -eq "EnableSymbolLoadingAtServerStartup")) -and ($customConfig.EnableSymbolLoadingAtServerStartup -eq "true")) {
             throw "app.json should NOT have a test dependency when running hybrid development (EnableSymbolLoading)"
         }
     }
 
-    if (([bool]($appJsonObject.PSobject.Properties.name -eq "dependencies")) -and $appJsonObject.dependencies)
-    {
+    if (([bool]($appJsonObject.PSobject.Properties.name -eq "dependencies")) -and $appJsonObject.dependencies) {
         $appJsonObject.dependencies | ForEach-Object {
             $dependencies += @{ "publisher" = $_.publisher; "name" = $_.name; "version" = $_.version }
         }
     }
 
     Write-Host "Looking for missing MS dependencies"
-    foreach($dep in ($dependencies | Where-Object {$_.publisher -like 'Microsoft'})) {
-        $MSAppFile = $MSApps | Where-Object {($_.name -eq $dep.name) -and ($_.publisher -eq $dep.publisher)} | Select-Object -First 1
+    foreach ($dep in ($dependencies | Where-Object { $_.publisher -like 'Microsoft' })) {
+        $MSAppFile = $MSApps | Where-Object { ($_.name -eq $dep.name) -and ($_.publisher -eq $dep.publisher) } | Select-Object -First 1
         if ($MSAppFile) {
             if (-not (Test-Path (Join-Path $appSymbolsFolder (Split-Path $MSAppFile -Leaf)))) {
                 Write-Host "Copying $([System.IO.Path]::GetFileName($MSAppFile.file)) "
@@ -110,7 +106,7 @@ function Compile-AppWithArtifact
         }
     }
     $result = Invoke-Command -ScriptBlock {
-        Param($binPath,$appProjectFolder, $appSymbolsFolder, $appOutputFile, $EnableCodeCop, $EnableAppSourceCop, $EnablePerTenantExtensionCop, $EnableUICop, $rulesetFile, $assemblyProbingPaths, $nowarn, $generateReportLayoutParam, $features, $preProcessorSymbols )
+        Param($binPath, $appProjectFolder, $appSymbolsFolder, $appOutputFile, $EnableCodeCop, $EnableAppSourceCop, $EnablePerTenantExtensionCop, $EnableUICop, $rulesetFile, $assemblyProbingPaths, $nowarn, $generateReportLayoutParam, $features, $preProcessorSymbols )
 
         Push-Location
         set-location $binPath
@@ -148,7 +144,7 @@ function Compile-AppWithArtifact
         if ($lastexitcode -ne 0) {
             "App generation failed with exit code $lastexitcode"
         }
-    } -ArgumentList $alcPath,$appProjectFolder, $appSymbolsFolder, (Join-Path $appOutputFolder $appName), $EnableCodeCop, $EnableAppSourceCop, $EnablePerTenantExtensionCop, $EnableUICop, $containerRulesetFile, $assemblyProbingPaths, $nowarn, $GenerateReportLayoutParam, $features, $preProcessorSymbols
+    } -ArgumentList $alcPath, $appProjectFolder, $appSymbolsFolder, (Join-Path $appOutputFolder $appName), $EnableCodeCop, $EnableAppSourceCop, $EnablePerTenantExtensionCop, $EnableUICop, $rulesetFile, $assemblyProbingPaths, $nowarn, $GenerateReportLayoutParam, $features, $preProcessorSymbols
 
     $devOpsResult = ""
     if ($result) {
@@ -156,7 +152,8 @@ function Compile-AppWithArtifact
     }
     if ($AzureDevOps) {
         $devOpsResult | % { $outputTo.Invoke($_) }
-    }    else {
+    }
+    else {
         $result | % { $outputTo.Invoke($_) }
         if ($devOpsResult -like "*task.complete result=Failed*") {
             throw "App generation failed"
