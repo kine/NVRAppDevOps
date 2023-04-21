@@ -12,8 +12,7 @@
 .OUTPUTS
     array of paths
 #>
-function Get-BCModulePathFromArtifact
-{
+function Get-BCModulePathFromArtifact {
     param(
         $artifactPath,
         $databaseServer
@@ -27,17 +26,17 @@ function Get-BCModulePathFromArtifact
         $AppManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Apps.Management.psd1")
     }
     if (!($ManagementModule)) {
-        throw "Unable to locate management module in artifacts"
+        throw "Unable to locate management module in artifacts $artifactPath"
     }
     if (!($AppManagementModule)) {
-        throw "Unable to locate apps management module in artifacts"
+        throw "Unable to locate apps management module in artifacts $artifactPath"
     }
     
     Write-Host "Found PowerShell module $($ManagementModule.FullName)"
     Write-Host "Found PowerShell module $($AppManagementModule.FullName)"
-    $Paths = @($ManagementModule.FullName,$AppManagementModule.FullName)
+    $Paths = @($ManagementModule.FullName, $AppManagementModule.FullName)
 
-    if ($databaseServer)  {
+    if ($databaseServer) {
         import-module SqlServer
         $SqlModule = get-module SqlServer
         $Path = Split-Path $SqlModule.Path
@@ -52,7 +51,7 @@ function Get-BCModulePathFromArtifact
             if ($e.Name -like "Microsoft.SqlServer.SmoExtended, Version=*, Culture=neutral, PublicKeyToken=89845dcd8080cc91") { return $SmoExtended }
             if ($e.Name -like "Microsoft.SqlServer.ConnectionInfo, Version=*, Culture=neutral, PublicKeyToken=89845dcd8080cc91") { return $ConnectionInfo }
             if ($e.Name -like "Microsoft.SqlServer.SqlEnum, Version=*, Culture=neutral, PublicKeyToken=89845dcd8080cc91") { return $SqlEnum }
-            foreach($a in [System.AppDomain]::CurrentDomain.GetAssemblies()) {
+            foreach ($a in [System.AppDomain]::CurrentDomain.GetAssemblies()) {
                 if ($a.FullName -eq $e.Name) { return $a }
             }
             return $null
