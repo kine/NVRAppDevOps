@@ -32,8 +32,8 @@ function Get-BCModulePathFromArtifact {
         throw "Unable to locate apps management module in artifacts $artifactPath"
     }
     
-    Write-Host "Found PowerShell module $($ManagementModule.FullName)"
-    Write-Host "Found PowerShell module $($AppManagementModule.FullName)"
+    Write-Verbose "Found PowerShell module $($ManagementModule.FullName)"
+    Write-Verbose "Found PowerShell module $($AppManagementModule.FullName)"
     $Paths = @($ManagementModule.FullName, $AppManagementModule.FullName)
 
     if ($databaseServer) {
