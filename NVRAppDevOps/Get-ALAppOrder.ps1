@@ -109,129 +109,131 @@ function Get-ALAppOrder {
                                     $AppsToAdd.Remove($Dependency.name)
                                     $AppsToAdd.Add($Dependency.name, $NewApp)
                                     #$AppsOrdered = $AppsOrdered -replace $OldApp,$NewApp
-                                    $AppsOrdered.Item($AppsOrdered.IndexOf($OldApp)).version = $Dependency.version
-                                    $AppsCompiled[$Dependency.name].version = $Dependency.version
+                                    #$AppsOrdered.Item($AppsOrdered.IndexOf($OldApp)).version = $Dependency.version
+                                    $a = $AppsOrdered | where-object { $_.name -eq $OldApp.name }
+                                    $a.version = $Dependency.version
                                 }
                             }
-                        } 
-                        #else {
-                        #     Write-Verbose "?Add dependency $($Dependency.name) $($Dependency.version)"
-                        #     $NewApp=New-Object -TypeName PSObject
-                        #     $NewApp | Add-Member -MemberType NoteProperty -Name 'name' -Value $Dependency.name
-                        #     $NewApp | Add-Member -MemberType NoteProperty -Name 'version' -Value $Dependency.version
-                        #     $NewApp | Add-Member -MemberType NoteProperty -Name 'publisher' -Value $Dependency.publisher
-                        #     $NewApp | Add-Member -MemberType NoteProperty -Name 'AppPath' -Value ""
+                        }
+                    } 
+                    #else {
+                    #     Write-Verbose "?Add dependency $($Dependency.name) $($Dependency.version)"
+                    #     $NewApp=New-Object -TypeName PSObject
+                    #     $NewApp | Add-Member -MemberType NoteProperty -Name 'name' -Value $Dependency.name
+                    #     $NewApp | Add-Member -MemberType NoteProperty -Name 'version' -Value $Dependency.version
+                    #     $NewApp | Add-Member -MemberType NoteProperty -Name 'publisher' -Value $Dependency.publisher
+                    #     $NewApp | Add-Member -MemberType NoteProperty -Name 'AppPath' -Value ""
 
-                        #     $OldApp = $Apps[$Dependency.name]
-                        #     if (([Version]$Dependency.version) -gt ([Version]$OldApp.Version)) {
-                        #         Write-Verbose "Replacing dependency $($OldApp.Name) $($OldApp.Version) $($Dependency.name) $($Dependency.version) "
-                        #         $AppsCompiled.Remove($Dependency.name)
-                        #         $AppsCompiled.Add($Dependency.name,$NewApp)
-                        #         $AppsToAdd.Remove($Dependency.name)
-                        #         $AppsToAdd.Add($Dependency.name,$NewApp)
-                        #         #$AppsOrdered = $AppsOrdered -replace $OldApp,$NewApp
-                        #         $AppsOrdered.Item($AppsOrdered.IndexOf($OldApp)).version = $Dependency.version
-                        #     }
-                        # }
-                        if (-not $AppsCompiled.ContainsKey($Dependency.name)) {
-                            $DependencyOk = $false
-                        }
+                    #     $OldApp = $Apps[$Dependency.name]
+                    #     if (([Version]$Dependency.version) -gt ([Version]$OldApp.Version)) {
+                    #         Write-Verbose "Replacing dependency $($OldApp.Name) $($OldApp.Version) $($Dependency.name) $($Dependency.version) "
+                    #         $AppsCompiled.Remove($Dependency.name)
+                    #         $AppsCompiled.Add($Dependency.name,$NewApp)
+                    #         $AppsToAdd.Remove($Dependency.name)
+                    #         $AppsToAdd.Add($Dependency.name,$NewApp)
+                    #         #$AppsOrdered = $AppsOrdered -replace $OldApp,$NewApp
+                    #         $AppsOrdered.Item($AppsOrdered.IndexOf($OldApp)).version = $Dependency.version
+                    #     }
+                    # }
+                    if (-not $AppsCompiled.ContainsKey($Dependency.name)) {
+                        $DependencyOk = $false
                     }
-                    if ($DependencyOk) {
-                        $AppsOrdered += $App.Value
-                        if (-not $AppsCompiled.ContainsKey($App.Value.name)) {
-                            $AppsCompiled.Add($App.Value.name, $App.Value)
-                        }
+                }
+                if ($DependencyOk) {
+                    $AppsOrdered += $App.Value
+                    if (-not $AppsCompiled.ContainsKey($App.Value.name)) {
+                        $AppsCompiled.Add($App.Value.name, $App.Value)
                     }
                 }
             }
-            foreach ($App in $AppsToAdd.GetEnumerator()) {
-                if (-not $Apps.ContainsKey($App.Value.name)) {
-                    $Apps.Add($App.Value.name, $App.Value)
-                }
+        }
+        foreach ($App in $AppsToAdd.GetEnumerator()) {
+            if (-not $Apps.ContainsKey($App.Value.name)) {
+                $Apps.Add($App.Value.name, $App.Value)
             }
-            $AppsToAdd = @{}
-        } while ($Apps.Count -ne $AppsCompiled.Count)
-        return $AppsOrdered
-    }
+        }
+        $AppsToAdd = @{}
+    } while ($Apps.Count -ne $AppsCompiled.Count)
+    return $AppsOrdered
+}
 
-    function Get-AppJsonFromApp {
-        Param(
-            $AppFile,
-            $ContainerName,
-            $ArtifactUrl
-        )
-        $AppDeps = @()
-        if ($ArtifactUrl) {
-            import-module (Get-BCModulePathFromArtifact -artifactPath ((Download-Artifacts -artifactUrl $artifactUrl -includePlatform)[1]))
-            $AppInfo = Get-NavAppInfo -Path $AppFile
-        }
-        else {
-            $AppInfo = Get-NavContainerAppInfoFile -AppPath $AppFile -ContainerName $ContainerName
-        }
-        $AppJson = New-Object -TypeName PSObject
-        $AppJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppInfo.Name
-        $AppJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppInfo.Publisher
-        $AppJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppInfo.Version
-        foreach ($AppDep in $AppInfo.Dependencies) {
-            $AppDepJson = New-Object -TypeName PSObject
-            $AppDepJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppDep.Name
-            $AppDepJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppDep.Publisher
-            $AppDepJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppDep.MinVersion
-            $AppDeps += $AppDepJson
-        }
-        $AppJson | Add-Member -MemberType NoteProperty -Name "dependencies" -Value $AppDeps
-        $AppJson | Add-Member -MemberType NoteProperty -Name "AppPath" -Value $AppFile
-        return $AppJson
-    }
-
-    if ($AppCollection) {
-        $Apps = $AppCollection
+function Get-AppJsonFromApp {
+    Param(
+        $AppFile,
+        $ContainerName,
+        $ArtifactUrl
+    )
+    $AppDeps = @()
+    if ($ArtifactUrl) {
+        import-module (Get-BCModulePathFromArtifact -artifactPath ((Download-Artifacts -artifactUrl $artifactUrl -includePlatform)[1]))
+        $AppInfo = Get-NavAppInfo -Path $AppFile
     }
     else {
-        $AppConfigs = Get-ChildItem -Path $Path -Filter App.json -Recurse
-        if ($AppConfigs) {
-            $Apps = ConvertTo-ALAppsInfo -Files $AppConfigs
-        }
+        $AppInfo = Get-NavContainerAppInfoFile -AppPath $AppFile -ContainerName $ContainerName
     }
+    $AppJson = New-Object -TypeName PSObject
+    $AppJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppInfo.Name
+    $AppJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppInfo.Publisher
+    $AppJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppInfo.Version
+    foreach ($AppDep in $AppInfo.Dependencies) {
+        $AppDepJson = New-Object -TypeName PSObject
+        $AppDepJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppDep.Name
+        $AppDepJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppDep.Publisher
+        $AppDepJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppDep.MinVersion
+        $AppDeps += $AppDepJson
+    }
+    $AppJson | Add-Member -MemberType NoteProperty -Name "dependencies" -Value $AppDeps
+    $AppJson | Add-Member -MemberType NoteProperty -Name "AppPath" -Value $AppFile
+    return $AppJson
+}
 
-    if ((-not $Apps) -or ($IncludeAppFiles)) {
-        if (-not $Apps) {
-            $Apps = @{}
-        }
-        $AppFiles = Get-ChildItem -Path $Path -Filter *.app -Recurse:$Recurse
-        foreach ($AppFile in $AppFiles) {
-            $App = Get-AppJsonFromApp -AppFile $AppFile.FullName -ContainerName $ContainerName -ArtifactUrl $ArtifactUrl
-            if ($App.publisher -ne 'Microsoft') {
-                if (-not $Apps.ContainsKey($App.name)) {
-                    Write-Verbose "Adding dependency $($App.Name) $($App.Version)"
-                    $Apps.Add($App.name, $App)
+if ($AppCollection) {
+    $Apps = $AppCollection
+}
+else {
+    $AppConfigs = Get-ChildItem -Path $Path -Filter App.json -Recurse
+    if ($AppConfigs) {
+        $Apps = ConvertTo-ALAppsInfo -Files $AppConfigs
+    }
+}
+
+if ((-not $Apps) -or ($IncludeAppFiles)) {
+    if (-not $Apps) {
+        $Apps = @{}
+    }
+    $AppFiles = Get-ChildItem -Path $Path -Filter *.app -Recurse:$Recurse
+    foreach ($AppFile in $AppFiles) {
+        $App = Get-AppJsonFromApp -AppFile $AppFile.FullName -ContainerName $ContainerName -ArtifactUrl $ArtifactUrl
+        if ($App.publisher -ne 'Microsoft') {
+            if (-not $Apps.ContainsKey($App.name)) {
+                Write-Verbose "Adding dependency $($App.Name) $($App.Version)"
+                $Apps.Add($App.name, $App)
+            }
+            else {
+                $OldApp = $Apps[$App.Name]
+                Write-Host "Adding dependency $($App.Name) $($App.Version) *"
+                if ($App.version.GetType().Name -eq 'PSCustomObject') {
+                    $NewVersion = [version]::new($App.version.Major, $App.version.Minor, $App.version.Build, $App.version.Revision)
                 }
                 else {
-                    $OldApp = $Apps[$App.Name]
-                    Write-Host "Adding dependency $($App.Name) $($App.Version) *"
-                    if ($App.version.GetType().Name -eq 'PSCustomObject') {
-                        $NewVersion = [version]::new($App.version.Major, $App.version.Minor, $App.version.Build, $App.version.Revision)
-                    }
-                    else {
-                        $NewVersion = [version]($App.version)
-                    }
-                    if ($OldApp.version.GetType().Name -eq 'PSCustomObject') {
-                        $OldVersion = [version]::new($OldApp.version.Major, $OldApp.version.Minor, $OldApp.version.Build, $OldApp.version.Revision)
-                    }
-                    else {
-                        $OldVersion = [version]($OldApp.version)
-                    }
-                    if (($NewVersion) -gt ($OldVersion)) {
-                        Write-Host "Updating dependency $($OldApp.Version) to $($App.Version) *"
-                        $Apps.Remove($App.name)
-                        $Apps.Add($App.name, $App)
-                    }
+                    $NewVersion = [version]($App.version)
+                }
+                if ($OldApp.version.GetType().Name -eq 'PSCustomObject') {
+                    $OldVersion = [version]::new($OldApp.version.Major, $OldApp.version.Minor, $OldApp.version.Build, $OldApp.version.Revision)
+                }
+                else {
+                    $OldVersion = [version]($OldApp.version)
+                }
+                if (($NewVersion) -gt ($OldVersion)) {
+                    Write-Host "Updating dependency $($OldApp.Version) to $($App.Version) *"
+                    $Apps.Remove($App.name)
+                    $Apps.Add($App.name, $App)
                 }
             }
         }
     }
+}
 
-    $AppsOrdered = Get-ALBuildOrder -Apps $Apps
-    Write-Output $AppsOrdered
+$AppsOrdered = Get-ALBuildOrder -Apps $Apps
+Write-Output $AppsOrdered
 }
