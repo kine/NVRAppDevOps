@@ -1,30 +1,30 @@
-function New-ALNuSpec
-{
+function New-ALNuSpec {
     Param(
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $AppFile,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $AppName,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $Publisher,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $AppVersion,
         $NuspecFileName,
         $id,
-        $authors='',
-        $owners='',
-        $licenseUrl='',
-        $projectUrl='',
-        $iconUrl='',
-        $releaseNotes='',
-        $description='',
-        $copyright='',
-        $tags='',
+        $authors = '',
+        $owners = '',
+        $licenseUrl = '',
+        $projectUrl = '',
+        $iconUrl = '',
+        $releaseNotes = '',
+        $description = '',
+        $copyright = '',
+        $tags = '',
         $AppDependencies,
         $IdPrefix, #Will be used before AppName and all Dependency names
-        $DependencyFormat='$($Dep.publisher)_$($Dep.name)'
+        $DependencyFormat = '$($Dep.publisher)_$($Dep.name)',
+        [bool]$IncludeBaseApp = $false
     )
-    $nuspec =@()
+    $nuspec = @()
     $xmltext = @"
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
@@ -35,15 +35,15 @@ function New-ALNuSpec
         <owners>$([Security.SecurityElement]::Escape($owners))</owners>
 "@
     if ($licenseUrl) {
-        $xmltext +="        <licenseUrl>$([Security.SecurityElement]::Escape($licenseUrl))</licenseUrl>"
+        $xmltext += "        <licenseUrl>$([Security.SecurityElement]::Escape($licenseUrl))</licenseUrl>"
     }
     if ($projectUrl) {
-        $xmltext +="    <projectUrl>$([Security.SecurityElement]::Escape($projectUrl))</projectUrl>"
+        $xmltext += "    <projectUrl>$([Security.SecurityElement]::Escape($projectUrl))</projectUrl>"
     }
     if ($iconUrl) {
-        $Xmltext +="       <iconUrl>$([Security.SecurityElement]::Escape($iconUrl))</iconUrl>"
+        $Xmltext += "       <iconUrl>$([Security.SecurityElement]::Escape($iconUrl))</iconUrl>"
     }
-    $xmltext +=@"
+    $xmltext += @"
         <releaseNotes>$([Security.SecurityElement]::Escape($releaseNotes))</releaseNotes>
         <description>$([Security.SecurityElement]::Escape($description))</description>
         <copyright>$([Security.SecurityElement]::Escape($copyright))</copyright>
@@ -55,10 +55,11 @@ function New-ALNuSpec
     </files>
 </package>
 "@
-    $nuspec =[System.Xml.XmlDocument]$xmltext
-    foreach($Dep in $AppDependencies) {
-        if ($Dep.publisher -ne 'Microsoft') {
-            $depXml = $nuspec.CreateElement('dependency','http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd')
+    $nuspec = [System.Xml.XmlDocument]$xmltext
+    foreach ($Dep in $AppDependencies) {
+        if (((-not $IncludeBaseApp) -and ($Dep.publisher -ne 'Microsoft')) `
+                -or ($IncludeBaseApp -and (($Dep.publisher -ne 'Microsoft') -or ($Dep.name -eq 'Application')))) {
+            $depXml = $nuspec.CreateElement('dependency', 'http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd')
             $attr = $nuspec.CreateAttribute("id")
             $attr.Value = "$IdPrefix$(Format-AppNameForNuget $ExecutionContext.InvokeCommand.ExpandString($DependencyFormat))"
             $depXml.Attributes.Append($attr) | out-null
