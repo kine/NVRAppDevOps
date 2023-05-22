@@ -93,7 +93,7 @@
     # FileList = @()
 
     # Version number of this module.
-    ModuleVersion     = '2.0.49'
+    ModuleVersion     = '2.1.0'
 
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -116,6 +116,9 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.1.0
+- Add IncludeBaseApp switch into New-ALNuSpec to include microsoft Application into dependencies (preview, to be able to select package based on MS application version dependency)
+
 2.0.44
 - Fixed issue #34 - rulesetfile parameter bug in Compile-AppWithArtifact.ps1 (thanks @skmcavoy)
 
