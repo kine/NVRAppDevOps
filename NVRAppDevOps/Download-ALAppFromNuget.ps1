@@ -22,34 +22,40 @@
     Path to place the downloaded App file
 
 #>
-function Download-ALAppFromNuget
-{
+function Download-ALAppFromNuget {
     param(
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $name,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $publisher,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $version,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $path = '.\',
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $Source = '',
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $SourceUrl = '',
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $Key = '',
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         [switch]$LatestVersion,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
-        [ValidateSet('Lowest','HighestPatch','HighestMinor','Highest','Ignore')]
-        $DependencyVersion = 'Highest'
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [ValidateSet('Lowest', 'HighestPatch', 'HighestMinor', 'Highest', 'Ignore')]
+        $DependencyVersion = 'Highest',
+        $BaseApplicationVersion = '',
+        [bool]$UsePaket = $false
 
     )
-    $DependencyFormat='$($publisher)_$($name)'
+    $DependencyFormat = '$($publisher)_$($name)'
     $packageName = Format-AppNameForNuget -Name ($ExecutionContext.InvokeCommand.ExpandString($DependencyFormat))
     if ($LatestVersion) {
         $version = ''
     }
-    Install-ALNugetPackage -PackageName $packageName -Version $version -TargetPath $path -IdPrefix "" -Source $Source -SourceUrl $SourceUrl -Key $Key -DependencyVersion $DependencyVersion
+    if ($UsePaket) {
+        Install-ALNugetPackageByPaket -PackageName $packageName -Version $version -TargetPath $path -IdPrefix "" -Source $Source -SourceUrl $SourceUrl -Key $Key -DependencyVersion $DependencyVersion -BaseApplicationVersion $BaseApplicationVersion
+    }
+    else {
+        Install-ALNugetPackage -PackageName $packageName -Version $version -TargetPath $path -IdPrefix "" -Source $Source -SourceUrl $SourceUrl -Key $Key -DependencyVersion $DependencyVersion
+    }
 }

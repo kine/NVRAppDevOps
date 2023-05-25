@@ -3,7 +3,6 @@ function Install-ALNugetPackageByPaket {
     Param(
         $PackageName,
         $Version,
-        $Source,
         $ApiKey,
         $SourceUrl,
         $DependencyVersion = 'Highest',
@@ -36,7 +35,7 @@ function Install-ALNugetPackageByPaket {
     }
     New-Item -Path $TempFolder -ItemType directory -Force | Out-Null
 
-    Write-Host "Installing package '$IdPrefix$(Format-AppNameForNuget $PackageName)' version $($Version) $DependencyVersion from '$Source' to $TargetPath..."
+    Write-Host "Installing package '$IdPrefix$(Format-AppNameForNuget $PackageName)' version $($Version) $DependencyVersion from '$SourceUrl' to $TargetPath..."
     if ($Version) {
         $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget $PackageName) => $($Version)"
     }
