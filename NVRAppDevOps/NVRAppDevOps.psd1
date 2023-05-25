@@ -24,7 +24,7 @@
     CompanyName       = 'NAVERTICA a.s.'
 
     # Copyright statement for this module
-    Copyright         = '(c) 2018-2021 Kamil Sacek'
+    Copyright         = '(c) 2018-2023 Kamil Sacek'
 
     # Description of the functionality provided by this module
     Description       = 'cmdlets for DevOps for Business Central'
@@ -93,7 +93,7 @@
     # FileList = @()
 
     # Version number of this module.
-    ModuleVersion     = '2.1.0'
+    ModuleVersion     = '2.2.0'
 
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -116,6 +116,9 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.2.0
+- Add Install-ALNugetPackageByPaket to install nuget package by Paket manager. Paket have better dependency resolving than nuget.exe
+            
 2.1.0
 - Add IncludeBaseApp switch into New-ALNuSpec to include microsoft Application into dependencies (preview, to be able to select package based on MS application version dependency)
 
