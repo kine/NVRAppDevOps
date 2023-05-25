@@ -57,7 +57,7 @@ function Download-ALApp {
         $Configuration | Add-Member -MemberType NoteProperty -Name 'publisher' -Value $publisher
         $Configuration | Add-Member -MemberType NoteProperty -Name 'version' -Value $version
         $Configuration | Add-Member -MemberType NoteProperty -Name 'path' -Value $targetPath
-        $Configuration | Add-Member -MemberType NoteProperty -Name '$baseApplicationVersion' -Value $baseApplicationVersion
+        $Configuration | Add-Member -MemberType NoteProperty -Name 'baseApplicationVersion' -Value $baseApplicationVersion
 
         #$Configuration | $AppDownloadScript
         #Invoke-Expression -Command $AppDownloadScript
