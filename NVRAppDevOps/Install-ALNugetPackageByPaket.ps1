@@ -32,7 +32,7 @@ function Install-ALNugetPackageByPaket {
         "Lowest" { $paketdependencies += "strategy: min"; $paketdependencies += "lowest_matching: true" }
     }
     if ($BaseApplicationVersion) {
-        $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") ~> $($BaseApplicationVersion)"
+        $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") ~> $($BaseApplicationVersion) storage: none"
     }
     New-Item -Path $TempFolder -ItemType directory -Force | Out-Null
 
