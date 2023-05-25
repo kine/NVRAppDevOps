@@ -49,7 +49,12 @@ function Install-ALNugetPackageByPaket {
     Write-Host "running paket.exe install..."
     paket.exe install
     Write-Host "Moving app files from $TempFolder to $TargetPath..."
-    Get-ChildItem -Path $TempFolder -Filter *.app -Recurse | Copy-Item -Destination $TargetPath -Container -Force | Out-Null
+    if ($DependencyVersion -eq 'Ignore') {
+        Get-ChildItem -Path $TempFolder -Filter "$($PackageName)_*.app" -Recurse | Copy-Item -Destination $TargetPath -Container -Force | Out-Null
+    }
+    else {
+        Get-ChildItem -Path $TempFolder -Filter *.app -Recurse | Copy-Item -Destination $TargetPath -Container -Force | Out-Null
+    }
     Pop-Location
     Write-Host "Removing folder $TempFolder..."
     Remove-Item $TempFolder -Force -Recurse | Out-Null
