@@ -38,7 +38,7 @@ function Install-ALNugetPackageByPaket {
 
     Write-Host "Installing package '$IdPrefix$(Format-AppNameForNuget $PackageName)' version $($Version) $DependencyVersion from '$SourceUrl' to $TargetPath..."
     if ($Version) {
-        $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget $PackageName) => $($Version)"
+        $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget $PackageName) >= $($Version)"
     }
     else {
         $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget $PackageName)"
