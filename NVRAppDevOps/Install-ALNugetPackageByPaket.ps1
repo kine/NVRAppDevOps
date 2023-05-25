@@ -14,12 +14,12 @@ function Install-ALNugetPackageByPaket {
     )
     $paketdependencies = @()
     $paketdependencies += "source $($SourceUrl) username: `"user`" password: `"$($Key)`" authtype: `"basic`""
-    if (-not $env:ChocolateyInstall) {
+    if (-not ($env:ChocolateyInstall -or (Test-Path C:\ProgramData\chocolatey))) {
         Write-Host "Installing Chocolatey..."
         Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     }
     Write-Host "Installing Paket..."
-    choco install Paket -y
+    & C:\ProgramData\chocolatey\choco install Paket -y
     $TempFolder = Join-Path $env:TEMP 'ALNugetApps'
     if (Test-Path $TempFolder) {
         Remove-Item $TempFolder -Force -Recurse | Out-Null
