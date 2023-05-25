@@ -29,6 +29,7 @@ function Install-ALNugetPackageByPaket {
         "HighestMinor" { $paketdependencies += "strategy: max"; $paketdependencies += "lowest_matching: false" }
         "Highest" { $paketdependencies += "strategy: max"; $paketdependencies += "lowest_matching: false" }
         "Lowest" { $paketdependencies += "strategy: min"; $paketdependencies += "lowest_matching: true" }
+        "Ignore" { $paketdependencies += "references: strict" }
     }
     if ($BaseApplicationVersion) {
         $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") ~> $($BaseApplicationVersion) storage: none"
