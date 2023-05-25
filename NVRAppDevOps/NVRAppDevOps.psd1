@@ -51,7 +51,7 @@
     RequiredModules   = @(
         @{
             ModuleName    = 'BcContainerHelper'
-            ModuleVersion = '2.0.0'
+            ModuleVersion = '4.0.0'
             Guid          = '8e034fbc-8c30-446d-bbc3-5b3be5392491'
         }
     )
@@ -93,7 +93,7 @@
     # FileList = @()
 
     # Version number of this module.
-    ModuleVersion     = '2.2.0'
+    ModuleVersion     = '2.2.1'
 
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -118,7 +118,7 @@
             ReleaseNotes = @'
 2.2.0
 - Add Install-ALNugetPackageByPaket to install nuget package by Paket manager. Paket have better dependency resolving than nuget.exe
-            
+
 2.1.0
 - Add IncludeBaseApp switch into New-ALNuSpec to include microsoft Application into dependencies (preview, to be able to select package based on MS application version dependency)
 
