@@ -47,7 +47,7 @@ function Install-ALNugetPackageByPaket {
     set-location $TempFolder
     $paketdependencies | Out-File paket.dependencies -Encoding utf8
     Write-Host "running paket.exe install..."
-    paket.exe install
+    & C:\ProgramData\chocolatey\lib\Paket\payload\paket.exe install
     Write-Host "Moving app files from $TempFolder to $TargetPath..."
     if ($DependencyVersion -eq 'Ignore') {
         Get-ChildItem -Path $TempFolder -Filter "$($PackageName)_*.app" -Recurse | Copy-Item -Destination $TargetPath -Container -Force | Out-Null
