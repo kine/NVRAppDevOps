@@ -33,6 +33,8 @@ function Download-ALAppFromNuget {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $path = '.\',
         [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $baseApplicationVersion = '',
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $Source = '',
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $SourceUrl = '',
@@ -43,7 +45,6 @@ function Download-ALAppFromNuget {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         [ValidateSet('Lowest', 'HighestPatch', 'HighestMinor', 'Highest', 'Ignore')]
         $DependencyVersion = 'Highest',
-        $BaseApplicationVersion = '',
         [bool]$UsePaket = $false
 
     )
@@ -53,7 +54,7 @@ function Download-ALAppFromNuget {
         $version = ''
     }
     if ($UsePaket) {
-        Install-ALNugetPackageByPaket -PackageName $packageName -Version $version -TargetPath $path -IdPrefix "" -Source $Source -SourceUrl $SourceUrl -Key $Key -DependencyVersion $DependencyVersion -BaseApplicationVersion $BaseApplicationVersion
+        Install-ALNugetPackageByPaket -PackageName $packageName -Version $version -TargetPath $path -IdPrefix "" -Source $Source -SourceUrl $SourceUrl -Key $Key -DependencyVersion $DependencyVersion -BaseApplicationVersion $baseApplicationVersion
     }
     else {
         Install-ALNugetPackage -PackageName $packageName -Version $version -TargetPath $path -IdPrefix "" -Source $Source -SourceUrl $SourceUrl -Key $Key -DependencyVersion $DependencyVersion

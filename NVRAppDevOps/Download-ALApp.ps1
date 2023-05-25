@@ -24,23 +24,27 @@
 .Parameter targetPath
     Path to place the downloaded App file
 
+.Parameter baseApplicationVersion
+    Version of base application to use for downloading the app. This is used for downloading only dependencies compatible with this version.
+
 .Parameter AppDownloadScript
     Script to use to download the app. This should take parameters from pipeline with name "name", "publisher", "version" and "targetPath" 
     or extract them from input object. Script could copy the app from somewhere, download it from some server etc.
 
 #>
-function Download-ALApp
-{
+function Download-ALApp {
     param(
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $name,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $publisher,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $version,
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $targetPath = '.\',
-        [Parameter(ValueFromPipelineByPropertyName=$True)]
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $baseApplicationVersion = '',
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $AppDownloadScript
     )
 
@@ -53,6 +57,7 @@ function Download-ALApp
         $Configuration | Add-Member -MemberType NoteProperty -Name 'publisher' -Value $publisher
         $Configuration | Add-Member -MemberType NoteProperty -Name 'version' -Value $version
         $Configuration | Add-Member -MemberType NoteProperty -Name 'path' -Value $targetPath
+        $Configuration | Add-Member -MemberType NoteProperty -Name '$baseApplicationVersion' -Value $baseApplicationVersion
 
         #$Configuration | $AppDownloadScript
         #Invoke-Expression -Command $AppDownloadScript
