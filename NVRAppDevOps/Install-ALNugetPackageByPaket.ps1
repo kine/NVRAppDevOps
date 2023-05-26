@@ -3,6 +3,7 @@ function Install-ALNugetPackageByPaket {
     Param(
         $PackageName,
         $Version,
+        $Dependencies,
         $ApiKey,
         $SourceUrl,
         $DependencyVersion = 'Highest',
@@ -45,12 +46,28 @@ function Install-ALNugetPackageByPaket {
     }
     New-Item -Path $TempFolder -ItemType directory -Force | Out-Null
 
-    Write-Host "Installing package '$IdPrefix$(Format-AppNameForNuget $PackageName)' version $($Version) $DependencyVersion from '$SourceUrl' to $TargetPath..."
-    if ($Version) {
-        $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget $PackageName) >= $($Version)"
+    if ($Dependencies) {
+        foreach ($dep in $Dependencies) {
+            $PackageName = $dep.packageName
+            $Version = $dep.version
+            Write-Host "Adding $PackageName $Version into paket.dependencies..."
+            if ($Version) {
+                $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget $PackageName) >= $($Version)"
+            }
+            else {
+                $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget $PackageName)"
+            }
+  
+        }
     }
     else {
-        $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget $PackageName)"
+        Write-Host "Installing package '$IdPrefix$(Format-AppNameForNuget $PackageName)' version $($Version) $DependencyVersion from '$SourceUrl' to $TargetPath..."
+        if ($Version) {
+            $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget $PackageName) >= $($Version)"
+        }
+        else {
+            $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget $PackageName)"
+        }
     }
     Push-Location
     set-location $TempFolder

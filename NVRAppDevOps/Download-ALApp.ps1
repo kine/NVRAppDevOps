@@ -41,28 +41,53 @@ function Download-ALApp {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $version,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $dependencies,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $targetPath = '.\',
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $baseApplicationVersion = '',
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $AppDownloadScript
     )
+    if ($dependencies) {
+        foreach ($dep in $dependencies) {
+            Write-Host "Downloading App $($dep.name) from $($dep.publisher) version $($dep.version) into $targetPath"
+            $DependencyFormat = '$($dep.publisher)_$($dep.name)'
+            $packageName = Format-AppNameForNuget -Name ($ExecutionContext.InvokeCommand.ExpandString($DependencyFormat))
+            $dep | Add-Member -MemberType NoteProperty -Name 'packageName' -Value $packageName
+        }
+        if ($AppDownloadScript) {
+            Write-Host "executing $AppDownloadScript"
 
-    Write-Host "Downloading App $name from $publisher version $version into $targetPath"
-    if ($AppDownloadScript) {
-        Write-Host "executing $AppDownloadScript"
+            $Configuration = New-Object -TypeName PSObject
+            $Configuration | Add-Member -MemberType NoteProperty -Name 'dependencies' -Value $dependencies
+            $Configuration | Add-Member -MemberType NoteProperty -Name 'path' -Value $targetPath
+            $Configuration | Add-Member -MemberType NoteProperty -Name 'baseApplicationVersion' -Value $baseApplicationVersion
 
-        $Configuration = New-Object -TypeName PSObject
-        $Configuration | Add-Member -MemberType NoteProperty -Name 'name' -Value $name
-        $Configuration | Add-Member -MemberType NoteProperty -Name 'publisher' -Value $publisher
-        $Configuration | Add-Member -MemberType NoteProperty -Name 'version' -Value $version
-        $Configuration | Add-Member -MemberType NoteProperty -Name 'path' -Value $targetPath
-        $Configuration | Add-Member -MemberType NoteProperty -Name 'baseApplicationVersion' -Value $baseApplicationVersion
+            #$Configuration | $AppDownloadScript
+            #Invoke-Expression -Command $AppDownloadScript
+            [ScriptBlock]$sb = [ScriptBlock]::Create("`$Args | $AppDownloadScript") 
+            Write-Host "Config: $Configuration"
+            Invoke-Command -ScriptBlock $sb -Args $Configuration
+        }
+    }
+    else {
+        Write-Host "Downloading App $name from $publisher version $version into $targetPath"
+        if ($AppDownloadScript) {
+            Write-Host "executing $AppDownloadScript"
 
-        #$Configuration | $AppDownloadScript
-        #Invoke-Expression -Command $AppDownloadScript
-        [ScriptBlock]$sb = [ScriptBlock]::Create("`$Args | $AppDownloadScript") 
-        Write-Host "Config: $Configuration"
-        Invoke-Command -ScriptBlock $sb -Args $Configuration
+            $Configuration = New-Object -TypeName PSObject
+            $Configuration | Add-Member -MemberType NoteProperty -Name 'name' -Value $name
+            $Configuration | Add-Member -MemberType NoteProperty -Name 'publisher' -Value $publisher
+            $Configuration | Add-Member -MemberType NoteProperty -Name 'version' -Value $version
+            $Configuration | Add-Member -MemberType NoteProperty -Name 'path' -Value $targetPath
+            $Configuration | Add-Member -MemberType NoteProperty -Name 'baseApplicationVersion' -Value $baseApplicationVersion
+
+            #$Configuration | $AppDownloadScript
+            #Invoke-Expression -Command $AppDownloadScript
+            [ScriptBlock]$sb = [ScriptBlock]::Create("`$Args | $AppDownloadScript") 
+            Write-Host "Config: $Configuration"
+            Invoke-Command -ScriptBlock $sb -Args $Configuration
+        }
     }
 }
