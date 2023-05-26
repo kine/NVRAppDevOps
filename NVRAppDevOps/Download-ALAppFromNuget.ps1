@@ -61,7 +61,7 @@ function Download-ALAppFromNuget {
             foreach ($dep in $dependencies) {
 
                 Install-ALNugetPackage -PackageName $dep.packageName -Version $dep.version -TargetPath $path -IdPrefix "" -Source $Source -SourceUrl $SourceUrl -Key $Key -DependencyVersion $DependencyVersion
-                Remove-Item -Path $path -Filter Microsoft_Application*.app -Force
+                Remove-Item -Path "$path\Microsoft_Application*.app" -Force
             }
         }
 
