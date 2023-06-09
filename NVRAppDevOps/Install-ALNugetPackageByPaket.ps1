@@ -42,7 +42,13 @@ function Install-ALNugetPackageByPaket {
         "Ignore" { $paketdependencies += "references: strict" }
     }
     if ($BaseApplicationVersion) {
-        $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") ~> $($BaseApplicationVersion) storage: none"
+        switch ($DependencyVersion) {
+            "HighestMinor" { $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") ~> $($BaseApplicationVersion) storage: none" }
+            "Highest" { $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") <= $($BaseApplicationVersion) storage: none" }
+            "Lowest" { $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") >= $($BaseApplicationVersion) storage: none" }
+            "Ignore" { $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") ~> $($BaseApplicationVersion) storage: none" }
+        }
+            
     }
     New-Item -Path $TempFolder -ItemType directory -Force | Out-Null
 
