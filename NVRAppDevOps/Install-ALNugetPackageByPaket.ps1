@@ -42,18 +42,8 @@ function Install-ALNugetPackageByPaket {
         "Ignore" { $paketdependencies += "references: strict" }
     }
     if ($BaseApplicationVersion) {
-        $V = [version]$BaseApplicationVersion
-        if ($V.Build -ne 0) {
-            #Want specific build- installing into existing environment, get same or lover
-            $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") <= $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
-        }
-        else {
-            #Only major and minor used, compiling for specific version
-            $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") ~> $($V.Major).$($V.Minor)"
-
-        }
         #We want to take the highest version of the base app but same or lower than the limiting version
-        #$paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") <= $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+        $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") <= $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
     }
     New-Item -Path $TempFolder -ItemType directory -Force | Out-Null
 
