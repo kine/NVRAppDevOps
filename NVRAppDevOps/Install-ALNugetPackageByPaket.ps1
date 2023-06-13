@@ -42,8 +42,25 @@ function Install-ALNugetPackageByPaket {
         "Ignore" { $paketdependencies += "references: strict" }
     }
     if ($BaseApplicationVersion) {
-        #We want to take the highest version of the base app but same or lower than the limiting version
-        $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") <= $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+        if ($BaseApplicationVersion.Contains('<') -or $BaseApplicationVersion.Contains('>')) {
+            Write-Host "Adding $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+            $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+        }
+        else {
+            #We want to take the highest version of the base app but same or lower than the limiting version
+            $BaseVersion = [version]$BaseApplicationVersion
+            if ($BaseVersion.Build -ne 0) {
+                #We want specific build - release to specific environment. Do not take anything higher
+                Write-Host "Adding $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") <= $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+                $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") <= $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+            }
+            else {
+                #Generic build, thus compailing for specific version. We can take even apps supporting higher minor, but not major
+                $BaseApplicationVersion = "$($BaseVersion.Major+1).0"
+                Write-Host "Adding $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") < $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+                $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") < $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+            }
+        }
     }
     New-Item -Path $TempFolder -ItemType directory -Force | Out-Null
 
