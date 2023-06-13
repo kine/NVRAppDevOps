@@ -13,15 +13,6 @@ function Install-ALNugetPackageByPaket {
         $BaseApplicationVersion, #version of the base app to use for limiting the dependencies
         $IdPrefix #Will be used before AppName and all Dependency names
     )
-    if ($BaseApplicationVersion) {
-        $V = [version]$BaseApplicationVersion
-        switch ($true) {
-            ($V -like '*.0.0.0') { $BaseApplicationVersion = "$($V.Major)"; break }
-            ($V -like '*.*.0.0') { $BaseApplicationVersion = "$($V.Major).$($V.Minor)"; break }
-            ($V -like '*.*.*.0') { $BaseApplicationVersion = "$($V.Major).$($V.Minor).$($V.Build)"; break }
-            ($V -like '*.*.*.*') { $BaseApplicationVersion = "$($V.Major).$($V.Minor).$($V.Build).$($V.Revision)"; break }
-        }
-    }
     $paketdependencies = @()
     $paketdependencies += "source $($SourceUrl) username: `"user`" password: `"$($Key)`" authtype: `"basic`""
     if (-not ($env:ChocolateyInstall -or (Test-Path C:\ProgramData\chocolatey))) {
