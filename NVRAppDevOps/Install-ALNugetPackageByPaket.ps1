@@ -51,6 +51,10 @@ function Install-ALNugetPackageByPaket {
                 Write-Host "Adding $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") < $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
                 $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") < $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
             }
+            if ($env:ADDITIONAL_PACKET_LINES) {
+                Write-Host "Adding $($env:ADDITIONAL_PACKET_LINES)"
+                $paketdependencies += $env:ADDITIONAL_PACKET_LINES
+            }
         }
     }
     New-Item -Path $TempFolder -ItemType directory -Force | Out-Null
