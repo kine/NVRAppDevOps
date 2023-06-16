@@ -51,6 +51,7 @@ function Install-ALNugetPackageByPaket {
                 Write-Host "Adding $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") < $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
                 $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") < $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
             }
+            Write-Host "`$env:ADDITIONAL_PACKET_LINES: $($env:ADDITIONAL_PACKET_LINES)"
             if ($env:ADDITIONAL_PACKET_LINES) {
                 Write-Host "Adding $($env:ADDITIONAL_PACKET_LINES)"
                 $paketdependencies += $env:ADDITIONAL_PACKET_LINES
