@@ -74,7 +74,15 @@ function Compile-ALProjectTree {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $AsmProbingPaths,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [bool]$UsePaket = $false
+        [bool]$UsePaket = $false,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]$sourceRepositoryUrl = '',
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]$sourceCommit = '',
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]$buildBy = '',
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [string]$buildUrl = ''
 
 
     )
@@ -123,7 +131,11 @@ function Compile-ALProjectTree {
                     -FailOn $FailOn `
                     -rulesetFile $NewRulesetFile `
                     -assemblyProbingPaths $AsmProbingPaths `
-                    -alcPath $alcPath | Out-Null
+                    -alcPath $alcPath `
+                    -sourceRepositoryUrl $sourceRepositoryUrl `
+                    -sourceCommit $sourceCommit `
+                    -buildBy $buildBy `
+                    -buildUrl $buildUrl | Out-Null
             }
             else {
                 if ($Auth -eq 'NavUserPassword') {

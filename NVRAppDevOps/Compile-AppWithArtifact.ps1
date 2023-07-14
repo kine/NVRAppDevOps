@@ -19,7 +19,11 @@ function Compile-AppWithArtifact {
         [string] $FailOn = 'none',
         [string]$rulesetFile,
         [string]$assemblyProbingPaths,
-        [scriptblock] $outputTo = { Param($line) Write-Host $line }
+        [scriptblock] $outputTo = { Param($line) Write-Host $line },
+        [string]$sourceRepositoryUrl = '',
+        [string]$sourceCommit = '',
+        [string]$buildBy = '',
+        [string]$buildUrl = ''
     )
     $startTime = [DateTime]::Now
     $appJsonFile = Join-Path $appProjectFolder 'app.json'
@@ -136,7 +140,25 @@ function Compile-AppWithArtifact {
         if ($assemblyProbingPaths) {
             $alcParameters += @("/assemblyprobingpaths:$assemblyProbingPaths")
         }
-        
+        $alcItem = get-item .\alc.exe
+        $alcVersion = $alcItem.VersionInfo.ProductVersion
+        if ($alcVersion -ge [System.Version]"12.0.12.41479") {
+            if ($sourceRepositoryUrl) {
+                $alcParameters += @("/SourceRepositoryUrl:""$sourceRepositoryUrl""")
+            }
+            if ($sourceCommit) {
+                $alcParameters += @("/SourceCommit:""$sourceCommit""")
+            }
+           
+            if ($buildBy) {
+                $buildBy += ';'
+            }
+            $buildBy += "NVRAppDevOps, v$(Get-CurrentModuleVersion)"
+            $alcParameters += @("/BuildBy:""$buildBy""")
+            if ($buildUrl) {
+                $alcParameters += @("/BuildUrl:""$buildUrl""")
+            }
+        }
         Write-Host ".\alc.exe $([string]::Join(' ', $alcParameters))"
         
         & .\alc.exe $alcParameters
