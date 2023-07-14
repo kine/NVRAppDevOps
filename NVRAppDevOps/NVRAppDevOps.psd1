@@ -93,7 +93,7 @@
     # FileList = @()
 
     # Version number of this module.
-    ModuleVersion     = '2.2.25'
+    ModuleVersion     = '2.3.0'
 
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -116,6 +116,9 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.3.0
+- Add support for new alc.exe parameters SourceRepositoryUrl, SourceCommit, BuildBy and BuildUrl
+            
 2.2.0
 - Add Install-ALNugetPackageByPaket to install nuget package by Paket manager. Paket have better dependency resolving than nuget.exe
 
