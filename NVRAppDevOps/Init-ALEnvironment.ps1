@@ -73,9 +73,9 @@ function Init-ALEnvironment {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $useSSL,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        $useBestContainerOS=$true,
+        $useBestContainerOS = $true,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        $alwaysPull=$false,
+        $alwaysPull = $false,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $ArtifactUrl
 
@@ -113,8 +113,7 @@ function Init-ALEnvironment {
             $myscripts += $customScripts
         }
 
-        $additionalParameters = @("--volume ""$($RepoPath):C:\app""",
-            '-e CustomNavSettings=ServicesUseNTLMAuthentication=true'
+        $additionalParameters = @("--volume ""$($RepoPath):C:\app"""
         )
 
         if ($useSSL -eq 'true') {
@@ -172,8 +171,7 @@ function Init-ALEnvironment {
             $myscripts = @()
         }
 
-        $additionalParameters = @("--volume ""$($RepoPath):C:\app""",
-            '-e CustomNavSettings=ServicesUseNTLMAuthentication=true'
+        $additionalParameters = @("--volume ""$($RepoPath):C:\app"""
         )
 
         if ($useSSL -eq 'true') {
