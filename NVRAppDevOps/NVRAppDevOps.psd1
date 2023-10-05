@@ -93,7 +93,7 @@
     # FileList = @()
 
     # Version number of this module.
-    ModuleVersion     = '2.3.0'
+    ModuleVersion     = '2.4.0'
 
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -116,6 +116,9 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.4.0
+- Removed custom parameter '-e CustomNavSettings=ServicesUseNTLMAuthentication=true' when initializing environment. If needed, add it as optionalParameters. This parameter makes problems on BCv22.5 and newer ("There was no endpoint listening at http://localhost:7086/BC/ManagementServicePs/Service.svc that could accept the message. This is often caused by an incorrect address or SOAP action. See InnerException, if present, for more details."))
+
 2.3.0
 - Add support for new alc.exe parameters SourceRepositoryUrl, SourceCommit, BuildBy and BuildUrl
             
