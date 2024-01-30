@@ -1,3 +1,32 @@
+<#
+.SYNOPSIS
+    Takes all parameters and will return NuGet package id for the info based on the Unified naming rules
+
+.DESCRIPTION
+    Takes all parameters and will return NuGet package id for the info based on the Unified naming rules
+
+.EXAMPLE
+    PS C:\>  Format-AppNameForNuget -appname 'MyApp' -publisher 'me' -version '1.0.0' -id '12345678-1234-1234-1234-123456789012'
+    Result: me.MyApp.12345678-1234-1234-1234-123456789012
+    
+.PARAMETER appname
+    Name of the app to use for the NuGet package id
+
+.PARAMETER publisher
+    Publisher of the app to use for the NuGet package id
+
+.PARAMETER version  
+    Version of the app to use for the NuGet package id
+
+.PARAMETER id
+    Id of the app to use for the NuGet package id
+
+.PARAMETER tag  
+    Tag of the app to use for the NuGet package id. Could be localization tag (W1, DK, DE, US, etc.) or "Symbols"
+
+.PARAMETER version
+    Version of the app to use for the NuGet package id
+#>
 function Format-AppNameForNuget {
     Param(
         [Parameter(Mandatory, ParameterSetName = 'OnlyName', Position = 0)]
