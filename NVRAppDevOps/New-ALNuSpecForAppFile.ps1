@@ -59,29 +59,29 @@ function New-ALNuSpecForAppFile {
         $tags = '',
         [String]$DependencyTag #will use unified naming for the dependencies and the package
     )
-    $AppFile = Get-AppJsonFromAppFile -appFile $AppFile
-    $AppDependencies = $AppFile.dependencies
-    if ($AppFile.application) {
+    $AppJson = Get-AppJsonFromAppFile -appFile $AppFile
+    $AppDependencies = $AppJson.dependencies
+    if ($AppJson.application) {
         $AppDependency = @{
             id        = ''
             name      = "Application"
             publisher = 'Microsoft'
-            version   = $AppFile.application
+            version   = $AppJson.application
         }
         $AppDependencies += $AppDependency
     }
-    if ($AppFile.platform) {
+    if ($AppJson.platform) {
         $AppDependency = @{
             id        = ''
             name      = "Platform"
             publisher = 'Microsoft'
-            version   = $AppFile.platform
+            version   = $AppJson.platform
         }
         $AppDependencies += $AppDependency
     }
 
     if (-not $description) {
-        $description = $AppFile.description
+        $description = $AppJson.description
     }
-    New-ALNuSpec -UnifiedNaming -AppFile $AppFile -AppName $AppFile.name -Publisher $AppFile.publisher -AppVersion $AppFile.version -AppId $AppFile.id -copyright '' -NuspecFileName $NuspecFileName -authors $authors -owners $owners -licenseUrl $licenseUrl -projectUrl $projectUrl -iconUrl $iconUrl -releaseNotes $releaseNotes -description $description -tags $tags -DependencyTag $DependencyTag  -AppDependencies $AppDependencies
+    New-ALNuSpec -UnifiedNaming -AppFile $AppFile -AppName $AppJson.name -Publisher $AppJson.publisher -AppVersion $AppJson.version -AppId $AppJson.id -copyright '' -NuspecFileName $NuspecFileName -authors $authors -owners $owners -licenseUrl $licenseUrl -projectUrl $projectUrl -iconUrl $iconUrl -releaseNotes $releaseNotes -description $description -tags $tags -DependencyTag $DependencyTag  -AppDependencies $AppDependencies
 }
