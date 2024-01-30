@@ -3,64 +3,64 @@ function New-ALNuSpec {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $AppFile,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $AppName,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $Publisher,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $AppVersion,
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $AppId,
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $NuspecFileName,
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
         $id,
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $authors = '',
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $owners = '',
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $licenseUrl = '',
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $projectUrl = '',
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $iconUrl = '',
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $releaseNotes = '',
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $description = '',
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $copyright = '',
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $tags = '',
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         $AppDependencies,
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
         $IdPrefix, #Will be used before AppName and all Dependency names
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
         $DependencyFormat = '$($Dep.publisher)_$($Dep.name)',
-        [Parameter(Mandatory, ParameterSetName = 'OldNaming')]
+        [Parameter(ParameterSetName = 'OldNaming')]
         [bool]$IncludeBaseApp = $false,
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         [switch]$UnifiedNaming,
-        [Parameter(Mandatory, ParameterSetName = 'UnifiedNaming')]
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
         [String]$DependencyTag #will use unified naming for the dependencies and the package
     )
     $nuspec = @()
