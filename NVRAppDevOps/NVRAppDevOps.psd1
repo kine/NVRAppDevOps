@@ -51,7 +51,7 @@
     RequiredModules   = @(
         @{
             ModuleName    = 'BcContainerHelper'
-            ModuleVersion = '4.0.0'
+            ModuleVersion = '6.0.0'
             Guid          = '8e034fbc-8c30-446d-bbc3-5b3be5392491'
         }
     )
@@ -93,7 +93,7 @@
     # FileList = @()
 
     # Version number of this module.
-    ModuleVersion     = '2.4.0'
+    ModuleVersion     = '2.5.0'
 
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
@@ -116,6 +116,12 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.5.0
+- Added ConvertTo-PaketDependencies script to convert App.json dependencies into paket.dependencies file to be able to download symbols/apps through Paket CLI (https://fsprojects.github.io/Paket/)
+- Added parameters UnifiedNaming and DependencyTag into New-ALNuSpec to be able to use unified naming for the dependencies and the package as it will be used by Microsoft
+- Added New-ALNuSpecForAppFile to create nuspec file for app file
+- Added Format-AppNameForNuget to format app name for NuGet package name based on Unified naming rules
+
 2.4.0
 - Removed custom parameter '-e CustomNavSettings=ServicesUseNTLMAuthentication=true' when initializing environment. If needed, add it as optionalParameters. This parameter makes problems on BCv22.5 and newer ("There was no endpoint listening at http://localhost:7086/BC/ManagementServicePs/Service.svc that could accept the message. This is often caused by an incorrect address or SOAP action. See InnerException, if present, for more details."))
 
