@@ -79,5 +79,9 @@ function New-ALNuSpecForAppFile {
         }
         $AppDependencies += $AppDependency
     }
+
+    if (-not $description) {
+        $description = $AppFile.description
+    }
     New-ALNuSpec -UnifiedNaming -AppFile $AppFile -AppName $AppFile.name -Publisher $AppFile.publisher -AppVersion $AppFile.version -AppId $AppFile.id -copyright '' -NuspecFileName $NuspecFileName -authors $authors -owners $owners -licenseUrl $licenseUrl -projectUrl $projectUrl -iconUrl $iconUrl -releaseNotes $releaseNotes -description $description -tags $tags -DependencyTag $DependencyTag  -AppDependencies $AppDependencies
 }
