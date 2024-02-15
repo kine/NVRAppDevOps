@@ -35,7 +35,7 @@ function Download-ALAppFromNuget {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $path = '.\',
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        $baseApplicationVersion = '',
+        [String]$baseApplicationVersion = '',
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $Source = '',
         [Parameter(ValueFromPipelineByPropertyName = $True)]
