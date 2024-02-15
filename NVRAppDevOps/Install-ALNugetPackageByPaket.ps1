@@ -39,10 +39,13 @@ function Install-ALNugetPackageByPaket {
         }
         else {
             #We want to take the highest version of the base app but same or lower than the limiting version
-            if (-not $BaseApplicationVersion.Contains('.')) {
-                $BaseApplicationVersion = "$($BaseApplicationVersion).0"
+            if ($BaseApplicationVersion.Contains('.')) {
+                $BaseVersion = [version]$BaseApplicationVersion
             }
-            $BaseVersion = [version]$BaseApplicationVersion
+            else {
+                Write-Host "Adding .0 to the version"
+                $BaseVersion = [version]"$($BaseApplicationVersion).0"
+            }
             if ($BaseVersion.Build -ne 0) {
                 #We want specific build - release to specific environment. Do not take anything higher
                 Write-Host "Adding $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") <= $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
