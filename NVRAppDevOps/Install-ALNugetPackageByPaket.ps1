@@ -10,7 +10,7 @@ function Install-ALNugetPackageByPaket {
         [switch]$ExactVersion, #do not use DependencyVersion for the main package
         $TargetPath,
         $Key,
-        $BaseApplicationVersion, #version of the base app to use for limiting the dependencies
+        [String]$BaseApplicationVersion, #version of the base app to use for limiting the dependencies
         $IdPrefix #Will be used before AppName and all Dependency names
     )
     $paketdependencies = @()
