@@ -93,8 +93,7 @@
     # FileList = @()
 
     # Version number of this module.
-    ModuleVersion     = '2.6.1'
-
+    ModuleVersion     = '2.6.2'
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
     PrivateData       = @{
@@ -116,6 +115,9 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.6.2
+- Fix error " Method invocation failed because [System.Int32] does not contain a method named 'Contains'" in Install-ALNugetPackageByPaket.ps1
+
 2.5.0
 - Added ConvertTo-PaketDependencies script to convert App.json dependencies into paket.dependencies file to be able to download symbols/apps through Paket CLI (https://fsprojects.github.io/Paket/)
 - Added parameters UnifiedNaming and DependencyTag into New-ALNuSpec to be able to use unified naming for the dependencies and the package as it will be used by Microsoft
