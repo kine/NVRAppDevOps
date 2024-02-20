@@ -96,7 +96,7 @@ function Install-ALNugetPackageByPaket {
     & C:\ProgramData\chocolatey\lib\Paket\payload\paket.exe install
     Write-Host "Moving app files from $TempFolder to $TargetPath..."
     if ($DependencyVersion -eq 'Ignore') {
-        Get-ChildItem -Path $TempFolder -Filter "$($PackageName)_*.app" -Recurse | Copy-Item -Destination $TargetPath -Container -Force | Out-Null
+        Get-ChildItem -Path (Join-Path $TempFolder "Packages\$($PackageName)") -Filter "*.app" -Recurse | Copy-Item -Destination $TargetPath -Container -Force | Out-Null
     }
     else {
         Get-ChildItem -Path $TempFolder -Filter *.app -Recurse | Copy-Item -Destination $TargetPath -Container -Force | Out-Null
