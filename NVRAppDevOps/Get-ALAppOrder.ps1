@@ -80,7 +80,11 @@ function Get-ALAppOrder {
         $AppsOrdered = @()
         $AppsToAdd = @{}
         $AppsCompiled = @{}
+        $Level = 0
         do {
+            $Level += 1
+            $unresolvedDependencies = @{}
+            Write-Verbose "------ $Level -----"
             foreach ($App in $Apps.GetEnumerator()) {
                 if (-not $AppsCompiled.ContainsKey($App.Value.name)) {
                     #test if all dependencies are compiled
@@ -94,7 +98,7 @@ function Get-ALAppOrder {
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'version' -Value $Dependency.version
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'publisher' -Value $Dependency.publisher
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'AppPath' -Value ""
-
+    
                             if (-not $AppsCompiled.ContainsKey($Dependency.name)) {
                                 $AppsCompiled.Add($Dependency.name, $NewApp)
                                 $AppsToAdd.Add($Dependency.name, $NewApp)
@@ -108,33 +112,17 @@ function Get-ALAppOrder {
                                     $AppsCompiled.Add($Dependency.name, $NewApp)
                                     $AppsToAdd.Remove($Dependency.name)
                                     $AppsToAdd.Add($Dependency.name, $NewApp)
-                                    #$AppsOrdered = $AppsOrdered -replace $OldApp,$NewApp
                                     $a = $AppsOrdered | where-object { $_.name -eq $OldApp.name }
                                     $a.version = $Dependency.version
                                 }
                             }
                         } 
-                        #else {
-                        #     Write-Verbose "?Add dependency $($Dependency.name) $($Dependency.version)"
-                        #     $NewApp=New-Object -TypeName PSObject
-                        #     $NewApp | Add-Member -MemberType NoteProperty -Name 'name' -Value $Dependency.name
-                        #     $NewApp | Add-Member -MemberType NoteProperty -Name 'version' -Value $Dependency.version
-                        #     $NewApp | Add-Member -MemberType NoteProperty -Name 'publisher' -Value $Dependency.publisher
-                        #     $NewApp | Add-Member -MemberType NoteProperty -Name 'AppPath' -Value ""
-
-                        #     $OldApp = $Apps[$Dependency.name]
-                        #     if (([Version]$Dependency.version) -gt ([Version]$OldApp.Version)) {
-                        #         Write-Verbose "Replacing dependency $($OldApp.Name) $($OldApp.Version) $($Dependency.name) $($Dependency.version) "
-                        #         $AppsCompiled.Remove($Dependency.name)
-                        #         $AppsCompiled.Add($Dependency.name,$NewApp)
-                        #         $AppsToAdd.Remove($Dependency.name)
-                        #         $AppsToAdd.Add($Dependency.name,$NewApp)
-                        #         #$AppsOrdered = $AppsOrdered -replace $OldApp,$NewApp
-                        #         $AppsOrdered.Item($AppsOrdered.IndexOf($OldApp)).version = $Dependency.version
-                        #     }
-                        # }
                         if (-not $AppsCompiled.ContainsKey($Dependency.name)) {
                             $DependencyOk = $false
+                            if (-not $unresolvedDependencies.ContainsKey($Dependency.Name)) {
+                                Write-Verbose "Unresolved $($App.Value.Name)->$($Dependency.Name) $($Dependency.version)"
+                                $unresolvedDependencies.Add($Dependency.name, $Dependency)
+                            }
                         }
                     }
                     if ($DependencyOk) {
@@ -151,10 +139,12 @@ function Get-ALAppOrder {
                 }
             }
             $AppsToAdd = @{}
-        } while ($Apps.Count -ne $AppsCompiled.Count)
+        } while ($Apps.Count -ne $AppsCompiled.Count -and (($unresolvedDependencies.Count -eq 0) -or ($Level -lt 20)))
+        if ($unresolvedDependencies.Count -gt 0) {
+            Write-Error "Unresolved dependencies: $($unresolvedDependencies.Keys -join ', ')"
+        }
         return $AppsOrdered
     }
-
     function Get-AppJsonFromApp {
         Param(
             $AppFile,
