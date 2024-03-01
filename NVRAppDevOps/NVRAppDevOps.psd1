@@ -93,7 +93,7 @@
     # FileList = @()
 
     # Version number of this module.
-    ModuleVersion     = '2.6.6'
+    ModuleVersion     = '2.6.7'
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
     PrivateData       = @{
@@ -115,9 +115,12 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.6.7
+- Fix Get-ALAppOrder infinite loop in case of cyclic dependencies (set to max 20 iterations)
+
 2.6.6
 - Fix bug when Install-ALNugetPackageByPaket with Ignore parameter doesn't work correctly (no app is copied to target folder)
-            
+
 2.6.2
 - Fix error " Method invocation failed because [System.Int32] does not contain a method named 'Contains'" in Install-ALNugetPackageByPaket.ps1
 
