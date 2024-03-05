@@ -121,18 +121,25 @@ function Compile-AppWithArtifact {
         # Import types needed to invoke the compiler
         #Add-Type -Path (Join-Path $alcPath System.Collections.Immutable.dll)
         #Add-Type -Path (Join-Path $alcPath Microsoft.Dynamics.Nav.CodeAnalysis.dll)
+        if (Test-Path (Join-Path $binPath 'Analyzers\Microsoft.Dynamics.Nav.CodeCop.dll')) {
+            $AnalyzersbinPath = Join-Path $binPath 'Analyzers' #pre BCv24
+        }
+        else {
+            $AnalyzersbinPath = $binPath  #BCv24 and later
+        }
+
         $alcParameters = @("/project:""$($appProjectFolder.TrimEnd('/\'))""", "/packagecachepath:""$($appSymbolsFolder.TrimEnd('/\'))""", "/out:""$appOutputFile""")
         if ($EnableCodeCop) {
-            $alcParameters += @("/analyzer:$(Join-Path $binPath 'Analyzers\Microsoft.Dynamics.Nav.CodeCop.dll')")
+            $alcParameters += @("/analyzer:$(Join-Path $AnalyzersbinPath 'Microsoft.Dynamics.Nav.CodeCop.dll')")
         }
         if ($EnableAppSourceCop) {
-            $alcParameters += @("/analyzer:$(Join-Path $binPath 'Analyzers\Microsoft.Dynamics.Nav.AppSourceCop.dll')")
+            $alcParameters += @("/analyzer:$(Join-Path $AnalyzersbinPath 'Microsoft.Dynamics.Nav.AppSourceCop.dll')")
         }
         if ($EnablePerTenantExtensionCop) {
-            $alcParameters += @("/analyzer:$(Join-Path $binPath 'Analyzers\Microsoft.Dynamics.Nav.PerTenantExtensionCop.dll')")
+            $alcParameters += @("/analyzer:$(Join-Path $AnalyzersbinPath 'Microsoft.Dynamics.Nav.PerTenantExtensionCop.dll')")
         }
         if ($EnableUICop) {
-            $alcParameters += @("/analyzer:$(Join-Path $binPath 'Analyzers\Microsoft.Dynamics.Nav.UICop.dll')")
+            $alcParameters += @("/analyzer:$(Join-Path $AnalyzersbinPath 'Microsoft.Dynamics.Nav.UICop.dll')")
         }
         
         if ($rulesetFile) {
