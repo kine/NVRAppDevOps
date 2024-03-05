@@ -51,6 +51,7 @@ function Compile-AppWithArtifact {
     (Join-Path $AppPath "\Applications.*\Microsoft_Base Application_*.app"),
     (Join-Path $AppPath "\Applications\BaseApp\Source\Microsoft_Base Application.app"),
     (Join-Path $AppPath "\Applications.*\Microsoft_System Application_*.app"),
+    (Join-Path $AppPath "\Applications.*\Microsoft_Business Foundation_*.app"),
     (Join-Path $AppPath "\Applications\System Application\source\Microsoft_System Application.app") | ForEach-Object {
         if ($_) {
             if (Test-Path $_) {
