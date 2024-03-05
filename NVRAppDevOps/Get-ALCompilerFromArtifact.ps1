@@ -1,16 +1,15 @@
-function Get-ALCompilerFromArtifact
-{
+function Get-ALCompilerFromArtifact {
     param(
         # URL of the artifact to be used
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [String] $ArtifactUrl,
         # Target path for extracted compiler
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [String] $TargetPath
     )
     function Expand-7zipArchive {
         Param (
-            [Parameter(Mandatory=$true)]
+            [Parameter(Mandatory = $true)]
             [string] $Path,
             [string] $DestinationPath
         )
@@ -30,9 +29,10 @@ function Get-ALCompilerFromArtifact
         if ($use7zip) {
             Write-Host "using 7zip"
             Set-Alias -Name 7z -Value $7zipPath
-            $command = '7z x "{0}" -o"{1}" -aoa -r' -f $Path,$DestinationPath
+            $command = '7z x "{0}" -o"{1}" -aoa -r' -f $Path, $DestinationPath
             Invoke-Expression -Command $command | Out-Null
-        } else {
+        }
+        else {
             Write-Host "using Expand-Archive"
             Expand-Archive -Path $Path -DestinationPath "$DestinationPath" -Force
         }
@@ -47,7 +47,10 @@ function Get-ALCompilerFromArtifact
     $VSIXPath = Get-ChildItem -Path (Join-Path $Path 'ModernDev\Program Files\Microsoft Dynamics NAV\') -Recurse -Filter ALLanguage.vsix
     Write-Host "Extracting ALLanguage.vsix into $TargetPath"
     Expand-7zipArchive -Path $VSIXPath.FullName -DestinationPath $TargetPath
-    $ALCPath = (Split-Path (Get-ChildItem -Path $TargetPath -Filter alc.exe -Recurse | Where-Object {$_.FullName -notlike '*win32*'}).FullName)
+    $ALCPath = (Split-Path (Get-ChildItem -Path $TargetPath -Filter alc.exe -Recurse | Where-Object { $_.FullName -notlike '*win32*' }).FullName)
+    if (-not $ALCPath) {
+        $ALCPath = (Split-Path (Get-ChildItem -Path $TargetPath -Filter alc.exe -Recurse | Where-Object { $_.FullName -like '*win32*' }).FullName)
+    }
     Write-Host "ALC.exe path: $($ALCPath)"
     return $ALCPath
 }
