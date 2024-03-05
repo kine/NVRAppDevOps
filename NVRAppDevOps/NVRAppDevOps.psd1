@@ -93,7 +93,7 @@
     # FileList = @()
 
     # Version number of this module.
-    ModuleVersion     = '2.6.7'
+    ModuleVersion     = '2.7.0'
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
     PrivateData       = @{
@@ -115,6 +115,9 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.7.0
+- Fixing compatibility with BCv24 folder structure of the vsix/alc.exe (Issue #37, #38 and #39 - thanks @skmcavoy for reporting!)
+
 2.6.7
 - Fix Get-ALAppOrder infinite loop in case of cyclic dependencies (set to max 20 iterations)
 
