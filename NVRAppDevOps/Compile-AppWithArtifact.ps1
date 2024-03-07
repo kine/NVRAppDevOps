@@ -125,7 +125,7 @@ function Compile-AppWithArtifact {
             $AnalyzersbinPath = Join-Path $binPath 'Analyzers' #pre BCv24
         }
         else {
-            $AnalyzersbinPath = $binPath  #BCv24 and later
+            $AnalyzersbinPath = Join-Path $binPath '..\Analyzers' #BCv24 and later
         }
 
         $alcParameters = @("/project:""$($appProjectFolder.TrimEnd('/\'))""", "/packagecachepath:""$($appSymbolsFolder.TrimEnd('/\'))""", "/out:""$appOutputFile""")
