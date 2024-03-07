@@ -47,8 +47,11 @@ function Get-ALCompilerFromArtifact {
     $VSIXPath = Get-ChildItem -Path (Join-Path $Path 'ModernDev\Program Files\Microsoft Dynamics NAV\') -Recurse -Filter ALLanguage.vsix
     Write-Host "Extracting ALLanguage.vsix into $TargetPath"
     Expand-7zipArchive -Path $VSIXPath.FullName -DestinationPath $TargetPath
-    $ALCPath = (Split-Path (Get-ChildItem -Path $TargetPath -Filter alc.exe -Recurse | Where-Object { $_.FullName -notlike '*win32*' }).FullName)
-    if (-not $ALCPath) {
+    $ALCPossiblePaths = (Get-ChildItem -Path $TargetPath -Filter alc.exe -Recurse | Where-Object { $_.FullName -notlike '*win32*' }).FullName
+    if ($ALCPossiblePaths) {
+        $ALCPath = (Split-Path ($ALCPossiblePaths))
+    }
+    else {
         $ALCPath = (Split-Path (Get-ChildItem -Path $TargetPath -Filter alc.exe -Recurse | Where-Object { $_.FullName -like '*win32*' }).FullName)
     }
     Write-Host "ALC.exe path: $($ALCPath)"
