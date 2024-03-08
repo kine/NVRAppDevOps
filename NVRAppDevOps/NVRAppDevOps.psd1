@@ -99,7 +99,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta6'
+            Prerelease   = ''
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -115,6 +115,9 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.8.1
+- Fix Download-ALApp when no dependencies to download
+            
 2.8.0
 - Support for downloading NuGet packages with Unified naming for Download-ALApp, Download-ALAppFromNuget and Compile-ALProjectTree
 - If $env:NVRAppDevOpsNugetFeedUrl is set to Azure DevOps MS feed with MS packages, the Format-AppNameForNuget will try to find the package name by ID. This is workaround for finding correct package names for e.g. Czech localization 
