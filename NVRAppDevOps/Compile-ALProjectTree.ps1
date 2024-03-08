@@ -82,7 +82,11 @@ function Compile-ALProjectTree {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         [string]$buildBy = '',
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [string]$buildUrl = ''
+        [string]$buildUrl = '',
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [switch]$UnifiedNaming,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [String]$DependencyTag
 
 
     )
@@ -94,8 +98,10 @@ function Compile-ALProjectTree {
     }
     if ($UsePaket) {
         $dependencies = $OrderedApps | where-object { (-not $_.AppPath) -and ($_.publisher -ne 'Microsoft') }
-        Write-Host "Downloading $($dependencies.count) dependencies from nuget with Paket..."
-        Download-ALApp -dependencies $dependencies -targetPath $PackagesPath -AppDownloadScript $AppDownloadScript
+        if ($dependencies -and ($dependencies.count -gt 0)) {
+            Write-Host "Downloading $($dependencies.count) dependencies from nuget with Paket..."
+            Download-ALApp -dependencies $dependencies -targetPath $PackagesPath -AppDownloadScript $AppDownloadScript -UnifiedNaming:$UnifiedNaming -DependencyTag $DependencyTag
+        }
     }
     foreach ($App in $OrderedApps) {
         if ($App.AppPath) {
@@ -181,7 +187,7 @@ function Compile-ALProjectTree {
             if (-not $UsePaket) {
                 #App not found, download
                 if ($App.publisher -ne 'Microsoft') {
-                    Download-ALApp -name $App.name -publisher $App.publisher -version $App.version -targetPath $PackagesPath -AppDownloadScript $AppDownloadScript
+                    Download-ALApp -name $App.name -publisher $App.publisher -id $App.id -version $App.version -targetPath $PackagesPath -AppDownloadScript $AppDownloadScript
                 }
             }
         }

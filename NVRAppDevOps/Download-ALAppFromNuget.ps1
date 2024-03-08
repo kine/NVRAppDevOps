@@ -31,6 +31,8 @@ function Download-ALAppFromNuget {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $version,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $id,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $dependencies,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $path = '.\',
@@ -47,7 +49,11 @@ function Download-ALAppFromNuget {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         [ValidateSet('Lowest', 'HighestPatch', 'HighestMinor', 'Highest', 'Ignore')]
         $DependencyVersion = 'Highest',
-        [bool]$UsePaket = $false
+        [bool]$UsePaket = $false,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [switch]$UnifiedNaming,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [String]$DependencyTag
 
     )
     if ($dependencies) {
@@ -55,7 +61,7 @@ function Download-ALAppFromNuget {
             $version = ''
         }
         if ($UsePaket) {
-            Install-ALNugetPackageByPaket -Dependencies $dependencies -TargetPath $path -IdPrefix "" -SourceUrl $SourceUrl -Key $Key -DependencyVersion $DependencyVersion -BaseApplicationVersion $baseApplicationVersion
+            Install-ALNugetPackageByPaket -Dependencies $dependencies -TargetPath $path -IdPrefix "" -SourceUrl $SourceUrl -Key $Key -DependencyVersion $DependencyVersion -BaseApplicationVersion $baseApplicationVersion -UnifiedNaming:$UnifiedNaming -DependencyTag $DependencyTag
         }
         else {
             foreach ($dep in $dependencies) {
@@ -66,13 +72,18 @@ function Download-ALAppFromNuget {
 
     }
     else {
-        $DependencyFormat = '$($publisher)_$($name)'
-        $packageName = Format-AppNameForNuget -Name ($ExecutionContext.InvokeCommand.ExpandString($DependencyFormat))
+        if ($UnifiedNaming) {
+            $packageName = Format-AppNameForNuget -publisher $publisher -appname $name -id $id -tag $DependencyTag -version ''
+        }
+        else {
+            $DependencyFormat = '$($dep.publisher)_$($dep.name)'
+            $packageName = Format-AppNameForNuget -Name ($ExecutionContext.InvokeCommand.ExpandString($DependencyFormat))
+        }
         if ($LatestVersion) {
             $version = ''
         }
         if ($UsePaket) {
-            Install-ALNugetPackageByPaket -PackageName $packageName -Version $version -TargetPath $path -IdPrefix "" -SourceUrl $SourceUrl -Key $Key -DependencyVersion $DependencyVersion -BaseApplicationVersion $baseApplicationVersion
+            Install-ALNugetPackageByPaket -PackageName $packageName -Version $version -TargetPath $path -IdPrefix "" -SourceUrl $SourceUrl -Key $Key -DependencyVersion $DependencyVersion -BaseApplicationVersion $baseApplicationVersion -UnifiedNaming:$UnifiedNaming -DependencyTag $DependencyTag
         }
         else {
             Install-ALNugetPackage -PackageName $packageName -Version $version -TargetPath $path -IdPrefix "" -Source $Source -SourceUrl $SourceUrl -Key $Key -DependencyVersion $DependencyVersion

@@ -41,19 +41,31 @@ function Download-ALApp {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $version,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
+        $id,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
         $dependencies,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $targetPath = '.\',
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         $baseApplicationVersion = '',
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        $AppDownloadScript
+        $AppDownloadScript,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [switch]$UnifiedNaming,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [String]$DependencyTag
+
     )
     if ($dependencies) {
         foreach ($dep in $dependencies) {
-            Write-Host "Downloading App $($dep.name) from $($dep.publisher) version $($dep.version) into $targetPath"
-            $DependencyFormat = '$($dep.publisher)_$($dep.name)'
-            $packageName = Format-AppNameForNuget -Name ($ExecutionContext.InvokeCommand.ExpandString($DependencyFormat))
+            Write-Host "Downloading App $($dep.name) from $($dep.publisher) version $($dep.version) id $($dep.id) into $targetPath"
+            if ($UnifiedNaming) {
+                $packageName = Format-AppNameForNuget -publisher $dep.publisher -appname $dep.name -id $dep.id -tag '' -version ''
+            }
+            else {
+                $DependencyFormat = '$($dep.publisher)_$($dep.name)'
+                $packageName = Format-AppNameForNuget -Name ($ExecutionContext.InvokeCommand.ExpandString($DependencyFormat))
+            }
             $dep | Add-Member -MemberType NoteProperty -Name 'packageName' -Value $packageName
         }
         if ($AppDownloadScript) {
@@ -80,7 +92,10 @@ function Download-ALApp {
             $Configuration | Add-Member -MemberType NoteProperty -Name 'name' -Value $name
             $Configuration | Add-Member -MemberType NoteProperty -Name 'publisher' -Value $publisher
             $Configuration | Add-Member -MemberType NoteProperty -Name 'version' -Value $version
+            $Configuration | Add-Member -MemberType NoteProperty -Name 'id' -Value $id
             $Configuration | Add-Member -MemberType NoteProperty -Name 'path' -Value $targetPath
+            $Configuration | Add-Member -MemberType NoteProperty -Name 'UnifiedNaming' -Value $UnifiedNaming
+            $Configuration | Add-Member -MemberType NoteProperty -Name 'DependencyTag' -Value $DependencyTag
             $Configuration | Add-Member -MemberType NoteProperty -Name 'baseApplicationVersion' -Value $baseApplicationVersion
 
             #$Configuration | $AppDownloadScript

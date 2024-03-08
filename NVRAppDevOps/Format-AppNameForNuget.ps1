@@ -41,7 +41,9 @@ function Format-AppNameForNuget {
         [Parameter(ParameterSetName = 'UnifiedNaming')]
         $tag,
         [Parameter(ParameterSetName = 'UnifiedNaming')]
-        $version
+        $version,
+        [Parameter(ParameterSetName = 'UnifiedNaming')]
+        $checkFeedUrl = $env:NVRAppDevOpsNugetFeedUrl #for using MS public feed to find MS packages based on ID, where package name is not correct
     )
     #Taken from bccontainerhelper PR until it is available in the bccontainerhelper
     function Get-BcNuGetPackageIdTemp {
@@ -85,7 +87,21 @@ function Format-AppNameForNuget {
     if ($tag -ieq 'W1') {
         $tag = ''
     }
-
+    if ($id -and $checkFeedUrl -and ($publisher -eq 'Microsoft')) {
+        $uriRequest = [System.UriBuilder]$checkFeedUrl
+        $QueryString = "$($tag).$($id)".TrimStart('.')
+        $Params = [System.Web.HttpUtility]::ParseQueryString($uriRequest.Query)
+        $Params.Add("packageNameQuery", $QueryString)
+        $uriRequest.Query = $Params.ToString()
+        $checkFeedUrlWithQuery = $uriRequest.Uri.ToString()
+        Write-Host "Resolving package name from feed for id $id"
+        $Packages = Invoke-RestMethod -Uri $checkFeedUrlWithQuery -Method Get
+        if ($Packages.Count -eq 1) {
+            $NuGetId = $Packages.value.name
+            Write-Verbose "NuGetId from feed: $NuGetId"
+            return $NuGetId
+        }
+    }
     if ($appname) {
         if ($appname -eq 'Platform') {
             $id = ''

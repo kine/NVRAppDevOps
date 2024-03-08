@@ -11,7 +11,11 @@ function Install-ALNugetPackageByPaket {
         $TargetPath,
         $Key,
         [String]$BaseApplicationVersion, #version of the base app to use for limiting the dependencies
-        $IdPrefix #Will be used before AppName and all Dependency names
+        $IdPrefix, #Will be used before AppName and all Dependency names
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [switch]$UnifiedNaming,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [String]$DependencyTag
     )
     $paketdependencies = @()
     $paketdependencies += "source $($SourceUrl) username: `"user`" password: `"$($Key)`" authtype: `"basic`""
@@ -33,9 +37,22 @@ function Install-ALNugetPackageByPaket {
         "Ignore" { $paketdependencies += "references: strict" }
     }
     if ($BaseApplicationVersion) {
+        if ($UnifiedNaming) {
+            $BaseAppPackageName = Format-AppNameForNuget -publisher "Microsoft" -appname "Application" -id "" -tag $DependencyTag -version ''
+            $PlatformAppPackageName = Format-AppNameForNuget -publisher "Microsoft" -appname "Platform" -id "" -tag $DependencyTag -version ''
+        }
+        else {
+            $BaseAppPackageName = "$($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`")"
+            $PlatformAppPackageName = ''
+        }
         if ($BaseApplicationVersion.Contains('<') -or $BaseApplicationVersion.Contains('>')) {
-            Write-Host "Adding $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
-            $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+            Write-Host "Adding $BaseAppPackageName $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+            $paketdependencies += "nuget $($BaseAppPackageName) $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+            $BaseVersion = [version]($BaseApplicationVersion.Trim('<>= '))
+            if ($PlatformAppPackageName) {
+                Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, strategy: max, lowest_matching: true"
+                $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, strategy: max, lowest_matching: true"
+            }
         }
         else {
             #We want to take the highest version of the base app but same or lower than the limiting version
@@ -48,14 +65,22 @@ function Install-ALNugetPackageByPaket {
             }
             if ($BaseVersion.Build -ne 0) {
                 #We want specific build - release to specific environment. Do not take anything higher
-                Write-Host "Adding $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") <= $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
-                $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") <= $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+                Write-Host "Adding $($BaseAppPackageName) <= $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+                $paketdependencies += "nuget $($BaseAppPackageName) <= $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+                if ($PlatformAppPackageName) {
+                    Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, strategy: max, lowest_matching: true"
+                    $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, strategy: max, lowest_matching: true"
+                }
             }
             else {
                 #Generic build, thus compailing for specific version. We can take even apps supporting higher minor, but not major
                 $BaseApplicationVersion = "$($BaseVersion.Major+1).0"
-                Write-Host "Adding $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") < $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
-                $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`") < $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+                Write-Host "Adding $($BaseAppPackageName) < $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+                $paketdependencies += "nuget $($BaseAppPackageName) < $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+                if ($PlatformAppPackageName) {
+                    Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, strategy: max, lowest_matching: true"
+                    $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, strategy: max, lowest_matching: true"
+                }
             }
             Write-Host "`$env:ADDITIONAL_PAKET_LINES: $($env:ADDITIONAL_PAKET_LINES)"
             if ($env:ADDITIONAL_PAKET_LINES) {
@@ -81,12 +106,24 @@ function Install-ALNugetPackageByPaket {
         }
     }
     else {
-        Write-Host "Installing package '$IdPrefix$(Format-AppNameForNuget $PackageName)' version $($Version) $DependencyVersion from '$SourceUrl' to $TargetPath..."
-        if ($Version) {
-            $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget $PackageName) >= $($Version)"
+        if ($UnifiedNaming) {
+            $PackageNameFormatted = $PackageName
         }
         else {
-            $paketdependencies += "nuget $($IdPrefix)$(Format-AppNameForNuget $PackageName)"
+            $PackageNameFormatted = "$($IdPrefix)$(Format-AppNameForNuget $PackageName)"
+        }
+
+        Write-Host "Installing package $PackageNameFormatted version $($Version) $DependencyVersion from '$SourceUrl' to $TargetPath..."
+        if ($Version) {
+            if ($ExactVersion) {
+                $paketdependencies += "nuget $PackageNameFormatted = $($Version)"
+            }
+            else {
+                $paketdependencies += "nuget $PackageNameFormatted >= $($Version)"
+            }
+        }
+        else {
+            $paketdependencies += "nuget $PackageNameFormatted"
         }
     }
     Push-Location
