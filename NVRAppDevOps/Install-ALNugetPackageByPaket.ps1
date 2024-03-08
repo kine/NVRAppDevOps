@@ -31,10 +31,10 @@ function Install-ALNugetPackageByPaket {
     }
 
     switch ($DependencyVersion) {
-        "HighestMinor" { $paketdependencies += "strategy: max"; $paketdependencies += "lowest_matching: false" }
-        "Highest" { $paketdependencies += "strategy: max"; $paketdependencies += "lowest_matching: false" }
-        "Lowest" { $paketdependencies += "strategy: min"; $paketdependencies += "lowest_matching: true" }
-        "Ignore" { $paketdependencies += "references: strict" }
+        "HighestMinor" { $paketdependencies += "strategy: max"; $paketdependencies += "lowest_matching: false"; $baseStrategy = 'strategy: max, lowest_matching: false' }
+        "Highest" { $paketdependencies += "strategy: max"; $paketdependencies += "lowest_matching: false"; $baseStrategy = 'strategy: max, lowest_matching: false' }
+        "Lowest" { $paketdependencies += "strategy: min"; $paketdependencies += "lowest_matching: true"; $baseStrategy = 'strategy: min, lowest_matching: true' }
+        "Ignore" { $paketdependencies += "references: strict"; $baseStrategy = 'strategy: min, lowest_matching: true' }
     }
     if ($BaseApplicationVersion) {
         if ($UnifiedNaming) {
@@ -45,13 +45,13 @@ function Install-ALNugetPackageByPaket {
             $BaseAppPackageName = "$($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`")"
             $PlatformAppPackageName = ''
         }
-        if ($BaseApplicationVersion.Contains('<') -or $BaseApplicationVersion.Contains('>')) {
-            Write-Host "Adding $BaseAppPackageName $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
-            $paketdependencies += "nuget $($BaseAppPackageName) $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
-            $BaseVersion = [version]($BaseApplicationVersion.Trim('<>= '))
+        if ($BaseApplicationVersion -match "[<>=~].+") {
+            Write-Host "Adding $BaseAppPackageName $($BaseApplicationVersion) storage: none, $baseStrategy"
+            $paketdependencies += "nuget $($BaseAppPackageName) $($BaseApplicationVersion) storage: none, $baseStrategy"
+            $BaseVersion = [version]($BaseApplicationVersion.Trim('<>=~ '))
             if ($PlatformAppPackageName) {
-                Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, strategy: max, lowest_matching: true"
-                $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, strategy: max, lowest_matching: true"
+                Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
+                $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
             }
         }
         else {
@@ -65,21 +65,21 @@ function Install-ALNugetPackageByPaket {
             }
             if ($BaseVersion.Build -ne 0) {
                 #We want specific build - release to specific environment. Do not take anything higher
-                Write-Host "Adding $($BaseAppPackageName) <= $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
-                $paketdependencies += "nuget $($BaseAppPackageName) <= $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+                Write-Host "Adding $($BaseAppPackageName) <= $($BaseApplicationVersion) storage: none, $baseStrategy"
+                $paketdependencies += "nuget $($BaseAppPackageName) <= $($BaseApplicationVersion) storage: none, $baseStrategy"
                 if ($PlatformAppPackageName) {
-                    Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, strategy: max, lowest_matching: true"
-                    $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, strategy: max, lowest_matching: true"
+                    Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
+                    $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
                 }
             }
             else {
                 #Generic build, thus compailing for specific version. We can take even apps supporting higher minor, but not major
                 $BaseApplicationVersion = "$($BaseVersion.Major+1).0"
-                Write-Host "Adding $($BaseAppPackageName) < $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
-                $paketdependencies += "nuget $($BaseAppPackageName) < $($BaseApplicationVersion) storage: none, strategy: max, lowest_matching: false"
+                Write-Host "Adding $($BaseAppPackageName) < $($BaseApplicationVersion) storage: none, $baseStrategy"
+                $paketdependencies += "nuget $($BaseAppPackageName) < $($BaseApplicationVersion) storage: none, $baseStrategy"
                 if ($PlatformAppPackageName) {
-                    Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, strategy: max, lowest_matching: true"
-                    $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, strategy: max, lowest_matching: true"
+                    Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
+                    $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
                 }
             }
             Write-Host "`$env:ADDITIONAL_PAKET_LINES: $($env:ADDITIONAL_PAKET_LINES)"
