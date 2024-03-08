@@ -93,13 +93,13 @@
     # FileList = @()
 
     # Version number of this module.
-    ModuleVersion     = '2.7.1'
+    ModuleVersion     = '2.8.1'
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = ''
+            Prerelease   = 'beta6'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -115,6 +115,11 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.8.0
+- Support for downloading NuGet packages with Unified naming for Download-ALApp, Download-ALAppFromNuget and Compile-ALProjectTree
+- If $env:NVRAppDevOpsNugetFeedUrl is set to Azure DevOps MS feed with MS packages, the Format-AppNameForNuget will try to find the package name by ID. This is workaround for finding correct package names for e.g. Czech localization 
+apps having tag CZ even when they are build on W1.
+
 2.7.1
 - Fixing compatibility with BCv24 folder structure of the vsix/alc.exe (Issue #37, #38)            
 
