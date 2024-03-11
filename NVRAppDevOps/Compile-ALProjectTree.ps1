@@ -98,7 +98,7 @@ function Compile-ALProjectTree {
     }
     if ($UsePaket) {
         $dependencies = $OrderedApps | where-object { (-not $_.AppPath) -and ($_.publisher -ne 'Microsoft') }
-        if ($dependencies -and ($dependencies.count -gt 0)) {
+        if ($dependencies -and (($dependencies.count -gt 0) -or (-not $dependencies.count))) {
             Write-Host "Downloading $($dependencies.count) dependencies from nuget with Paket..."
             Download-ALApp -dependencies $dependencies -targetPath $PackagesPath -AppDownloadScript $AppDownloadScript -UnifiedNaming:$UnifiedNaming -DependencyTag $DependencyTag
         }
