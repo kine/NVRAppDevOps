@@ -99,7 +99,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta002'
+            Prerelease   = ''
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -115,6 +115,9 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.8.2
+- Fix problems with Install-ALNugetPackage and Compile-ALProjectTree when packages were not installed
+
 2.8.1
 - Fix Download-ALApp when no dependencies to download
 
