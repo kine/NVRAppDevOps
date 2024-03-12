@@ -72,12 +72,12 @@ function Install-ALNugetPackage {
     }
     New-Item -Path $TempFolder -ItemType directory -Force | Out-Null
     if ($UnifiedNaming) {
-        $PackageameFormatted = "$PackageName"
+        $PackageNameFormatted = "$PackageName"
     }
     else {
-        $PackageameFormatted = "$IdPrefix$(Format-AppNameForNuget $PackageName)"
+        $PackageNameFormatted = "$IdPrefix$(Format-AppNameForNuget $PackageName)"
     }
-    Write-Host "Installing package $PackageameFormatted version $($Version) $DependencyVersion from '$Source' to $TargetPath..."
+    Write-Host "Installing package $PackageNameFormatted version $($Version) $DependencyVersion from '$Source' to $TargetPath..."
 
     if ($Version) {
         if ($Source) {
