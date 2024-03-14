@@ -25,11 +25,12 @@ function Install-ALNugetPackageByPaket {
     }
     Write-Host "Installing Paket..."
     & C:\ProgramData\chocolatey\choco install Paket -y
-    $TempFolder = Join-Path $env:TEMP 'ALNugetApps'
+    $TempFolder = Join-Path $env:TEMP 'ALN'
+    Write-Host "Using $TempFolder as temporary folder..."
     if (Test-Path $TempFolder) {
         Remove-Item $TempFolder -Force -Recurse | Out-Null
     }
-
+    
     switch ($DependencyVersion) {
         "HighestMinor" { $paketdependencies += "strategy: max"; $paketdependencies += "lowest_matching: false"; $baseStrategy = 'strategy: max, lowest_matching: false' }
         "Highest" { $paketdependencies += "strategy: max"; $paketdependencies += "lowest_matching: false"; $baseStrategy = 'strategy: max, lowest_matching: false' }
@@ -129,6 +130,24 @@ function Install-ALNugetPackageByPaket {
     Push-Location
     set-location $TempFolder
     $paketdependencies | Out-File paket.dependencies -Encoding utf8
+    Write-Host "Enabling long path suppport in paket"
+    $PaketPath = 'C:\ProgramData\chocolatey\lib\Paket\payload\'
+    $Manifest = @"
+<application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+        <longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</longPathAware>
+    </windowsSettings>
+</application>
+"@
+    $Manifest | Out-File (Join-Path $PaketPath "paket.exe.manifest") -Encoding utf8
+    $PaketConfig = @"
+<application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+        <longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</longPathAware>
+    </windowsSettings>
+</application>
+"@
+
     Write-Host "running paket.exe install..."
     & C:\ProgramData\chocolatey\lib\Paket\payload\paket.exe install
     Write-Host "Moving app files from $TempFolder to $TargetPath..."

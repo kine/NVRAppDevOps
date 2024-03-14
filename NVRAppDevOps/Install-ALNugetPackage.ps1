@@ -33,7 +33,8 @@ function Install-ALNugetPackage {
             nuget.exe source update -Name "$Source" -Username 'user' -Password $Key -StorePasswordInClearText
         }
     }
-    $TempFolder = Join-Path $env:TEMP 'ALNugetApps'
+    $TempFolder = Join-Path $env:TEMP 'ALN'
+    Write-Host "Using $TempFolder as temporary folder..."
     if (Test-Path $TempFolder) {
         Remove-Item $TempFolder -Force -Recurse | Out-Null
     }
