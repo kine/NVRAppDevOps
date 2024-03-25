@@ -131,7 +131,9 @@ function Install-ALNugetPackageByPaket {
     set-location $TempFolder
     $paketdependencies | Out-File paket.dependencies -Encoding utf8
     Write-Verbose "+++++paket.dependencies+++++"
-    Write-Verbose $paketdependencies
+    foreach ($line in $paketdependencies) {
+        Write-Verbose $line
+    }
     Write-Verbose "-----paket.dependencies-----"
     Write-Host "Enabling long path suppport in paket"
     $PaketPath = 'C:\ProgramData\chocolatey\lib\Paket\payload\'
