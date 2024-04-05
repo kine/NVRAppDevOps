@@ -28,13 +28,19 @@ function Get-BCModulePathFromArtifact {
     if (!($ManagementModule)) {
         throw "Unable to locate management module in artifacts $artifactPath"
     }
-    if (!($AppManagementModule)) {
-        throw "Unable to locate apps management module in artifacts $artifactPath"
-    }
+    # module doesn't exists for BCv24 Powwershell 5 bridge
+    # if (!($AppManagementModule)) {
+    #     throw "Unable to locate apps management module in artifacts $artifactPath"
+    # }
     
     Write-Verbose "Found PowerShell module $($ManagementModule.FullName)"
-    Write-Verbose "Found PowerShell module $($AppManagementModule.FullName)"
-    $Paths = @($ManagementModule.FullName, $AppManagementModule.FullName)
+    if ($AppManagementModule) {
+        Write-Verbose "Found PowerShell module $($AppManagementModule.FullName)"
+        $Paths = @($ManagementModule.FullName, $AppManagementModule.FullName)
+    }
+    else {
+        $Paths = @($ManagementModule.FullName)
+    }
 
     if ($databaseServer) {
         import-module SqlServer
