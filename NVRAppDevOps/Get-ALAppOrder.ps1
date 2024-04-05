@@ -155,7 +155,7 @@ function Get-ALAppOrder {
         $AppDeps = @()
         if ($ArtifactUrl) {
             if (-not $global:BCModuleImported) {
-                import-module (Get-BCModulePathFromArtifact -artifactPath (Download-Artifacts -artifactUrl $artifactUrl -includePlatform))
+                import-module (Get-BCModulePathFromArtifact -artifactPath ((Download-Artifacts -artifactUrl $artifactUrl -includePlatform)[1]))
                 $global:BCModuleImported = $true
             }
             $AppInfo = Get-NavAppInfo -Path $AppFile
