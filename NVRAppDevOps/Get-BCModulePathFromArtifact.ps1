@@ -22,6 +22,9 @@ function Get-BCModulePathFromArtifact {
     if (-not $ManagementModule) {
         $ManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Management.psm1")
     }
+    if (-not $ManagementModule) {
+        $ManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Management.dll")
+    }
     if (-not $AppManagementModule) {
         $AppManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Apps.Management.psd1")
     }
