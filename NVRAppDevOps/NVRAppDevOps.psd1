@@ -99,7 +99,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta07'
+            Prerelease   = 'beta08'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -118,6 +118,7 @@
 2.8.3
 - Long path support for NuGet cmdlets
 - Add verbose output of paket.dependencies for better debugging
+- Fix missing .app. management module in BCv24 Powershell 5 bridge
 
 2.8.2
 - Fix problems with Install-ALNugetPackage and Compile-ALProjectTree when packages were not installed
