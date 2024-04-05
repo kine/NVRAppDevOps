@@ -62,7 +62,7 @@ function Compile-AppWithArtifact {
             }
         } 
     }
-    import-module (Get-BCModulePathFromArtifact -artifactPath ((Download-Artifacts -artifactUrl $artifactUrl -includePlatform)[1]))
+    import-module (Get-BCModulePathFromArtifact -artifactPath (Download-Artifacts -artifactUrl $artifactUrl -includePlatform))
 
     $MSAppsFiles = Get-ChildItem -Path $AppPath -Filter *.app -Recurse
     $MSApps = @()
