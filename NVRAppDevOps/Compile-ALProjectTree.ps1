@@ -93,7 +93,7 @@ function Compile-ALProjectTree {
     if (-not $PackagesPath) {
         $PackagesPath = Get-Location
     }
-    if ($artifactPath) {
+    if ($ArtifactUrl) {
         $alcPath = Get-ALCompilerFromArtifact -artifactUrl $artifactUrl -TargetPath (Join-Path $env:TEMP 'alc')
     }
     if ($UsePaket) {

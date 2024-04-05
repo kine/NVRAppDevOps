@@ -67,7 +67,7 @@ function Compile-AppWithArtifact {
     $MSAppsFiles = Get-ChildItem -Path $AppPath -Filter *.app -Recurse
     $MSApps = @()
     foreach ($File in $MSAppsFiles) {
-        $AppInfo = get-navappinfo -Path $File.FullName
+        $AppInfo = (Get-NavAppInfo -Path $File.FullName)
         $AppJson = New-Object -TypeName PSObject
         $AppJson | Add-Member -MemberType NoteProperty -Name "id" -Value $AppInfo.id
         $AppJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppInfo.Name
