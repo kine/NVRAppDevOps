@@ -113,8 +113,12 @@ function Init-ALEnvironment {
             $myscripts += $customScripts
         }
 
-        $additionalParameters = @("--volume ""$($RepoPath):C:\app"""
-        )
+        if ($RepoPath) {
+            $additionalParameters = @("--volume ""$($RepoPath):C:\app""")
+        }
+        else {
+            $additionalParameters = @()
+        }
 
         if ($useSSL -eq 'true') {
             $additionalParameters += "--env useSSL=Y"
@@ -171,8 +175,12 @@ function Init-ALEnvironment {
             $myscripts = @()
         }
 
-        $additionalParameters = @("--volume ""$($RepoPath):C:\app"""
-        )
+        if ($RepoPath) {
+            $additionalParameters = @("--volume ""$($RepoPath):C:\app""")
+        }
+        else {
+            $additionalParameters = @()
+        }
 
         if ($useSSL -eq 'true') {
             $additionalParameters += "--env useSSL=Y"
