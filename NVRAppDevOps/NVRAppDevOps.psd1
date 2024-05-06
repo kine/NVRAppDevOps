@@ -116,6 +116,7 @@
             # ReleaseNotes of this module
             ReleaseNotes = @'
 2.8.3
+- BCv24 compilation support by adding the Microsoft Business Foundation.app into dependencies
 - Long path support for NuGet cmdlets
 - Add verbose output of paket.dependencies for better debugging
 - Fix missing .app. management module in BCv24 Powershell 5 bridge
