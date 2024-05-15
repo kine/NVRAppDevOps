@@ -219,7 +219,8 @@ function Init-ALEnvironment {
             -updateHosts `
             -myScripts $myscripts `
             -alwaysPull:$alwaysPull `
-            -artifactUrl $ArtifactUrl 
+            -artifactUrl $ArtifactUrl `
+            -accept_insiderEula
 
         #        -myScripts @{"SetupWebClient.ps1"=''}
         #    -memoryLimit 4GB
