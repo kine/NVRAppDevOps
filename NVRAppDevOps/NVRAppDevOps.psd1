@@ -99,7 +99,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta01'
+            Prerelease   = 'beta02'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -117,6 +117,7 @@
             ReleaseNotes = @'
 2.8.4
 - conditional mapping of the repository folder into the container
+- accept_insiderEula parameter for New-BCContainer in Init-ALEnvironment
 
 2.8.3
 - BCv24 compilation support by adding the Microsoft Business Foundation.app into dependencies
