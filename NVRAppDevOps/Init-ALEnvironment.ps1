@@ -153,7 +153,8 @@ function Init-ALEnvironment {
             -useBestContainerOS:$useBestContainerOS `
             -myScripts $myscripts `
             -alwaysPull:$alwaysPull `
-            -artifactUrl $ArtifactUrl 
+            -artifactUrl $ArtifactUrl `
+            -accept_insiderEula
 
     }
     else {
