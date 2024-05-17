@@ -34,7 +34,7 @@ function Install-SigningTool {
     # Install the signing tool in the temp folder
     Write-Host "Installing signing tool version $version in $Path"
     New-Item -ItemType Directory -Path $Path | Out-Null
-    dotnet tool install sign --version $version --tool-path $Path | Out-Null
+    dotnet tool install sign --version $version --tool-path $Path --ignore-failed-sources --add-source 'https://api.nuget.org/v3/index.json'
 
     # Return the path to the signing tool
     $signingTool = Join-Path -Path $Path "sign.exe" -Resolve
