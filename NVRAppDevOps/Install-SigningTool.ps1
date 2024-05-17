@@ -29,7 +29,7 @@ function Install-SigningTool {
         Write-Host "Signing tool not found in $Path, installing..."
     }
     # Get version of the signing tool
-    $version = Get-PackageVersion -PackageName "sign"
+    $version = '0.9.1-beta.24123.2'
 
     # Install the signing tool in the temp folder
     Write-Host "Installing signing tool version $version in $Path"
