@@ -68,5 +68,5 @@ function Sign-ALAppsAzure {
         --timestamp-digest $DigestAlgorithm `
         --timestamp-url $TimestampService `
         --verbosity $Verbosity `
-        $FilesToSign
+        $AppFiles
 }
