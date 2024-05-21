@@ -99,7 +99,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta09'
+            Prerelease   = 'beta10'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
