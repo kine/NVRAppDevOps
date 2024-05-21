@@ -56,17 +56,5 @@ function Sign-ALAppsAzure {
     $SigningToolExe = Install-SigningTool -Path $SigningToolPath
 
     # Sign files
-    . $SigningToolExe code azure-key-vault `
-        --azure-key-vault-url "https://$KeyVaultName.vault.azure.net/" `
-        --azure-key-vault-certificate $CertificateName `
-        --azure-key-vault-client-id $ClientId `
-        --azure-key-vault-client-secret $ClientSecret `
-        --azure-key-vault-tenant-id $TenantId `
-        --description $Description `
-        --description-url $DescriptionUrl `
-        --file-digest $DigestAlgorithm `
-        --timestamp-digest $DigestAlgorithm `
-        --timestamp-url $TimestampService `
-        --verbosity $Verbosity `
-        $AppFiles
+    . $SigningToolExe code azure-key-vault $AppFiles --azure-key-vault-url "https://$KeyVaultName.vault.azure.net/" --azure-key-vault-certificate $CertificateName --azure-key-vault-client-id $ClientId --azure-key-vault-client-secret $ClientSecret --azure-key-vault-tenant-id $TenantId --description $Description --description-url $DescriptionUrl --file-digest $DigestAlgorithm --timestamp-digest $DigestAlgorithm --timestamp-url $TimestampService --verbosity $Verbosity
 }
