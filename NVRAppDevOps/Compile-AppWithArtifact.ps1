@@ -64,11 +64,16 @@ function Compile-AppWithArtifact {
             }
         } 
     }
-    import-module (Get-BCModulePathFromArtifact -artifactPath ((Download-Artifacts -artifactUrl $artifactUrl -includePlatform)[1]))
+    Write-Host "Getting artifact path for $artifactUrl"
+    $Path = (Download-Artifacts -artifactUrl $artifactUrl -includePlatform)[1]
+    Write-Host "Importing Microsoft apps from artifact folder"
+    import-module (Get-BCModulePathFromArtifact -artifactPath ($Path))
 
+    Write-Host "Looking for apps in $AppPath"
     $MSAppsFiles = Get-ChildItem -Path $AppPath -Filter *.app -Recurse
     $MSApps = @()
     foreach ($File in $MSAppsFiles) {
+        Write-Verbose "Getting app info from ${File.FullName}"
         $AppInfo = (Get-NavAppInfo -Path $File.FullName)
         $AppJson = New-Object -TypeName PSObject
         $AppJson | Add-Member -MemberType NoteProperty -Name "id" -Value $AppInfo.id
