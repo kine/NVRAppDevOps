@@ -68,20 +68,44 @@ function Compile-AppWithArtifact {
     $Path = (Download-Artifacts -artifactUrl $artifactUrl -includePlatform)[1]
     Write-Host "Importing Microsoft apps from artifact folder"
     import-module (Get-BCModulePathFromArtifact -artifactPath ($Path))
+    #https://bcartifacts-exdbf9fwegejdqak.b02.azurefd.net/onprem/23.6.18013.0/w1
+    $Version = [Version]($artifactUrl.Split('/')[4])
 
-    Write-Host "Looking for apps in $AppPath"
-    $MSAppsFiles = Get-ChildItem -Path $AppPath -Filter *.app -Recurse
-    $MSApps = @()
-    foreach ($File in $MSAppsFiles) {
-        Write-Verbose "Getting app info from $($File.FullName)"
-        $AppInfo = (Get-NavAppInfo -Path $File.FullName)
-        $AppJson = New-Object -TypeName PSObject
-        $AppJson | Add-Member -MemberType NoteProperty -Name "id" -Value $AppInfo.id
-        $AppJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppInfo.Name
-        $AppJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppInfo.Publisher
-        $AppJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppInfo.Version
-        $AppJson | Add-Member -MemberType NoteProperty -Name "file" -Value $File.FullName
-        $MSApps += $AppJson
+    if ($Version.Major -ge 24) {
+        Write-Host "Running in pwsh7 for BCv24 or later to make it faster"
+        $MSApps = pwsh {
+            Write-Host "Looking for apps in $AppPath"
+            $MSAppsFiles = Get-ChildItem -Path $AppPath -Filter *.app -Recurse
+            $MSApps = @()
+            foreach ($File in $MSAppsFiles) {
+                Write-Verbose "Getting app info from $($File.FullName)"
+                $AppInfo = (Get-NavAppInfo -Path $File.FullName)
+                $AppJson = New-Object -TypeName PSObject
+                $AppJson | Add-Member -MemberType NoteProperty -Name "id" -Value $AppInfo.id
+                $AppJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppInfo.Name
+                $AppJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppInfo.Publisher
+                $AppJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppInfo.Version
+                $AppJson | Add-Member -MemberType NoteProperty -Name "file" -Value $File.FullName
+                $MSApps += $AppJson
+            }
+            return $MSApps
+        } 
+    }
+    else {
+        Write-Host "Looking for apps in $AppPath"
+        $MSAppsFiles = Get-ChildItem -Path $AppPath -Filter *.app -Recurse
+        $MSApps = @()
+        foreach ($File in $MSAppsFiles) {
+            Write-Verbose "Getting app info from $($File.FullName)"
+            $AppInfo = (Get-NavAppInfo -Path $File.FullName)
+            $AppJson = New-Object -TypeName PSObject
+            $AppJson | Add-Member -MemberType NoteProperty -Name "id" -Value $AppInfo.id
+            $AppJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppInfo.Name
+            $AppJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppInfo.Publisher
+            $AppJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppInfo.Version
+            $AppJson | Add-Member -MemberType NoteProperty -Name "file" -Value $File.FullName
+            $MSApps += $AppJson
+        }
     }
 
     $dependencies = @()
