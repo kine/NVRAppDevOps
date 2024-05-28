@@ -73,8 +73,13 @@ function Compile-AppWithArtifact {
 
     if ($Version.Major -ge 24) {
         Write-Host "Running in pwsh7 for BCv24 or later to make it faster"
-        $MSApps = pwsh -CommandWithArgs {
-            param($AppPath)
+        
+        $MSApps = pwsh {
+            $AppPath = $args[0]
+            $Path = $args[1]
+            Write-Host "Importing Microsoft apps from artifact folder"
+            import-module NVRAppDevOps
+            import-module (Get-BCModulePathFromArtifact7 -artifactPath ($Path))
             Write-Host "Looking for apps in $AppPath"
             $MSAppsFiles = Get-ChildItem -Path $AppPath -Filter *.app -Recurse
             $MSApps = @()
@@ -90,7 +95,7 @@ function Compile-AppWithArtifact {
                 $MSApps += $AppJson
             }
             return $MSApps
-        } $AppPath
+        } -Args @($AppPath, $Path)
     }
     else {
         Write-Host "Looking for apps in $AppPath"
@@ -108,7 +113,7 @@ function Compile-AppWithArtifact {
             $MSApps += $AppJson
         }
     }
-
+    Write-Verbose "MSApps: $($MSApps | Format-Table | Out-String)"
     $dependencies = @()
 
     if (([bool]($appJsonObject.PSobject.Properties.name -eq "application")) -and $appJsonObject.application) {

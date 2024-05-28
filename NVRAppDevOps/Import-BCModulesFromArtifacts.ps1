@@ -10,13 +10,20 @@
     artifactPath - path to platform artifact of given version
     databaseServer - if set then libraries to interact with the database server are loaded (e.g. for Export-NAVApplication etc.)
 #>
-function Import-BCModulesFromArtifacts
-{
+function Import-BCModulesFromArtifacts {
     param(
         $artifactPath,
         $databaseServer
     )
-    $Paths = Get-BCModulePathFromArtifact -artifactPath $artifactPath
+    if (([Version]$PSVersionTable.Version).Major -ge 7) {
+        Write-Host "Getting path for PS7 management module"
+        $Paths = Get-BCModulePathFromArtifact7 -artifactPath $artifactPath
+
+    }
+    else {
+        Write-Host "Getting path for old powershell management module"
+        $Paths = Get-BCModulePathFromArtifact -artifactPath $artifactPath
+    }
 
     try { [System.IO.File]::WriteAllText((Join-Path $artifactPath 'lastused'), "$([datetime]::UtcNow.Ticks)") } catch {}
     
