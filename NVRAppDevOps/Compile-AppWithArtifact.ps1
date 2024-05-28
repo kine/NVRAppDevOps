@@ -73,7 +73,8 @@ function Compile-AppWithArtifact {
 
     if ($Version.Major -ge 24) {
         Write-Host "Running in pwsh7 for BCv24 or later to make it faster"
-        $MSApps = pwsh {
+        $MSApps = pwsh -CommandWithArgs {
+            param($AppPath)
             Write-Host "Looking for apps in $AppPath"
             $MSAppsFiles = Get-ChildItem -Path $AppPath -Filter *.app -Recurse
             $MSApps = @()
@@ -89,7 +90,7 @@ function Compile-AppWithArtifact {
                 $MSApps += $AppJson
             }
             return $MSApps
-        } 
+        } $AppPath
     }
     else {
         Write-Host "Looking for apps in $AppPath"
