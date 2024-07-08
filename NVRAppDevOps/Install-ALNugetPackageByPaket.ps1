@@ -19,12 +19,18 @@ function Install-ALNugetPackageByPaket {
     )
     $paketdependencies = @()
     $paketdependencies += "source $($SourceUrl) username: `"user`" password: `"$($Key)`" authtype: `"basic`""
-    if (-not ($env:ChocolateyInstall -or (Test-Path C:\ProgramData\chocolatey))) {
-        Write-Host "Installing Chocolatey..."
-        Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    if ($env:PaketExePath) {
+        $PaketPath = $env:PaketExePath
     }
-    Write-Host "Installing Paket..."
-    & C:\ProgramData\chocolatey\choco install Paket -y
+    else {
+        if (-not ($env:ChocolateyInstall -or (Test-Path C:\ProgramData\chocolatey))) {
+            Write-Host "Installing Chocolatey..."
+            Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+        }
+        Write-Host "Installing Paket..."
+        & C:\ProgramData\chocolatey\choco install Paket -y
+        $PaketPath = 'C:\ProgramData\chocolatey\lib\Paket\payload\'
+    }
     $TempFolder = Join-Path $env:TEMP 'ALN'
     Write-Host "Using $TempFolder as temporary folder..."
     if (Test-Path $TempFolder) {
@@ -135,26 +141,9 @@ function Install-ALNugetPackageByPaket {
         Write-Verbose $line
     }
     Write-Verbose "-----paket.dependencies-----"
-    Write-Host "Enabling long path suppport in paket"
-    $PaketPath = 'C:\ProgramData\chocolatey\lib\Paket\payload\'
-    $Manifest = @"
-<application xmlns="urn:schemas-microsoft-com:asm.v3">
-    <windowsSettings>
-        <longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</longPathAware>
-    </windowsSettings>
-</application>
-"@
-    $Manifest | Out-File (Join-Path $PaketPath "paket.exe.manifest") -Encoding utf8
-    $PaketConfig = @"
-<application xmlns="urn:schemas-microsoft-com:asm.v3">
-    <windowsSettings>
-        <longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</longPathAware>
-    </windowsSettings>
-</application>
-"@
-
-    Write-Host "running paket.exe install..."
-    & C:\ProgramData\chocolatey\lib\Paket\payload\paket.exe install
+    $PaketCmd = Join-Path $PaketPath "paket.exe"
+    Write-Host "running: $PaketCmd install"
+    & $PaketCmd install
     Write-Host "Moving app files from $TempFolder to $TargetPath..."
     if ($DependencyVersion -eq 'Ignore') {
         Get-ChildItem -Path (Join-Path $TempFolder "Packages\$($PackageName)") -Filter "*.app" -Recurse | Copy-Item -Destination $TargetPath -Container -Force | Out-Null
