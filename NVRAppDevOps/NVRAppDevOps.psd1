@@ -99,7 +99,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta17'
+            Prerelease   = 'beta18'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -120,6 +120,7 @@
 - accept_insiderEula parameter for New-BCContainer in Init-ALEnvironment
 - add Sign-ALAppsAzure to sign apps with Azure KeyVault certificate
 - add Install-SigningTool to install the signing tool
+- If environment variable PaketExePath is set, use it for Paket execution
 
 2.8.3
 - BCv24 compilation support by adding the Microsoft Business Foundation.app into dependencies
