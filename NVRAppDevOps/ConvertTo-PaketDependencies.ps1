@@ -56,7 +56,7 @@ function ConvertTo-PaketDependencies {
         $tag += '.Symbols'
     }
     foreach ($Dependency in $AppJsonDependencies) {
-        $DependencyName = Format-AppNameForNuget -appname $Dependency.name -publisher $Dependency.publisher -version $Dependency.version -id $Dependency.id -tag $tag
+        $DependencyName = Format-AppNameForNuget -appname $Dependency.name -publisher $Dependency.publisher -version $Dependency.version -id $Dependency.id -tag $tag -NuGetSources $NuGetSources
         $PaketDependencies.Add("nuget $($DependencyName) >= $($Dependency.version)") | out-null
     }
     if ($AppJson.application) {

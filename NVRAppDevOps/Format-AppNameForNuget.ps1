@@ -42,8 +42,9 @@ function Format-AppNameForNuget {
         $tag,
         [Parameter(ParameterSetName = 'UnifiedNaming')]
         $version,
+        #Sources in format of paket.dependencies file sources to check for the package ID to find the correct package name
         [Parameter(ParameterSetName = 'UnifiedNaming')]
-        $checkFeedUrl = $env:NVRAppDevOpsNugetFeedUrl #for using MS public feed to find MS packages based on ID, where package name is not correct
+        $NuGetSources = $env:NVRAppDevOpsNugetFeedUrl 
     )
     #Taken from bccontainerhelper PR until it is available in the bccontainerhelper
     function Get-BcNuGetPackageIdTemp {
@@ -87,19 +88,24 @@ function Format-AppNameForNuget {
     if ($tag -ieq 'W1') {
         $tag = ''
     }
-    if ($id -and $checkFeedUrl -and ($publisher -eq 'Microsoft')) {
-        $uriRequest = [System.UriBuilder]$checkFeedUrl
-        $QueryString = "$($tag).$($id)".TrimStart('.')
-        $Params = [System.Web.HttpUtility]::ParseQueryString($uriRequest.Query)
-        $Params.Add("packageNameQuery", $QueryString)
-        $uriRequest.Query = $Params.ToString()
-        $checkFeedUrlWithQuery = $uriRequest.Uri.ToString()
-        Write-Host "Resolving package name from feed for id $id"
-        $Packages = Invoke-RestMethod -Uri $checkFeedUrlWithQuery -Method Get
-        if ($Packages.Count -eq 1) {
-            $NuGetId = $Packages.value.name
-            Write-Verbose "NuGetId from feed: $NuGetId"
-            return $NuGetId
+    if ($NuGetSources -and $id) {
+        foreach ($Source in $NuGetSources) {
+            Write-Verbose "Checking feed $Source for package id $id"
+            #https://navertica.pkgs.visualstudio.com/_packaging/BCApps_Unified/nuget/v3/index.json username:"" password:"%PAT%" authmethod:basic
+            $Parts = $Source -split ' '
+            $SourceUrl = $Parts[0]
+            $Username = ($Parts | Where-Object { $_ -match 'Username:"?(\w*)"?' }).Remove(0, 9).Trim('"')
+            $Password = ($Parts | Where-Object { $_ -match 'Password:"?(\w*)"?' }).Remove(0, 9).Trim('"')
+            $authmethod = ($Parts | Where-Object { $_ -match 'authmethod:"?(\w*)"?' }).Remove(0, 11).Trim('"')
+            If (($Password[0] -eq '%') -and ($Password[$Password.Length - 1] -eq '%')) {
+                $VarName = $Password.Trim('%')
+                $Password = (Get-Item -Path env:\$VarName).Value
+            }
+            $PackageName = Find-NuGetPackageNameFromFeed -FeedUrl $SourceUrl -AuthMode $authmethod -Username $Username -Password $Password -PackageFilter $id
+            if ($PackageName) {
+                Write-Verbose "Package id found in feed $($Source): $PackageName"
+                return $PackageName
+            }
         }
     }
     if ($appname) {
