@@ -24,7 +24,7 @@
     variable PaketExePath. If not set, the path to paket installed with chcocolatey is used.
 
 .EXAMPLE
-    Invoke-PaketForAl -Path "C:\Projects\MyALProject" -Command "install"
+    Invoke-PaketForAl -Path "C:\Projects\MyALProject" -Command "install" -Sources 'https://myaccount.pkgs.visualstudio.com/_packaging/FeedName/nuget/v3/index.json username:"" password:"%PAT%" authmethod:basic'
     This example install the dependencies specified in the paket.dependencies file for the AL project located at "C:\Projects\MyALProject".
 
 .EXAMPLE
