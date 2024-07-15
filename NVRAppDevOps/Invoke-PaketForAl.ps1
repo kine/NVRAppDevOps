@@ -42,7 +42,7 @@
 function Invoke-PaketForAl {
     param(
         $Command = 'install',
-        $ProjectPath = (get-location),
+        $ProjectPath = (get-location).Path,
         [switch]$UsePackagesAsCache,
         #Sources in form of '{url} username:"{username}" password:"{password}" authmethod:{authmethod}'. See Paket documentation for more information
         [string[]] $Sources,
