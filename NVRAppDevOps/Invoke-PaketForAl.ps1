@@ -23,6 +23,15 @@
     Specifies the path to the Paket executable. If this parameter is not specified, the function uses the default path to the Paket executable set in system environment 
     variable PaketExePath. If not set, the path to paket installed with chcocolatey is used.
 
+.PARAMETER Policy
+    Specifies the policy to use for resolving dependencies. Valid values are 'Min' and 'Max'. The default value is 'Min'.
+
+.PARAMETER MaxApplicationVersion
+    Specifies the maximum version of the application to use for resolving dependencies. Will add '~> {version}' to the dependency in paket.dependencies file for the Microsoft.Application.
+
+.PARAMETER MaxPlatformVersion
+    Specifies the maximum version of the platform to use for resolving dependencies. Will add '~> {version}' to the dependency in paket.dependencies file for the Microsoft.Platform.
+    
 .EXAMPLE
     Invoke-PaketForAl -Path "C:\Projects\MyALProject" -Command "install" -Sources 'https://myaccount.pkgs.visualstudio.com/_packaging/FeedName/nuget/v3/index.json username:"" password:"%PAT%" authmethod:basic'
     This example install the dependencies specified in the paket.dependencies file for the AL project located at "C:\Projects\MyALProject".
@@ -46,7 +55,13 @@ function Invoke-PaketForAl {
         [switch]$UsePackagesAsCache,
         #Sources in form of '{url} username:"{username}" password:"{password}" authmethod:{authmethod}'. See Paket documentation for more information
         [string[]] $Sources,
-        [string] $PaketExePath = $env:PaketExePath
+        [string] $PaketExePath = $env:PaketExePath,
+        [ValidateSet('Max', 'Min')]
+        [string]$Policy = 'Min',        
+        [version]$MaxApplicationVersion,
+        [version]$MaxPlatformVersion
+
+
     )
 
     if (-not $PaketExePath) {
@@ -62,7 +77,7 @@ function Invoke-PaketForAl {
     }
 
     Write-Verbose "Creating/Updating paket.dependencies file..."
-    ConvertTo-PaketDependencies -ProjectPath $ProjectPath -NuGetSources $Sources
+    ConvertTo-PaketDependencies -ProjectPath $ProjectPath -NuGetSources $Sources -Policy $Policy -MaxApplicationVersion $MaxApplicationVersion -MaxPlatformVersion $MaxPlatformVersion
     Write-Verbose "Running $PaketExe $Command..."
     & $PaketExe $Command
 
