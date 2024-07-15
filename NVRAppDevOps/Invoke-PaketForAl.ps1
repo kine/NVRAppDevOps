@@ -51,14 +51,14 @@ function Invoke-PaketForAl {
 
     if (-not $PaketExePath) {
         #paket path not passed, use default chocolatey path
-        $PaketPath = 'C:\ProgramData\chocolatey\lib\Paket\tools\'
+        $PaketExePath = 'C:\ProgramData\chocolatey\lib\Paket\tools\'
     }
 
-    $PaketExe = Join-Path $PaketPath "paket.exe"
+    $PaketExe = Join-Path $PaketExePath "paket.exe"
     if (-not (Test-Path $PaketExe)) {
         #if not found on the path, use default search mechanism
         $PaketExe = 'paket.exe'
-        $PaketPath = ''
+        $PaketExePath = ''
     }
 
     Write-Verbose "Creating/Updating paket.dependencies file..."
