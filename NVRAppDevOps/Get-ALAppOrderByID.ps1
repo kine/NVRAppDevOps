@@ -2,9 +2,9 @@
 .SYNOPSIS
     Sort apps into order in which must be compiled/installed to fullfill their dependencies
 .DESCRIPTION
-    Sort apps into order in which must be compiled/installed to fullfill their dependencies
+    Sort apps into order in which must be compiled/installed to fullfill their dependencies. Key in the hash table is ID of the app.
 .EXAMPLE
-    PS C:\> Get-ALAppOrder -Path .\
+    PS C:\> Get-ALAppOrderByID -Path .\
     Read all app.json from the subfolders and sort the app objects
 .Parameter ContainerName
     Name of the container to use to get info from .App file
@@ -15,20 +15,22 @@
 .Parameter Recurse
     Will search for files recursively
 .Parameter AppCollection
-    Array of app.json files you want to compile. Key is app Name.
+    Array of app.json files you want to compile. Key is the ID of the app
 .OUTPUTS
     Array of App objects having these members:
+        id
         name
         publisher
         version
         AppPath
         dependencies
+            id
             name
             publisher
             version
 
 #>
-function Get-ALAppOrder {
+function Get-ALAppOrderByID {
     [CMDLetBinding(DefaultParameterSetName = "Path")]
     Param(
 
@@ -54,19 +56,20 @@ function Get-ALAppOrder {
         foreach ($F in $Files) {
             $AppJson = Get-Content -Path $F.FullName | ConvertFrom-Json
             $AppJson | Add-Member -MemberType NoteProperty -Name "AppPath" -Value $F.FullName
-            if (-not $result.ContainsKey($AppJson.name)) {
-                Write-Verbose "Adding dependency $($AppJson.Name) $($AppJson.Version) *"
-                $result.Add($AppJson.name, $AppJson)
+            $Key = $AppJson.id
+            if (-not $result.ContainsKey($Key)) {
+                Write-Verbose "Adding dependency $($Key) $($AppJson.Name) $($AppJson.Version) *"
+                $result.Add($Key, $AppJson)
             }
             else {
-                $OldApp = $result[$AppJson.name]
-                Write-Verbose "Adding dependency $($AppJson.Name) $($AppJson.Version) *"
+                $OldApp = $result[$Key]
+                Write-Verbose "Adding dependency $($Key) $($AppJson.Name) $($AppJson.Version) *"
                 $NewVersion = [Version]$AppJson.Version
                 $OldVersion = [Version]$OldApp.Version
                 if (($NewVersion) -gt ($OldVersion)) {
                     Write-Host "Updating dependency $($OldApp.Version) to $($AppJson.Version) *"
-                    $Apps.Remove($AppJson.name)
-                    $Apps.Add($AppJson.name, $AppJson)
+                    $Apps.Remove($Key)
+                    $Apps.Add($Key, $AppJson)
                 }
             }
         }
@@ -86,13 +89,13 @@ function Get-ALAppOrder {
             $unresolvedDependencies = @{}
             Write-Verbose "------ $Level -----"
             foreach ($App in $Apps.GetEnumerator()) {
-                if (-not $AppsCompiled.ContainsKey($App.Value.name)) {
+                if (-not $AppsCompiled.ContainsKey($App.Value.id)) {
                     #test if all dependencies are compiled
                     $DependencyOk = $true
                     foreach ($Dependency in $App.Value.dependencies) {
-                        Write-Verbose "$($App.Value.Name)->$($Dependency.Name) $($Dependency.version)"
-                        if (-not $Apps.Contains($Dependency.name)) {
-                            Write-Verbose "Add dependency $($Dependency.name) $($Dependency.version)"
+                        Write-Verbose "$($App.Value.id)->$($Dependency.id) $($App.Value.name)->$($Dependency.name) $($Dependency.version)"
+                        if (-not $Apps.Contains($Dependency.id)) {
+                            Write-Verbose "Add dependency $($Dependency.id) $($Dependency.name) $($Dependency.version)"
                             $NewApp = New-Object -TypeName PSObject
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'name' -Value $Dependency.name
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'version' -Value $Dependency.version
@@ -100,43 +103,43 @@ function Get-ALAppOrder {
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'id' -Value $Dependency.id
                             $NewApp | Add-Member -MemberType NoteProperty -Name 'AppPath' -Value ""
     
-                            if (-not $AppsCompiled.ContainsKey($Dependency.name)) {
-                                $AppsCompiled.Add($Dependency.name, $NewApp)
-                                $AppsToAdd.Add($Dependency.name, $NewApp)
+                            if (-not $AppsCompiled.ContainsKey($Dependency.id)) {
+                                $AppsCompiled.Add($Dependency.id, $NewApp)
+                                $AppsToAdd.Add($Dependency.id, $NewApp)
                                 $AppsOrdered += $NewApp
                             }
                             else {
-                                $OldApp = $AppsCompiled[$Dependency.name]
+                                $OldApp = $AppsCompiled[$Dependency.id]
                                 if (([Version]$Dependency.version) -gt ([Version]$OldApp.Version)) {
-                                    Write-Verbose "Replacing dependency $($OldApp.Name) $($OldApp.Version) $($Dependency.name) $($Dependency.version) "
-                                    $AppsCompiled.Remove($Dependency.name)
-                                    $AppsCompiled.Add($Dependency.name, $NewApp)
-                                    $AppsToAdd.Remove($Dependency.name)
-                                    $AppsToAdd.Add($Dependency.name, $NewApp)
-                                    $a = $AppsOrdered | where-object { $_.name -eq $OldApp.name }
+                                    Write-Verbose "Replacing dependency $($OldApp.id) $($OldApp.Name) $($OldApp.Version) $($Dependency.id) $($Dependency.name) $($Dependency.version) "
+                                    $AppsCompiled.Remove($Dependency.id)
+                                    $AppsCompiled.Add($Dependency.id, $NewApp)
+                                    $AppsToAdd.Remove($Dependency.id)
+                                    $AppsToAdd.Add($Dependency.id, $NewApp)
+                                    $a = $AppsOrdered | where-object { $_.id -eq $OldApp.id }
                                     $a.version = $Dependency.version
                                 }
                             }
                         } 
-                        if (-not $AppsCompiled.ContainsKey($Dependency.name)) {
+                        if (-not $AppsCompiled.ContainsKey($Dependency.id)) {
                             $DependencyOk = $false
-                            if (-not $unresolvedDependencies.ContainsKey($Dependency.Name)) {
-                                Write-Verbose "Unresolved $($App.Value.Name)->$($Dependency.Name) $($Dependency.version)"
-                                $unresolvedDependencies.Add($Dependency.name, $Dependency)
+                            if (-not $unresolvedDependencies.ContainsKey($Dependency.id)) {
+                                Write-Verbose "Unresolved $($App.Value.id)->$($Dependency.id) $($App.Value.Name)->$($Dependency.Name) $($Dependency.version)"
+                                $unresolvedDependencies.Add($Dependency.id, $Dependency)
                             }
                         }
                     }
                     if ($DependencyOk) {
                         $AppsOrdered += $App.Value
-                        if (-not $AppsCompiled.ContainsKey($App.Value.name)) {
-                            $AppsCompiled.Add($App.Value.name, $App.Value)
+                        if (-not $AppsCompiled.ContainsKey($App.Value.id)) {
+                            $AppsCompiled.Add($App.Value.id, $App.Value)
                         }
                     }
                 }
             }
             foreach ($App in $AppsToAdd.GetEnumerator()) {
-                if (-not $Apps.ContainsKey($App.Value.name)) {
-                    $Apps.Add($App.Value.name, $App.Value)
+                if (-not $Apps.ContainsKey($App.Value.id)) {
+                    $Apps.Add($App.Value.id, $App.Value)
                 }
             }
             $AppsToAdd = @{}
@@ -204,13 +207,13 @@ function Get-ALAppOrder {
         foreach ($AppFile in $AppFiles) {
             $App = Get-AppJsonFromApp -AppFile $AppFile.FullName -ContainerName $ContainerName -ArtifactUrl $ArtifactUrl
             if ($App.publisher -ne 'Microsoft') {
-                if (-not $Apps.ContainsKey($App.name)) {
-                    Write-Verbose "Adding dependency $($App.Name) $($App.Version)"
-                    $Apps.Add($App.name, $App)
+                if (-not $Apps.ContainsKey($App.id)) {
+                    Write-Verbose "Adding dependency $($App.id) $($App.Name) $($App.Version)"
+                    $Apps.Add($App.id, $App)
                 }
                 else {
-                    $OldApp = $Apps[$App.Name]
-                    Write-Host "Adding dependency $($App.Name) $($App.Version) *"
+                    $OldApp = $Apps[$App.id]
+                    Write-Host "Adding dependency $($App.id) $($App.Name) $($App.Version) *"
                     if ($App.version.GetType().Name -eq 'PSCustomObject') {
                         $NewVersion = [version]::new($App.version.Major, $App.version.Minor, $App.version.Build, $App.version.Revision)
                     }
@@ -225,8 +228,8 @@ function Get-ALAppOrder {
                     }
                     if (($NewVersion) -gt ($OldVersion)) {
                         Write-Host "Updating dependency $($OldApp.Version) to $($App.Version) *"
-                        $Apps.Remove($App.name)
-                        $Apps.Add($App.name, $App)
+                        $Apps.Remove($App.id)
+                        $Apps.Add($App.id, $App)
                     }
                 }
             }
