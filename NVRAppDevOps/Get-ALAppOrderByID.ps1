@@ -156,15 +156,20 @@ function Get-ALAppOrderByID {
             $ArtifactUrl
         )
         $AppDeps = @()
-        if ($ArtifactUrl) {
-            if (-not $global:BCModuleImported) {
-                import-module (Get-BCModulePathFromArtifact -artifactPath ((Download-Artifacts -artifactUrl $artifactUrl -includePlatform)[1]))
-                $global:BCModuleImported = $true
-            }
-            $AppInfo = Get-NavAppInfo -Path $AppFile
+        if (Get-Command -Module bccontainerhelper -Name Get-AppJsonFromAppFile) {
+            $AppInfo = Get-AppJsonFromAppFile -appFile $AppFile
         }
         else {
-            $AppInfo = Get-NavContainerAppInfoFile -AppPath $AppFile -ContainerName $ContainerName
+            if ($ArtifactUrl) {
+                if (-not $global:BCModuleImported) {
+                    import-module (Get-BCModulePathFromArtifact -artifactPath ((Download-Artifacts -artifactUrl $artifactUrl -includePlatform)[1]))
+                    $global:BCModuleImported = $true
+                }
+                $AppInfo = Get-NavAppInfo -Path $AppFile
+            }
+            else {
+                $AppInfo = Get-NavContainerAppInfoFile -AppPath $AppFile -ContainerName $ContainerName
+            }
         }
         $AppJson = New-Object -TypeName PSObject
         $AppJson | Add-Member -MemberType NoteProperty -Name "name" -Value $AppInfo.Name
