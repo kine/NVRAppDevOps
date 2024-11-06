@@ -111,7 +111,9 @@ function Format-AppNameForNuget {
     if ($appname) {
         if ($appname -eq 'Platform') {
             $id = ''
-            $tag = ''
+            if ($tag -ne 'Symbols') {
+                $tag = ''
+            }
         }
         if ($appname -eq 'Application') {
             $id = ''
