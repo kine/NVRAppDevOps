@@ -59,7 +59,8 @@ function Invoke-PaketForAl {
         [ValidateSet('Max', 'Min')]
         [string]$Policy = 'Min',        
         [version]$MaxApplicationVersion,
-        [version]$MaxPlatformVersion
+        [version]$MaxPlatformVersion,
+        [switch]$Symbols
 
 
     )
@@ -77,7 +78,7 @@ function Invoke-PaketForAl {
     }
 
     Write-Verbose "Creating/Updating paket.dependencies file..."
-    ConvertTo-PaketDependencies -ProjectPath $ProjectPath -NuGetSources $Sources -Policy $Policy -MaxApplicationVersion $MaxApplicationVersion -MaxPlatformVersion $MaxPlatformVersion
+    ConvertTo-PaketDependencies -ProjectPath $ProjectPath -NuGetSources $Sources -Policy $Policy -MaxApplicationVersion $MaxApplicationVersion -MaxPlatformVersion $MaxPlatformVersion -Symbols:$Symbols
     Write-Verbose "Running $PaketExe $Command..."
     & $PaketExe $Command
 
