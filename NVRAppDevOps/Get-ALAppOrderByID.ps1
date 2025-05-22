@@ -186,7 +186,12 @@ function Get-ALAppOrderByID {
             else {
                 $AppDepJson | Add-Member -MemberType NoteProperty -Name "id" -Value $AppDep.Id
             }
-            $AppDepJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppDep.MinVersion
+            if ($AppDep.MinVersion) {
+                $AppDepJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppDep.MinVersion
+            }
+            else {
+                $AppDepJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppDep.Version
+            }
             $AppDeps += $AppDepJson
         }
         $AppJson | Add-Member -MemberType NoteProperty -Name "dependencies" -Value $AppDeps
