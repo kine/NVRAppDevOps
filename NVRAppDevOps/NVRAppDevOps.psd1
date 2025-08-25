@@ -99,7 +99,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta01'
+            Prerelease   = 'beta02'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -115,6 +115,9 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.8.6
+- add Microsoft_Shopify Connector.app to artifact folder when compiling apps
+            
 2.8.4
 - conditional mapping of the repository folder into the container
 - accept_insiderEula parameter for New-BCContainer in Init-ALEnvironment
