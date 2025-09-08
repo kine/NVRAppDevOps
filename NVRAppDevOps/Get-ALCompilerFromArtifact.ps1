@@ -44,7 +44,14 @@ function Get-ALCompilerFromArtifact {
     }
     $Path = (Download-Artifacts -artifactUrl $ArtifactUrl -includePlatform)[1]
     Write-Host "Locating the vsix path in $Path"
-    $VSIXPath = Get-ChildItem -Path (Join-Path $Path 'ModernDev\Program Files\Microsoft Dynamics NAV\') -Recurse -Filter ALLanguage.vsix
+    if (Test-Path (Join-Path $Path 'ModernDev\Program Files\Microsoft Dynamics NAV\')) {
+        $SubPath = 'ModernDev\Program Files\Microsoft Dynamics NAV\'
+    }
+    else {
+        $SubPath = 'pfiles\microsoft dynamics nav\'
+    }
+    $VSIXPath = Get-ChildItem -Path "$(Join-Path $Path $SubPath)" -Recurse -Filter ALLanguage.vsix
+    #C:\bcartifacts.cache\sandbox\27.0.38460.39168\platform\ModernDev\pfiles\microsoft dynamics nav\270\al development environment
     Write-Host "Extracting ALLanguage.vsix into $TargetPath"
     Expand-7zipArchive -Path $VSIXPath.FullName -DestinationPath $TargetPath
     $ALCPossiblePaths = (Get-ChildItem -Path $TargetPath -Filter alc.exe -Recurse | Where-Object { $_.FullName -notlike '*win32*' }).FullName
