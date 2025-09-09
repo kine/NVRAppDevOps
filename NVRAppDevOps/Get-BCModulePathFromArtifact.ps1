@@ -17,16 +17,33 @@ function Get-BCModulePathFromArtifact {
         $artifactPath,
         $databaseServer
     )
-    $ManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\Microsoft.Dynamics.Nav.Management.psm1")
-    $AppManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\Microsoft.Dynamics.Nav.Apps.Management.psd1")
-    if (-not $ManagementModule) {
-        $ManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Management.psm1")
-    }
-    if (-not $ManagementModule) {
-        $ManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Management.dll")
-    }
-    if (-not $AppManagementModule) {
-        $AppManagementModule = Get-Item -Path (Join-Path $artifactPath "ServiceTier\program files\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Apps.Management.psd1")
+    # Try with "program files" first, then fallback to "PFiles64" if not found
+    $serviceTierPaths = @("ServiceTier\program files", "ServiceTier\PFiles64")
+    
+    $ManagementModule = $null
+    $AppManagementModule = $null
+    
+    foreach ($serviceTierPath in $serviceTierPaths) {
+        if (-not $ManagementModule) {
+            $ManagementModule = Get-Item -Path (Join-Path $artifactPath "$serviceTierPath\Microsoft Dynamics NAV\*\Service\Microsoft.Dynamics.Nav.Management.psm1") -ErrorAction SilentlyContinue
+        }
+        if (-not $AppManagementModule) {
+            $AppManagementModule = Get-Item -Path (Join-Path $artifactPath "$serviceTierPath\Microsoft Dynamics NAV\*\Service\Microsoft.Dynamics.Nav.Apps.Management.psd1") -ErrorAction SilentlyContinue
+        }
+        if (-not $ManagementModule) {
+            $ManagementModule = Get-Item -Path (Join-Path $artifactPath "$serviceTierPath\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Management.psm1") -ErrorAction SilentlyContinue
+        }
+        if (-not $ManagementModule) {
+            $ManagementModule = Get-Item -Path (Join-Path $artifactPath "$serviceTierPath\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Management.dll") -ErrorAction SilentlyContinue
+        }
+        if (-not $AppManagementModule) {
+            $AppManagementModule = Get-Item -Path (Join-Path $artifactPath "$serviceTierPath\Microsoft Dynamics NAV\*\Service\*\Microsoft.Dynamics.Nav.Apps.Management.psd1") -ErrorAction SilentlyContinue
+        }
+        
+        # If we found the management module, we can break early
+        if ($ManagementModule) {
+            break
+        }
     }
     if (!($ManagementModule)) {
         throw "Unable to locate management module in artifacts $artifactPath"

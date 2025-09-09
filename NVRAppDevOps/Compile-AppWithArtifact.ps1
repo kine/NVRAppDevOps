@@ -45,7 +45,16 @@ function Compile-AppWithArtifact {
     else {
         $AppPath = $ArtifactPaths[0]
     }
-    (Join-Path $ArtifactPaths[1] "\ModernDev\program files\Microsoft Dynamics NAV\*\AL Development Environment\System.app"),
+    
+    # Check for ModernDev path - use "program files" if it exists, otherwise use "pfiles"
+    $ModernDevPath = if (Test-Path (Join-Path $ArtifactPaths[1] "\ModernDev\program files\Microsoft Dynamics NAV\")) {
+        "\ModernDev\program files\Microsoft Dynamics NAV\*\AL Development Environment\System.app"
+    }
+    else {
+        "\ModernDev\pfiles\Microsoft Dynamics NAV\*\AL Development Environment\System.app"
+    }
+    
+    (Join-Path $ArtifactPaths[1] $ModernDevPath),
     (Join-Path $AppPath "\Applications.*\Microsoft_Application_*.app"),
     (Join-Path $AppPath "\Applications\Application\Source\Microsoft_Application.app"),
     (Join-Path $AppPath "\Applications.*\Microsoft_Base Application_*.app"),
