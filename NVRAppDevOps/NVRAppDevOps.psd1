@@ -99,7 +99,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta04'
+            Prerelease   = 'beta05'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -116,6 +116,7 @@
             # ReleaseNotes of this module
             ReleaseNotes = @'
 2.8.6
+- Enhance module path resolution by checking both "program files" and "PFiles64" or "pfiles" for different files in artifacts
 - Fix path handling for locating ALLanguage.vsix in Get-ALCompilerFromArtifact function
 - Refactor path handling for ALLanguage.vsix extraction
 - Add Microsoft Shopify Connector app path to artifact import
