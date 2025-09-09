@@ -43,14 +43,15 @@ function Get-ALCompilerFromArtifact {
         Remove-Item $TargetPath -Recurse -Force
     }
     $Path = (Download-Artifacts -artifactUrl $ArtifactUrl -includePlatform)[1]
-    Write-Host "Locating the vsix path in $Path"
     if (Test-Path (Join-Path $Path 'ModernDev\Program Files\Microsoft Dynamics NAV\')) {
         $SubPath = 'ModernDev\Program Files\Microsoft Dynamics NAV\'
     }
     else {
-        $SubPath = 'pfiles\microsoft dynamics nav\'
+        $SubPath = 'ModernDev\pfiles\microsoft dynamics nav\'
     }
-    $VSIXPath = Get-ChildItem -Path "$(Join-Path $Path $SubPath)" -Recurse -Filter ALLanguage.vsix
+    $Path = Join-Path $Path $SubPath
+    Write-Host "Locating the vsix path in $Path"
+    $VSIXPath = Get-ChildItem -Path $Path -Recurse -Filter ALLanguage.vsix
     #C:\bcartifacts.cache\sandbox\27.0.38460.39168\platform\ModernDev\pfiles\microsoft dynamics nav\270\al development environment
     Write-Host "Extracting ALLanguage.vsix into $TargetPath"
     Expand-7zipArchive -Path $VSIXPath.FullName -DestinationPath $TargetPath
