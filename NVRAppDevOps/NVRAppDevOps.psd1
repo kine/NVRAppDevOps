@@ -99,7 +99,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta05'
+            Prerelease   = 'beta06'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -116,6 +116,7 @@
             # ReleaseNotes of this module
             ReleaseNotes = @'
 2.8.6
+- Try to preserve file encoding when reading and writing settings.json file in Invoke-PaketForAl
 - Enhance module path resolution by checking both "program files" and "PFiles64" or "pfiles" for different files in artifacts
 - Fix path handling for locating ALLanguage.vsix in Get-ALCompilerFromArtifact function
 - Refactor path handling for ALLanguage.vsix extraction
