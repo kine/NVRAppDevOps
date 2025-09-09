@@ -61,9 +61,96 @@ function Invoke-PaketForAl {
         [version]$MaxApplicationVersion,
         [version]$MaxPlatformVersion,
         [switch]$Symbols
-
-
     )
+
+    # Helper function to detect file encoding
+    function Get-FileEncoding {
+        param(
+            [Parameter(Mandatory = $true)]
+            [string]$FilePath
+        )
+        
+        if (-not (Test-Path $FilePath)) {
+            throw "File not found: $FilePath"
+        }
+        
+        $FileBytes = [System.IO.File]::ReadAllBytes($FilePath)
+        
+        # Check for BOM to determine encoding
+        if ($FileBytes.Length -ge 3 -and $FileBytes[0] -eq 0xEF -and $FileBytes[1] -eq 0xBB -and $FileBytes[2] -eq 0xBF) {
+            return [System.Text.Encoding]::UTF8
+        }
+        elseif ($FileBytes.Length -ge 2 -and $FileBytes[0] -eq 0xFF -and $FileBytes[1] -eq 0xFE) {
+            return [System.Text.Encoding]::Unicode
+        }
+        elseif ($FileBytes.Length -ge 2 -and $FileBytes[0] -eq 0xFE -and $FileBytes[1] -eq 0xFF) {
+            return [System.Text.Encoding]::BigEndianUnicode
+        }
+        elseif ($FileBytes.Length -ge 4 -and $FileBytes[0] -eq 0xFF -and $FileBytes[1] -eq 0xFE -and $FileBytes[2] -eq 0x00 -and $FileBytes[3] -eq 0x00) {
+            return [System.Text.Encoding]::UTF32
+        }
+        else {
+            # Try to detect if it's UTF-8 without BOM
+            try {
+                $Content = [System.Text.Encoding]::UTF8.GetString($FileBytes)
+                $ReEncodedBytes = [System.Text.Encoding]::UTF8.GetBytes($Content)
+                if (Compare-Object -ReferenceObject $FileBytes -DifferenceObject $ReEncodedBytes -SyncWindow 0) {
+                    return [System.Text.Encoding]::Default
+                }
+                else {
+                    return [System.Text.UTF8Encoding]::new($false) # UTF-8 without BOM
+                }
+            }
+            catch {
+                return [System.Text.Encoding]::Default
+            }
+        }
+    }
+
+    # Helper function to update AL package cache path setting
+    function Update-ALPackageCachePathSetting {
+        param(
+            [Parameter(Mandatory = $true)]
+            [PSCustomObject]$Settings
+        )
+        
+        if ([bool]($Settings.PSobject.Properties.name -match "al.packageCachePath")) {
+            if (-not ($Settings."al.packageCachePath" | Where-Object { $_ -eq "packages" })) {
+                if ($Settings."al.packageCachePath".Count -gt 0) {
+                    $Settings."al.packageCachePath" += "packages"
+                }
+                else {
+                    $Settings."al.packageCachePath" = @($Settings["al.packageCachePath"], "packages")
+                }
+            }
+        }
+        else {
+            $Settings | Add-Member -MemberType NoteProperty -Name "al.packageCachePath" -Value @("packages")
+        }
+        
+        return $Settings
+    }
+
+    # Helper function to write JSON with encoding preservation
+    function Write-JsonWithEncoding {
+        param(
+            [Parameter(Mandatory = $true)]
+            [string]$FilePath,
+            
+            [Parameter(Mandatory = $true)]
+            [string]$JsonContent,
+            
+            [System.Text.Encoding]$Encoding = $null
+        )
+        
+        if ($Encoding) {
+            [System.IO.File]::WriteAllText($FilePath, $JsonContent, $Encoding)
+        }
+        else {
+            # For new files, use UTF-8 without BOM
+            [System.IO.File]::WriteAllText($FilePath, $JsonContent, [System.Text.UTF8Encoding]::new($false))
+        }
+    }
 
     if (-not $PaketExePath) {
         #paket path not passed, use default chocolatey path
@@ -84,27 +171,23 @@ function Invoke-PaketForAl {
 
     if ($UsePackagesAsCache) {
         $SettingsPath = Join-Path $ProjectPath ".vscode/settings.json"
+        $OriginalEncoding = $null
+        
         if (-not (Test-Path $SettingsPath)) {
+            # Create new settings for new file
             $Settings = @{
                 "al.packageCachePath" = @("packages")
             }
         }
         else {
-            $Settings = Get-Content $SettingsPath | ConvertFrom-Json
-            if ( [bool]($Settings.PSobject.Properties.name -match "al.packageCachePath")) {
-                if (-not ($Settings."al.packageCachePath" | where-object { $_ -eq "packages" })) {
-                    if ($Settings."al.packageCachePath".Count -gt 0) {
-                        $Settings."al.packageCachePath" += "packages"
-                    }
-                    else {
-                        $Settings."al.packageCachePath" = @($Settings["al.packageCachePath"], "packages")
-                    }
-                }
-            }
-            else {
-                $Settings | Add-Member -MemberType NoteProperty -Name "al.packageCachePath" -Value @("packages")
-            }
+            # Load existing settings and detect encoding
+            $OriginalEncoding = Get-FileEncoding -FilePath $SettingsPath
+            $Settings = Get-Content $SettingsPath -Encoding $OriginalEncoding | ConvertFrom-Json
+            $Settings = Update-ALPackageCachePathSetting -Settings $Settings
         }
-        $Settings | ConvertTo-Json | Out-File $SettingsPath
+        
+        # Write the updated settings back to file with preserved encoding
+        $JsonContent = $Settings | ConvertTo-Json
+        Write-JsonWithEncoding -FilePath $SettingsPath -JsonContent $JsonContent -Encoding $OriginalEncoding
     }
 }
