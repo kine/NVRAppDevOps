@@ -116,8 +116,14 @@
             # ReleaseNotes of this module
             ReleaseNotes = @'
 2.8.6
-- add Microsoft_Shopify Connector.app to artifact folder when compiling apps
-            
+- Fix path handling for locating ALLanguage.vsix in Get-ALCompilerFromArtifact function
+- Refactor path handling for ALLanguage.vsix extraction
+- Add Microsoft Shopify Connector app path to artifact import
+
+2.8.5
+- Add retry for running tests in Run-ALTestInContainer
+- Fix bug in missing version for dependencies in Get-ALAppOrderByID and Get-ALAppOrder
+
 2.8.4
 - conditional mapping of the repository folder into the container
 - accept_insiderEula parameter for New-BCContainer in Init-ALEnvironment
