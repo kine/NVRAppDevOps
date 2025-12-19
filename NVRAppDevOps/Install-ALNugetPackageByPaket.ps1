@@ -60,6 +60,11 @@ function Install-ALNugetPackageByPaket {
                 Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
                 $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
             }
+            Write-Host "`$env:ADDITIONAL_PAKET_LINES: $($env:ADDITIONAL_PAKET_LINES)"
+            if ($env:ADDITIONAL_PAKET_LINES) {
+                Write-Host "Adding $($env:ADDITIONAL_PAKET_LINES)"
+                $paketdependencies += $env:ADDITIONAL_PAKET_LINES
+            }
         }
         else {
             #We want to take the highest version of the base app but same or lower than the limiting version
