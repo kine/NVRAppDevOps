@@ -49,11 +49,6 @@
 
     # Modules that must be imported into the global environment prior to importing this module
     RequiredModules   = @(
-        @{
-            ModuleName    = 'BcContainerHelper'
-            ModuleVersion = '6.0.0'
-            Guid          = '8e034fbc-8c30-446d-bbc3-5b3be5392491'
-        }
     )
 
     # Assemblies that must be loaded prior to importing this module
@@ -99,7 +94,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta01'
+            Prerelease   = 'beta02'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -115,6 +110,9 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.8.7
+- Removed RequiredModule for bccontianerhelper! Can have impact to the scripts. You need to import bccontainerhelper module by yourself if needed.
+
 2.8.6
 - Try to preserve file encoding when reading and writing settings.json file in Invoke-PaketForAl
 - Enhance module path resolution by checking both "program files" and "PFiles64" or "pfiles" for different files in artifacts
