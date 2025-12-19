@@ -93,13 +93,13 @@
     # FileList = @()
 
     # Version number of this module.
-    ModuleVersion     = '2.8.6'
+    ModuleVersion     = '2.8.7'
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = ''
+            Prerelease   = 'beta01'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
