@@ -36,6 +36,10 @@
 
 .Parameter RulesetFile
     File with rulesets to use during compilation
+
+.Parameter UseALCNuget
+    Use AL compiler from NuGet package instead of from artifact. 
+    The runtime version is read from the 'runtime' property in each app's app.json file.
     
 #>
 function Compile-ALProjectTree {
@@ -86,14 +90,16 @@ function Compile-ALProjectTree {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         [switch]$UnifiedNaming,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [String]$DependencyTag
+        [String]$DependencyTag,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [switch]$UseALCNuget
 
 
     )
     if (-not $PackagesPath) {
         $PackagesPath = Get-Location
     }
-    if ($ArtifactUrl) {
+    if ($ArtifactUrl -and (-not $UseALCNuget)) {
         $alcPath = Get-ALCompilerFromArtifact -artifactUrl $artifactUrl -TargetPath (Join-Path $env:TEMP 'alc')
     }
     if ($UsePaket) {
@@ -120,9 +126,18 @@ function Compile-ALProjectTree {
             else {
 
             }
-            if ($ArtifactUrl) {
+            if ($ArtifactUrl -or $UseALCNuget) {
                 if (-not $alcPath) {
-                    $alcPath = Get-ALCompilerFromArtifact -artifactUrl $artifactUrl -TargetPath (Join-Path $env:TEMP 'alc')
+                    if ($UseALCNuget) {
+                        $appJson = Get-Content -Path $App.AppPath | ConvertFrom-Json
+                        if (-not $appJson.runtime) {
+                            throw "app.json does not contain 'runtime' property. Cannot determine compiler version."
+                        }
+                        $alcPath = Get-ALCompilerFromNuget -RuntimeVersion $appJson.runtime -TargetPath (Join-Path $env:TEMP 'alc')
+                    }
+                    else {
+                        $alcPath = Get-ALCompilerFromArtifact -artifactUrl $artifactUrl -TargetPath (Join-Path $env:TEMP 'alc')
+                    }
                 }
                 Compile-AppWithArtifact `
                     -artifactUrl $artifactUrl `
