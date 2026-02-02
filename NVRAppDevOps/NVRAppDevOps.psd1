@@ -67,16 +67,88 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport = '*'
+    FunctionsToExport = @(
+        'Add-ArtifactView',
+        'Compile-ALProject',
+        'Compile-ALProjectTree',
+        'Compile-AppWithArtifact',
+        'Convert-ALTestResultToTrxResult',
+        'ConvertTo-PaketDependencies',
+        'Download-ALApp',
+        'Download-ALAppFromNuget',
+        'Download-ALC',
+        'Download-ALPackages',
+        'Download-ALSystemPackages',
+        'Find-NuGetPackageNameFromFeed',
+        'Format-AppNameForNuget',
+        'Get-ALAppOrder',
+        'Get-ALAppOrderByID',
+        'Get-ALAppPublicationStatus',
+        'Get-ALCompilerFromArtifact',
+        'Get-ALCompilerFromNuget',
+        'Get-ALConfiguration',
+        'Get-ALDesktopClientPath',
+        'Get-BatchWI',
+        'Get-BCAPIData',
+        'Get-BCModulePathFromArtifact',
+        'Get-BCModulePathFromArtifact7',
+        'Get-ContainerImageCurrentness',
+        'Get-CurrentModuleVersion',
+        'Get-NAVContainerAppInfoFile',
+        'Get-OAuth2',
+        'Get-WI',
+        'Get-WIFieldDefault',
+        'Get-WIQResult',
+        'Import-BCModulesFromArtifacts',
+        'Init-ALEnvironment',
+        'Install-ALApp',
+        'Install-ALAppTree',
+        'Install-ALNugetPackage',
+        'Install-ALNugetPackageByPaket',
+        'Install-SigningTool',
+        'Invoke-ALTestInsideContainer',
+        'Invoke-PaketForAl',
+        'New-ALNugetPackage',
+        'New-ALNuSpec',
+        'New-ALNuSpecForAppFile',
+        'Parse-ALCOutputToTFS',
+        'Patch-BCAPIData',
+        'Post-BCAPIData',
+        'Publish-ALApp',
+        'Publish-ALAppTree',
+        'Push-ALNugetPackage',
+        'Read-ALConfiguration',
+        'Read-ALJsonConfiguration',
+        'Read-ALTestResult',
+        'Remove-ALEnvironment',
+        'Run-ALDesktopClient',
+        'Run-ALDevelClient',
+        'Run-ALTest',
+        'Run-ALTestInContainer',
+        'Set-ALAppBuildNo',
+        'Set-ALDockerHostFolder',
+        'Sign-ALApp',
+        'Sign-ALAppsAzure',
+        'Start-ALEnvironment',
+        'Stop-ALEnvironment',
+        'Sync-ALApp',
+        'Test-ALApp',
+        'Uninstall-ALAppTree',
+        'Unpublish-ALApp',
+        'Unpublish-ALAppTree',
+        'Upgrade-ALAppData',
+        'Upload-FileToShp',
+        'Upload-PerTenantApp'
+    )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-    CmdletsToExport   = '*'
+    CmdletsToExport   = @()
 
     # Variables to export from this module
     # VariablesToExport = @()
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    AliasesToExport   = '*'
+    AliasesToExport   = @()
 
     # DSC resources to export from this module
     # DscResourcesToExport = @()
@@ -94,7 +166,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta03'
+            Prerelease   = 'beta04'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
