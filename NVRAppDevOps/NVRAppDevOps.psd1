@@ -110,6 +110,10 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.8.8
+- Add Get-ALCompilerFromNuget function to download AL compiler from NuGet package Microsoft.Dynamics.BusinessCentral.Development.Tools
+- Add UseALCNuget switch to Compile-ALProjectTree to use compiler from NuGet instead of artifact (reads runtime version from app.json)
+
 2.8.7
 - Removed RequiredModule for bccontianerhelper! Can have impact to the scripts. You need to import bccontainerhelper module by yourself if needed.
 
