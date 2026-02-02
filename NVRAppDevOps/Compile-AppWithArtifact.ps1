@@ -168,24 +168,52 @@ function Compile-AppWithArtifact {
         # Import types needed to invoke the compiler
         #Add-Type -Path (Join-Path $alcPath System.Collections.Immutable.dll)
         #Add-Type -Path (Join-Path $alcPath Microsoft.Dynamics.Nav.CodeAnalysis.dll)
-        if (Test-Path (Join-Path $binPath 'Analyzers\Microsoft.Dynamics.Nav.CodeCop.dll')) {
-            $AnalyzersbinPath = Join-Path $binPath 'Analyzers' #pre BCv24
+        # Find analyzer path dynamically - search for CodeCop.dll in multiple potential locations
+        # This handles different compiler versions (pre-BCv24, BCv24+) and NuGet installations
+        $AnalyzersbinPath = $null
+        $analyzerSearchPaths = @(
+            (Join-Path $binPath 'Analyzers'),                    # pre BCv24
+            (Join-Path $binPath '..\Analyzers'),                 # BCv24 and later
+            (Join-Path $binPath '..\..\Analyzers'),              # NuGet structure variant
+            (Join-Path $binPath 'analyzers\dotnet\any')          # NuGet package structure
+        )
+        
+        foreach ($searchPath in $analyzerSearchPaths) {
+            if (Test-Path (Join-Path $searchPath 'Microsoft.Dynamics.Nav.CodeCop.dll')) {
+                $AnalyzersbinPath = (Resolve-Path $searchPath).Path
+                Write-Host "Found analyzers at: $AnalyzersbinPath"
+                break
+            }
         }
-        else {
-            $AnalyzersbinPath = Join-Path $binPath '..\Analyzers' #BCv24 and later
+        
+        # If not found in expected paths, search recursively from binPath parent
+        if (-not $AnalyzersbinPath) {
+            $parentPath = Split-Path $binPath -Parent
+            $foundAnalyzer = Get-ChildItem -Path $parentPath -Filter 'Microsoft.Dynamics.Nav.CodeCop.dll' -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($foundAnalyzer) {
+                $AnalyzersbinPath = $foundAnalyzer.DirectoryName
+                Write-Host "Found analyzers by search at: $AnalyzersbinPath"
+            }
         }
 
         $alcParameters = @("/project:""$($appProjectFolder.TrimEnd('/\'))""", "/packagecachepath:""$($appSymbolsFolder.TrimEnd('/\'))""", "/out:""$appOutputFile""")
-        if ($EnableCodeCop) {
+        
+        # Check if any analyzers are requested but folder not found
+        $analyzersRequested = $EnableCodeCop -or $EnableAppSourceCop -or $EnablePerTenantExtensionCop -or $EnableUICop
+        if ($analyzersRequested -and (-not $AnalyzersbinPath)) {
+            Write-Warning "Analyzers folder not found - CodeCop, AppSourceCop, PerTenantExtensionCop, and UICop will not be enabled"
+        }
+        
+        if ($EnableCodeCop -and $AnalyzersbinPath) {
             $alcParameters += @("/analyzer:$(Join-Path $AnalyzersbinPath 'Microsoft.Dynamics.Nav.CodeCop.dll')")
         }
-        if ($EnableAppSourceCop) {
+        if ($EnableAppSourceCop -and $AnalyzersbinPath) {
             $alcParameters += @("/analyzer:$(Join-Path $AnalyzersbinPath 'Microsoft.Dynamics.Nav.AppSourceCop.dll')")
         }
-        if ($EnablePerTenantExtensionCop) {
+        if ($EnablePerTenantExtensionCop -and $AnalyzersbinPath) {
             $alcParameters += @("/analyzer:$(Join-Path $AnalyzersbinPath 'Microsoft.Dynamics.Nav.PerTenantExtensionCop.dll')")
         }
-        if ($EnableUICop) {
+        if ($EnableUICop -and $AnalyzersbinPath) {
             $alcParameters += @("/analyzer:$(Join-Path $AnalyzersbinPath 'Microsoft.Dynamics.Nav.UICop.dll')")
         }
         
