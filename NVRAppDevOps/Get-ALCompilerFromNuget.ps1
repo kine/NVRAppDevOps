@@ -85,6 +85,12 @@ function Get-ALCompilerFromNuget {
         }
     }
 
+    # Minimum supported major version is 15
+    if ($majorVersion -lt 15) {
+        Write-Host "Major version $majorVersion is less than 15, using version 15 instead"
+        $majorVersion = 15
+    }
+
     Write-Host "Looking for $packageName with major version $majorVersion on nuget.org"
 
     if (Test-Path $TargetPath) {
