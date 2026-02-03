@@ -158,7 +158,23 @@ function Get-ALCompilerFromNuget {
     } | Sort-Object -Property Version -Descending
 
     if (-not $matchingVersions -or $matchingVersions.Count -eq 0) {
-        throw "No versions of $packageName found with major version $majorVersion"
+        Write-Host "No versions of $packageName found with major version $majorVersion, falling back to latest version"
+        # Get the latest version available
+        $matchingVersions = $versionsResponse.versions | ForEach-Object {
+            try {
+                [PSCustomObject]@{
+                    VersionString = $_
+                    Version       = [System.Version]::Parse($_)
+                }
+            }
+            catch {
+                $null
+            }
+        } | Where-Object { $_ -ne $null } | Sort-Object -Property Version -Descending
+        
+        if (-not $matchingVersions -or $matchingVersions.Count -eq 0) {
+            throw "No versions of $packageName found on nuget.org"
+        }
     }
 
     $latestVersion = $matchingVersions[0].VersionString
