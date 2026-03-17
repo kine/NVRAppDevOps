@@ -102,6 +102,13 @@ function Compile-AppWithArtifact {
                 $AppJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppInfo.Publisher
                 $AppJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppInfo.Version
                 $AppJson | Add-Member -MemberType NoteProperty -Name "file" -Value $File.FullName
+                $deps = @()
+                if ($AppInfo.PSObject.Properties['Dependencies'] -and $AppInfo.Dependencies) {
+                    foreach ($d in $AppInfo.Dependencies) {
+                        $deps += @{ "name" = "$($d.Name)"; "publisher" = "$($d.Publisher)" }
+                    }
+                }
+                $AppJson | Add-Member -MemberType NoteProperty -Name "dependencies" -Value $deps
                 $MSApps += $AppJson
             }
             return $MSApps
@@ -120,6 +127,13 @@ function Compile-AppWithArtifact {
             $AppJson | Add-Member -MemberType NoteProperty -Name "publisher" -Value $AppInfo.Publisher
             $AppJson | Add-Member -MemberType NoteProperty -Name "version" -Value $AppInfo.Version
             $AppJson | Add-Member -MemberType NoteProperty -Name "file" -Value $File.FullName
+            $deps = @()
+            if ($AppInfo.PSObject.Properties['Dependencies'] -and $AppInfo.Dependencies) {
+                foreach ($d in $AppInfo.Dependencies) {
+                    $deps += @{ "name" = "$($d.Name)"; "publisher" = "$($d.Publisher)" }
+                }
+            }
+            $AppJson | Add-Member -MemberType NoteProperty -Name "dependencies" -Value $deps
             $MSApps += $AppJson
         }
     }
@@ -157,6 +171,32 @@ function Compile-AppWithArtifact {
             }
         }
     }
+
+    Write-Host "Resolving transitive Microsoft dependencies"
+    $resolvedNames = @($dependencies | Where-Object { $_.publisher -like 'Microsoft' } | ForEach-Object { $_.name })
+    $newDepsFound = $true
+    while ($newDepsFound) {
+        $newDepsFound = $false
+        foreach ($depName in @($resolvedNames)) {
+            $MSApp = $MSApps | Where-Object { ($_.name -eq $depName) -and ($_.publisher -eq 'Microsoft') } | Select-Object -First 1
+            if ($MSApp -and $MSApp.dependencies) {
+                foreach ($transDep in ($MSApp.dependencies | Where-Object { $_.publisher -eq 'Microsoft' })) {
+                    if ($transDep.name -notin $resolvedNames) {
+                        $resolvedNames += $transDep.name
+                        $transDepFile = $MSApps | Where-Object { ($_.name -eq $transDep.name) -and ($_.publisher -eq $transDep.publisher) } | Select-Object -First 1
+                        if ($transDepFile) {
+                            if (-not (Test-Path (Join-Path $appSymbolsFolder (Split-Path $transDepFile.file -Leaf)))) {
+                                Write-Host "Copying transitive dependency: $([System.IO.Path]::GetFileName($transDepFile.file)) "
+                                Copy-Item -Path $transDepFile.file -Destination $appSymbolsFolder -Force
+                                $newDepsFound = $true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     $result = Invoke-Command -ScriptBlock {
         Param($binPath, $appProjectFolder, $appSymbolsFolder, $appOutputFile, $EnableCodeCop, $EnableAppSourceCop, $EnablePerTenantExtensionCop, $EnableUICop, $rulesetFile, $assemblyProbingPaths, $nowarn, $generateReportLayoutParam, $features, $preProcessorSymbols )
 
