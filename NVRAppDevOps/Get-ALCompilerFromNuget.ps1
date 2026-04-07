@@ -16,12 +16,21 @@
     Will download the newest version of Microsoft.Dynamics.BusinessCentral.Development.Tools with major version 26
     and extract it to c:\compiler
 
+.EXAMPLE
+    PS C:\> Get-ALCompilerFromNuget -RuntimeVersion "27.0" -TargetPath "c:\compiler" -Prerelease
+    Will download the newest prerelease version of Microsoft.Dynamics.BusinessCentral.Development.Tools with major version 27
+    and extract it to c:\compiler
+
 .Parameter RuntimeVersion
     The runtime version to match. The major version will be extracted and used to find
     the newest package with matching major version.
 
 .Parameter TargetPath
     Target path where the compiler will be extracted.
+
+.Parameter Prerelease
+    If set, includes prerelease versions when searching for the package.
+    Use this when compiling for vNext.
 
 .OUTPUTS
     String - Path to the folder containing alc.exe
@@ -33,7 +42,9 @@ function Get-ALCompilerFromNuget {
         [String] $RuntimeVersion,
         # Target path for extracted compiler
         [Parameter(Mandatory = $true)]
-        [String] $TargetPath
+        [String] $TargetPath,
+        # Include prerelease versions (for vNext)
+        [switch] $Prerelease
     )
 
     function Expand-7zipArchive {
@@ -116,10 +127,11 @@ function Get-ALCompilerFromNuget {
     }
 
     # Search for the package
-    Write-Host "Searching for package $packageName..."
+    $prereleaseFlag = if ($Prerelease) { 'true' } else { 'false' }
+    Write-Host "Searching for package $packageName (prerelease=$prereleaseFlag)..."
     $prev = $global:ProgressPreference; $global:ProgressPreference = "SilentlyContinue"
     try {
-        $searchResult = Invoke-RestMethod -UseBasicParsing -Method GET -Uri "$searchUrl`?q=$packageName&prerelease=false&take=50"
+        $searchResult = Invoke-RestMethod -UseBasicParsing -Method GET -Uri "$searchUrl`?q=$packageName&prerelease=$prereleaseFlag&take=50"
     }
     finally {
         $global:ProgressPreference = $prev
@@ -143,34 +155,48 @@ function Get-ALCompilerFromNuget {
 
     # Filter versions by major version and find the latest
     $matchingVersions = $versionsResponse.versions | Where-Object {
+        $vStr = $_
+        # Extract base version (before any prerelease suffix)
+        $basePart = ($vStr -split '-')[0]
+        $isPrerelease = $vStr -match '-'
+        # Skip prerelease versions unless -Prerelease is set
+        if ($isPrerelease -and -not $Prerelease) { return $false }
         try {
-            $v = [System.Version]::Parse($_)
+            $v = [System.Version]::Parse($basePart)
             $v.Major -eq $majorVersion
         }
         catch {
             $false
         }
     } | ForEach-Object {
+        $basePart = ($_ -split '-')[0]
+        $suffix = if ($_ -match '-(.+)$') { $matches[1] } else { '' }
         [PSCustomObject]@{
             VersionString = $_
-            Version       = [System.Version]::Parse($_)
+            Version       = [System.Version]::Parse($basePart)
+            Suffix        = $suffix
+            IsPrerelease  = [bool]($suffix)
         }
-    } | Sort-Object -Property Version -Descending
+    } | Sort-Object -Property @{Expression = { $_.Version }; Descending = $true }, @{Expression = { $_.IsPrerelease }; Ascending = $true }, @{Expression = { $_.Suffix }; Descending = $true }
 
     if (-not $matchingVersions -or $matchingVersions.Count -eq 0) {
         Write-Host "No versions of $packageName found with major version $majorVersion, falling back to latest version"
         # Get the latest version available
-        $matchingVersions = $versionsResponse.versions | ForEach-Object {
-            try {
-                [PSCustomObject]@{
-                    VersionString = $_
-                    Version       = [System.Version]::Parse($_)
-                }
+        $matchingVersions = $versionsResponse.versions | Where-Object {
+            $isPrerelease = $_ -match '-'
+            if ($isPrerelease -and -not $Prerelease) { return $false }
+            $basePart = ($_ -split '-')[0]
+            try { [System.Version]::Parse($basePart); $true } catch { $false }
+        } | ForEach-Object {
+            $basePart = ($_ -split '-')[0]
+            $suffix = if ($_ -match '-(.+)$') { $matches[1] } else { '' }
+            [PSCustomObject]@{
+                VersionString = $_
+                Version       = [System.Version]::Parse($basePart)
+                Suffix        = $suffix
+                IsPrerelease  = [bool]($suffix)
             }
-            catch {
-                $null
-            }
-        } | Where-Object { $_ -ne $null } | Sort-Object -Property Version -Descending
+        } | Sort-Object -Property @{Expression = { $_.Version }; Descending = $true }, @{Expression = { $_.IsPrerelease }; Ascending = $true }, @{Expression = { $_.Suffix }; Descending = $true }
         
         if (-not $matchingVersions -or $matchingVersions.Count -eq 0) {
             throw "No versions of $packageName found on nuget.org"

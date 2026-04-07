@@ -40,6 +40,10 @@
 .Parameter UseALCNuget
     Use AL compiler from NuGet package instead of from artifact. 
     The runtime version is read from the 'runtime' property in each app's app.json file.
+
+.Parameter Prerelease
+    When used with UseALCNuget, includes prerelease versions of the compiler package.
+    Use this when compiling for vNext.
     
 #>
 function Compile-ALProjectTree {
@@ -92,7 +96,9 @@ function Compile-ALProjectTree {
         [Parameter(ValueFromPipelineByPropertyName = $True)]
         [String]$DependencyTag,
         [Parameter(ValueFromPipelineByPropertyName = $True)]
-        [switch]$UseALCNuget
+        [switch]$UseALCNuget,
+        [Parameter(ValueFromPipelineByPropertyName = $True)]
+        [switch]$Prerelease
 
 
     )
@@ -133,7 +139,7 @@ function Compile-ALProjectTree {
                         if (-not $appJson.runtime) {
                             throw "app.json does not contain 'runtime' property. Cannot determine compiler version."
                         }
-                        $alcPath = Get-ALCompilerFromNuget -RuntimeVersion $appJson.runtime -TargetPath (Join-Path $env:TEMP 'alc')
+                        $alcPath = Get-ALCompilerFromNuget -RuntimeVersion $appJson.runtime -TargetPath (Join-Path $env:TEMP 'alc') -Prerelease:$Prerelease
                     }
                     else {
                         $alcPath = Get-ALCompilerFromArtifact -artifactUrl $artifactUrl -TargetPath (Join-Path $env:TEMP 'alc')
