@@ -102,7 +102,7 @@ function Get-ALCompilerFromNuget {
         $majorVersion = 15
     }
 
-    Write-Host "Looking for $packageName with major version $majorVersion on nuget.org"
+    Write-Host "Looking for $packageName with major version $majorVersion on nuget.org (Prerelease: $Prerelease)"
 
     if (Test-Path $TargetPath) {
         Write-Host "Removing $TargetPath"
@@ -161,6 +161,8 @@ function Get-ALCompilerFromNuget {
         $isPrerelease = $vStr -match '-'
         # Skip prerelease versions unless -Prerelease is set
         if ($isPrerelease -and -not $Prerelease) { return $false }
+        # When Prerelease is set, skip major version filtering to get the latest available
+        if ($Prerelease) { return $true }
         try {
             $v = [System.Version]::Parse($basePart)
             $v.Major -eq $majorVersion
