@@ -166,7 +166,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta09'
+            Prerelease   = 'beta11'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -185,6 +185,7 @@
 2.8.8
 - Add Get-ALCompilerFromNuget function to download AL compiler from NuGet package Microsoft.Dynamics.BusinessCentral.Development.Tools
 - Add UseALCNuget switch to Compile-ALProjectTree to use compiler from NuGet instead of artifact (reads runtime version from app.json)
+- Add Prerelease switch to Get-ALCompilerFromNuget and Compile-ALProjectTree to support prerelease compiler versions for vNext compilation
 - Compile-AppWithArtifact: Dynamically search for analyzer path instead of using hardcoded paths, supporting different compiler versions (pre-BCv24, BCv24+) and NuGet installations
 
 2.8.7
