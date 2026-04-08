@@ -135,11 +135,51 @@ function Compile-ALProjectTree {
             if ($ArtifactUrl -or $UseALCNuget) {
                 if (-not $alcPath) {
                     if ($UseALCNuget) {
-                        $appJson = Get-Content -Path $App.AppPath | ConvertFrom-Json
-                        if (-not $appJson.runtime) {
-                            throw "app.json does not contain 'runtime' property. Cannot determine compiler version."
+                        $packageRuntimeVersion = $null
+                        $appJsonRuntimeVersion = $null
+                        # Try to detect runtime version from downloaded Microsoft .app files (e.g. System Application)
+                        $microsoftApps = Get-ChildItem -Path $PackagesPath -Filter 'Microsoft_*.app' -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^Microsoft_' }
+                        if ($microsoftApps) {
+                            $sampleApp = $microsoftApps | Where-Object { $_.Name -like 'Microsoft_System Application_*' } | Select-Object -First 1
+                            if (-not $sampleApp) {
+                                $sampleApp = $microsoftApps | Select-Object -First 1
+                            }
+                            Write-Host "Detecting runtime version from downloaded package: $($sampleApp.Name)"
+                            $packageAppJson = Get-AppJsonFromAppFile -appFile $sampleApp.FullName
+                            if ($packageAppJson.runtime) {
+                                $packageRuntimeVersion = [System.Version]::Parse($packageAppJson.runtime)
+                                Write-Host "Detected runtime version from package: $packageRuntimeVersion"
+                            }
                         }
-                        $alcPath = Get-ALCompilerFromNuget -RuntimeVersion $appJson.runtime -TargetPath (Join-Path $env:TEMP 'alc') -Prerelease:$Prerelease
+                        # Get runtime version from app.json
+                        $appJson = Get-Content -Path $App.AppPath | ConvertFrom-Json
+                        if ($appJson.runtime) {
+                            $appJsonRuntimeVersion = [System.Version]::Parse($appJson.runtime)
+                            Write-Host "Runtime version from app.json: $appJsonRuntimeVersion"
+                        }
+                        # Use the higher of the two versions
+                        if ($packageRuntimeVersion -and $appJsonRuntimeVersion) {
+                            if ($packageRuntimeVersion -ge $appJsonRuntimeVersion) {
+                                $runtimeVersion = $packageRuntimeVersion.ToString()
+                                Write-Host "Using runtime version from package (higher): $runtimeVersion"
+                            }
+                            else {
+                                $runtimeVersion = $appJsonRuntimeVersion.ToString()
+                                Write-Host "Using runtime version from app.json (higher): $runtimeVersion"
+                            }
+                        }
+                        elseif ($packageRuntimeVersion) {
+                            $runtimeVersion = $packageRuntimeVersion.ToString()
+                            Write-Host "Using runtime version from package: $runtimeVersion"
+                        }
+                        elseif ($appJsonRuntimeVersion) {
+                            $runtimeVersion = $appJsonRuntimeVersion.ToString()
+                            Write-Host "Using runtime version from app.json: $runtimeVersion"
+                        }
+                        else {
+                            throw "Cannot determine runtime version. No Microsoft packages found and app.json does not contain 'runtime' property."
+                        }
+                        $alcPath = Get-ALCompilerFromNuget -RuntimeVersion $runtimeVersion -TargetPath (Join-Path $env:TEMP 'alc') -Prerelease:$Prerelease
                     }
                     else {
                         $alcPath = Get-ALCompilerFromArtifact -artifactUrl $artifactUrl -TargetPath (Join-Path $env:TEMP 'alc')
