@@ -1,5 +1,7 @@
-Write-Host "Importing BcContainerHelper module as Global..."
-Import-Module BcContainerHelper -DisableNameChecking -Global
+if (-not (Get-Module -Name BcContainerHelper)) {
+    Write-Host "Importing BcContainerHelper module as Global..."
+    Import-Module BcContainerHelper -DisableNameChecking -Global
+}
 
 $Psd = get-content -Path (Join-Path $PSScriptRoot 'NVRAppDevOps.psd1') -Raw
 $ModuleVersion = (invoke-expression $Psd).ModuleVersion
