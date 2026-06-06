@@ -32,6 +32,13 @@ function Compile-AppWithArtifact {
         $appName = "$($appJsonObject.Publisher)_$($appJsonObject.Name)_$($appJsonObject.Version).app".Split([System.IO.Path]::GetInvalidFileNameChars()) -join ''
     }
     Get-ArtifactPackages -artifactUrl $artifactUrl -appSymbolsFolder $appSymbolsFolder
+    $ArtifactPaths = Download-Artifacts -artifactUrl $artifactUrl -includePlatform
+    if ((-not (Test-Path (Join-Path $ArtifactPaths[0] 'Applications'))) -and (-not (Test-Path (Join-Path $ArtifactPaths[0] 'Applications.*')))) {
+        $AppPath = $ArtifactPaths[1]
+    }
+    else {
+        $AppPath = $ArtifactPaths[0]
+    }
     Write-Host "Getting artifact path for $artifactUrl"
     $Path = (Download-Artifacts -artifactUrl $artifactUrl -includePlatform)[1]
     Write-Host "Importing Microsoft apps from artifact folder"

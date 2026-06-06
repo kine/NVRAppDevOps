@@ -138,8 +138,9 @@ function Compile-ALProjectTree {
                         $packageRuntimeVersion = $null
                         $appJsonRuntimeVersion = $null
                         # Try to detect runtime version from downloaded Microsoft .app files (e.g. System Application)
-                        Get-ArtifactPackages -artifactUrl $artifactUrl -appSymbolsFolder $PackagesPath
-                        $microsoftApps = Get-ChildItem -Path $PackagesPath -Filter 'Microsoft_*.app' -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^Microsoft_' }
+                        $PackagesPathTemp = Join-Path $env:TEMP 'appPackages'
+                        Get-ArtifactPackages -artifactUrl $artifactUrl -appSymbolsFolder $PackagesPathTemp
+                        $microsoftApps = Get-ChildItem -Path $PackagesPathTemp -Filter 'Microsoft_*.app' -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^Microsoft_' }
                         if ($microsoftApps) {
                             $sampleApp = $microsoftApps | Where-Object { $_.Name -like 'Microsoft_System Application_*' } | Select-Object -First 1
                             if (-not $sampleApp) {
@@ -152,6 +153,7 @@ function Compile-ALProjectTree {
                                 Write-Host "Detected runtime version from package: $packageRuntimeVersion"
                             }
                         }
+                        Remove-Item -Path $PackagesPathTemp -Recurse -Force
                         # Get runtime version from app.json
                         $appJson = Get-Content -Path $App.AppPath | ConvertFrom-Json
                         if ($appJson.runtime) {
