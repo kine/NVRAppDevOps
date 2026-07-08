@@ -107,6 +107,7 @@
         'Install-ALNugetPackage',
         'Install-ALNugetPackageByPaket',
         'Install-SigningTool',
+        'Invoke-AICli',
         'Invoke-ALTestInsideContainer',
         'Invoke-PaketForAl',
         'New-ALNugetPackage',
@@ -167,7 +168,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta16'
+            Prerelease   = 'beta17'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -184,6 +185,7 @@
             # ReleaseNotes of this module
             ReleaseNotes = @'
 2.8.8
+- Add Invoke-AICli function - generic AI CLI invocation wrapper supporting Claude Code, GitHub Copilot CLI, and OpenAI providers with streaming, skill files, and timeout support
 - Add Get-ALCompilerFromNuget function to download AL compiler from NuGet package Microsoft.Dynamics.BusinessCentral.Development.Tools
 - Add UseALCNuget switch to Compile-ALProjectTree to use compiler from NuGet instead of artifact (reads runtime version from app.json)
 - Add Prerelease switch to Get-ALCompilerFromNuget and Compile-ALProjectTree to support prerelease compiler versions for vNext compilation
