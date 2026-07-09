@@ -203,10 +203,33 @@ function Get-AICliExecutable {
     )
 
     switch ($Provider) {
-        'ClaudeCode' { return 'claude' }
+        'ClaudeCode' { return Get-ExecutablePath -ExecutableName 'claude' -NativeInstallSubPath '.local\bin\claude.exe' }
         'GitHubCopilot' { return 'copilot' }
         'OpenAI' { return 'openai' }
     }
+}
+
+function Get-ExecutablePath {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ExecutableName,
+
+        [Parameter(Mandatory = $true)]
+        [string]$NativeInstallSubPath
+    )
+
+    $command = Get-Command $ExecutableName -ErrorAction SilentlyContinue
+    if ($command) {
+        return $command.Source
+    }
+
+    $nativeInstallPath = Join-Path $HOME $NativeInstallSubPath
+    if (Test-Path $nativeInstallPath) {
+        return $nativeInstallPath
+    }
+
+    return $ExecutableName
 }
 
 function Invoke-AICliBuffered {
