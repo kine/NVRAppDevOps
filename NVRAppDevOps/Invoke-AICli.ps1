@@ -24,6 +24,12 @@ function Invoke-AICli {
         [string]$WorkingDirectory,
 
         [Parameter()]
+        [string[]]$McpConfig,
+
+        [Parameter()]
+        [string]$PermissionMode,
+
+        [Parameter()]
         [hashtable]$EnvironmentVars,
 
         [Parameter()]
@@ -39,13 +45,12 @@ function Invoke-AICli {
         [string]$RawOutputPath
     )
 
-    if ($WorkingDirectory -and (Test-Path $WorkingDirectory)) {
-        Push-Location $WorkingDirectory
-    }
+    $resolvedWorkingDirectory = Resolve-AICliWorkingDirectory -WorkingDirectory $WorkingDirectory
 
     try {
         $cliArgs = Build-AICLiArguments -Provider $Provider -Prompt $Prompt -SkillFiles $SkillFiles `
-            -AllowedTools $AllowedTools -Model $Model
+            -AllowedTools $AllowedTools -Model $Model -WorkingDirectory $resolvedWorkingDirectory `
+            -McpConfig $McpConfig -PermissionMode $PermissionMode
 
         $envBackup = @{}
         if ($ApiKey) {
@@ -77,10 +82,10 @@ function Invoke-AICli {
         Write-Host "Invoking $Provider CLI: $executable $cliArgsForLog"
 
         if ($EnableStream) {
-            $result = Invoke-AICliStreaming -Executable $executable -Arguments $cliArgs -TimeoutMinutes $TimeoutMinutes
+            $result = Invoke-AICliStreaming -Executable $executable -Arguments $cliArgs -TimeoutMinutes $TimeoutMinutes -WorkingDirectory $resolvedWorkingDirectory
         }
         else {
-            $result = Invoke-AICliBuffered -Executable $executable -Arguments $cliArgs -TimeoutMinutes $TimeoutMinutes
+            $result = Invoke-AICliBuffered -Executable $executable -Arguments $cliArgs -TimeoutMinutes $TimeoutMinutes -WorkingDirectory $resolvedWorkingDirectory
         }
 
         if ($ShowRawOutput -and $result.Output) {
@@ -105,10 +110,6 @@ function Invoke-AICli {
                 [System.Environment]::SetEnvironmentVariable($key, $envBackup[$key])
             }
         }
-
-        if ($WorkingDirectory -and (Test-Path $WorkingDirectory)) {
-            Pop-Location
-        }
     }
 }
 
@@ -119,7 +120,10 @@ function Build-AICLiArguments {
         [string]$Prompt,
         [string[]]$SkillFiles,
         [string[]]$AllowedTools,
-        [string]$Model
+        [string]$Model,
+        [string]$WorkingDirectory,
+        [string[]]$McpConfig,
+        [string]$PermissionMode
     )
 
     $cliArgs = @()
@@ -134,6 +138,22 @@ function Build-AICLiArguments {
             else {
                 $cliArgs += '--allowedTools'
                 $cliArgs += '""'
+            }
+            if ($WorkingDirectory) {
+                $cliArgs += '--add-dir'
+                $cliArgs += $WorkingDirectory
+            }
+            if ($McpConfig) {
+                foreach ($mcpConfigEntry in $McpConfig) {
+                    if ($mcpConfigEntry) {
+                        $cliArgs += '--mcp-config'
+                        $cliArgs += $mcpConfigEntry
+                    }
+                }
+            }
+            if ($PermissionMode) {
+                $cliArgs += '--permission-mode'
+                $cliArgs += $PermissionMode
             }
             if ($SkillFiles) {
                 foreach ($skillFile in $SkillFiles) {
@@ -158,12 +178,24 @@ function Build-AICLiArguments {
             $cliArgs += $Prompt
             $cliArgs += '-s'
             $cliArgs += '--no-ask-user'
+            if ($WorkingDirectory) {
+                $cliArgs += '-C'
+                $cliArgs += $WorkingDirectory
+            }
             if ($AllowedTools) {
                 $cliArgs += '--allow-tool'
                 $cliArgs += ($AllowedTools -join ',')
             }
             else {
                 $cliArgs += '--allow-all-tools'
+            }
+            if ($McpConfig) {
+                foreach ($mcpConfigEntry in $McpConfig) {
+                    if ($mcpConfigEntry) {
+                        $cliArgs += '--additional-mcp-config'
+                        $cliArgs += $mcpConfigEntry
+                    }
+                }
             }
             if ($SkillFiles) {
                 foreach ($skillFile in $SkillFiles) {
@@ -195,6 +227,31 @@ function Build-AICLiArguments {
     }
 
     return $cliArgs
+}
+
+function Resolve-AICliWorkingDirectory {
+    [CmdletBinding()]
+    param(
+        [string]$WorkingDirectory
+    )
+
+    if (-not $WorkingDirectory) {
+        return ''
+    }
+
+    try {
+        $item = Get-Item -LiteralPath $WorkingDirectory -ErrorAction Stop
+        if ($item.PSIsContainer) {
+            return $item.FullName
+        }
+
+        Write-Warning "AI CLI working directory is not a directory: $WorkingDirectory"
+    }
+    catch {
+        Write-Warning "AI CLI working directory is not accessible: $WorkingDirectory. $($_.Exception.Message)"
+    }
+
+    return ''
 }
 
 function Format-AICliArgumentsForLog {
@@ -265,12 +322,16 @@ function Invoke-AICliBuffered {
     param(
         [string]$Executable,
         [string[]]$Arguments,
-        [int]$TimeoutMinutes
+        [int]$TimeoutMinutes,
+        [string]$WorkingDirectory
     )
 
     $psi = [System.Diagnostics.ProcessStartInfo]::new()
     $psi.FileName = $Executable
     $psi.Arguments = Join-ProcessArguments -Arguments $Arguments
+    if ($WorkingDirectory) {
+        $psi.WorkingDirectory = $WorkingDirectory
+    }
     $psi.UseShellExecute = $false
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError = $true
@@ -380,7 +441,8 @@ function Invoke-AICliStreaming {
     param(
         [string]$Executable,
         [string[]]$Arguments,
-        [int]$TimeoutMinutes
+        [int]$TimeoutMinutes,
+        [string]$WorkingDirectory
     )
 
     $outputBuilder = [System.Text.StringBuilder]::new()
@@ -388,6 +450,9 @@ function Invoke-AICliStreaming {
     $psi = [System.Diagnostics.ProcessStartInfo]::new()
     $psi.FileName = $Executable
     $psi.Arguments = Join-ProcessArguments -Arguments $Arguments
+    if ($WorkingDirectory) {
+        $psi.WorkingDirectory = $WorkingDirectory
+    }
     $psi.UseShellExecute = $false
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError = $true

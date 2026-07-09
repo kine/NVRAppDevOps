@@ -168,7 +168,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta20'
+            Prerelease   = 'beta21'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -185,6 +185,7 @@
             # ReleaseNotes of this module
             ReleaseNotes = @'
 2.8.8
+- Invoke-AICli: Add Claude --add-dir, MCP config, and explicit process working directory support for CI review agents
 - Invoke-AICli: Use Claude Code --append-system-prompt-file for skill files instead of inlining them into the prompt
 - Invoke-AICli: Escape ProcessStartInfo arguments correctly for multiline prompts and quoted skill file content
 - Add Invoke-AICli function - generic AI CLI invocation wrapper supporting Claude Code, GitHub Copilot CLI, and OpenAI providers with streaming, skill files, and timeout support
