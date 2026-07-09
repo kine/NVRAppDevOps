@@ -73,7 +73,8 @@ function Invoke-AICli {
         }
 
         $executable = Get-AICliExecutable -Provider $Provider
-        Write-Host "Invoking $Provider CLI: $executable $($cliArgs -join ' ')"
+        $cliArgsForLog = Format-AICliArgumentsForLog -Arguments $cliArgs
+        Write-Host "Invoking $Provider CLI: $executable $cliArgsForLog"
 
         if ($EnableStream) {
             $result = Invoke-AICliStreaming -Executable $executable -Arguments $cliArgs -TimeoutMinutes $TimeoutMinutes
@@ -137,7 +138,7 @@ function Build-AICLiArguments {
             if ($SkillFiles) {
                 foreach ($skillFile in $SkillFiles) {
                     if (Test-Path $skillFile) {
-                        $cliArgs += '--skill-file'
+                        $cliArgs += '--append-system-prompt-file'
                         $cliArgs += $skillFile
                     }
                     else {
@@ -196,6 +197,33 @@ function Build-AICLiArguments {
     return $cliArgs
 }
 
+function Format-AICliArgumentsForLog {
+    [CmdletBinding()]
+    param(
+        [string[]]$Arguments
+    )
+
+    if (-not $Arguments) {
+        return ''
+    }
+
+    $promptSeparatorIndex = [Array]::IndexOf($Arguments, '--')
+    if ($promptSeparatorIndex -lt 0 -or $promptSeparatorIndex -eq ($Arguments.Count - 1)) {
+        return ($Arguments -join ' ')
+    }
+
+    $argumentsBeforePrompt = @()
+    if ($promptSeparatorIndex -gt 0) {
+        $argumentsBeforePrompt = $Arguments[0..$promptSeparatorIndex]
+    }
+    else {
+        $argumentsBeforePrompt = @('--')
+    }
+
+    $promptLength = ($Arguments[($promptSeparatorIndex + 1)..($Arguments.Count - 1)] -join ' ').Length
+    return "$(($argumentsBeforePrompt -join ' ')) <prompt omitted; $promptLength chars>"
+}
+
 function Get-AICliExecutable {
     [CmdletBinding()]
     param(
@@ -242,7 +270,7 @@ function Invoke-AICliBuffered {
 
     $psi = [System.Diagnostics.ProcessStartInfo]::new()
     $psi.FileName = $Executable
-    $psi.Arguments = ($Arguments | ForEach-Object { if ($_ -match '\s') { "`"$_`"" } else { $_ } }) -join ' '
+    $psi.Arguments = Join-ProcessArguments -Arguments $Arguments
     $psi.UseShellExecute = $false
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError = $true
@@ -286,6 +314,67 @@ function Invoke-AICliBuffered {
     }
 }
 
+function Join-ProcessArguments {
+    [CmdletBinding()]
+    param(
+        [string[]]$Arguments
+    )
+
+    if (-not $Arguments) {
+        return ''
+    }
+
+    return (($Arguments | ForEach-Object { ConvertTo-ProcessArgument -Argument $_ }) -join ' ')
+}
+
+function ConvertTo-ProcessArgument {
+    [CmdletBinding()]
+    param(
+        [AllowEmptyString()]
+        [string]$Argument
+    )
+
+    if ($null -eq $Argument) {
+        return '""'
+    }
+
+    if ($Argument -notmatch '[\s"]') {
+        return $Argument
+    }
+
+    $result = [System.Text.StringBuilder]::new()
+    $result.Append('"') | Out-Null
+    $backslashCount = 0
+
+    foreach ($character in $Argument.ToCharArray()) {
+        if ($character -eq '\') {
+            $backslashCount++
+            continue
+        }
+
+        if ($character -eq '"') {
+            $result.Append('\' * (($backslashCount * 2) + 1)) | Out-Null
+            $result.Append('"') | Out-Null
+            $backslashCount = 0
+            continue
+        }
+
+        if ($backslashCount -gt 0) {
+            $result.Append('\' * $backslashCount) | Out-Null
+            $backslashCount = 0
+        }
+
+        $result.Append($character) | Out-Null
+    }
+
+    if ($backslashCount -gt 0) {
+        $result.Append('\' * ($backslashCount * 2)) | Out-Null
+    }
+
+    $result.Append('"') | Out-Null
+    return $result.ToString()
+}
+
 function Invoke-AICliStreaming {
     [CmdletBinding()]
     param(
@@ -298,7 +387,7 @@ function Invoke-AICliStreaming {
 
     $psi = [System.Diagnostics.ProcessStartInfo]::new()
     $psi.FileName = $Executable
-    $psi.Arguments = ($Arguments | ForEach-Object { if ($_ -match '\s') { "`"$_`"" } else { $_ } }) -join ' '
+    $psi.Arguments = Join-ProcessArguments -Arguments $Arguments
     $psi.UseShellExecute = $false
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError = $true
