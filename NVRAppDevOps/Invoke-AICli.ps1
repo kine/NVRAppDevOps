@@ -163,6 +163,9 @@ function Build-AICLiArguments {
                 $cliArgs += '--output-format'
                 $cliArgs += $OutputFormat
             }
+            if ($OutputFormat -eq 'stream-json') {
+                $cliArgs += '--verbose'
+            }
             if ($SkillFiles) {
                 foreach ($skillFile in $SkillFiles) {
                     if (Test-Path $skillFile) {
