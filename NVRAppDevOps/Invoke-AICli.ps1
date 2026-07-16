@@ -30,6 +30,9 @@ function Invoke-AICli {
         [string]$PermissionMode,
 
         [Parameter()]
+        [string]$OutputFormat,
+
+        [Parameter()]
         [hashtable]$EnvironmentVars,
 
         [Parameter()]
@@ -50,7 +53,7 @@ function Invoke-AICli {
     try {
         $cliArgs = Build-AICLiArguments -Provider $Provider -Prompt $Prompt -SkillFiles $SkillFiles `
             -AllowedTools $AllowedTools -Model $Model -WorkingDirectory $resolvedWorkingDirectory `
-            -McpConfig $McpConfig -PermissionMode $PermissionMode
+            -McpConfig $McpConfig -PermissionMode $PermissionMode -OutputFormat $OutputFormat
 
         $envBackup = @{}
         if ($ApiKey) {
@@ -123,7 +126,8 @@ function Build-AICLiArguments {
         [string]$Model,
         [string]$WorkingDirectory,
         [string[]]$McpConfig,
-        [string]$PermissionMode
+        [string]$PermissionMode,
+        [string]$OutputFormat
     )
 
     $cliArgs = @()
@@ -154,6 +158,10 @@ function Build-AICLiArguments {
             if ($PermissionMode) {
                 $cliArgs += '--permission-mode'
                 $cliArgs += $PermissionMode
+            }
+            if ($OutputFormat) {
+                $cliArgs += '--output-format'
+                $cliArgs += $OutputFormat
             }
             if ($SkillFiles) {
                 foreach ($skillFile in $SkillFiles) {
