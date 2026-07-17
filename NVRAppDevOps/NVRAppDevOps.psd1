@@ -168,7 +168,7 @@
     PrivateData       = @{
 
         PSData = @{
-            Prerelease   = 'beta23'
+            Prerelease   = 'beta24'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags         = 'PSModule'
@@ -184,7 +184,8 @@
 
             # ReleaseNotes of this module
             ReleaseNotes = @'
-2.8.7-beta22
+2.8.7-beta24
+- Invoke-AICli: Retry transient AI CLI failures such as Claude 529 overloaded
 - Invoke-AICli: Add OutputFormat support for Claude Code structured output such as stream-json
 - Invoke-AICli: Add Claude --add-dir, MCP config, and explicit process working directory support for CI review agents
 - Invoke-AICli: Use Claude Code --append-system-prompt-file for skill files instead of inlining them into the prompt

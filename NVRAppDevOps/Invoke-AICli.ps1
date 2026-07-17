@@ -39,6 +39,12 @@ function Invoke-AICli {
         [int]$TimeoutMinutes = 30,
 
         [Parameter()]
+        [int]$RetryCount = 2,
+
+        [Parameter()]
+        [int]$RetryDelaySeconds = 30,
+
+        [Parameter()]
         [switch]$EnableStream,
 
         [Parameter()]
@@ -84,12 +90,23 @@ function Invoke-AICli {
         $cliArgsForLog = Format-AICliArgumentsForLog -Arguments $cliArgs
         Write-Host "Invoking $Provider CLI: $executable $cliArgsForLog"
 
-        if ($EnableStream) {
-            $result = Invoke-AICliStreaming -Executable $executable -Arguments $cliArgs -TimeoutMinutes $TimeoutMinutes -WorkingDirectory $resolvedWorkingDirectory
-        }
-        else {
-            $result = Invoke-AICliBuffered -Executable $executable -Arguments $cliArgs -TimeoutMinutes $TimeoutMinutes -WorkingDirectory $resolvedWorkingDirectory
-        }
+        $attempt = 0
+        do {
+            if ($attempt -gt 0) {
+                $delay = $RetryDelaySeconds * $attempt
+                Write-Warning "AI CLI transient failure detected. Retry $attempt of $RetryCount in $delay seconds."
+                Start-Sleep -Seconds $delay
+            }
+
+            if ($EnableStream) {
+                $result = Invoke-AICliStreaming -Executable $executable -Arguments $cliArgs -TimeoutMinutes $TimeoutMinutes -WorkingDirectory $resolvedWorkingDirectory
+            }
+            else {
+                $result = Invoke-AICliBuffered -Executable $executable -Arguments $cliArgs -TimeoutMinutes $TimeoutMinutes -WorkingDirectory $resolvedWorkingDirectory
+            }
+
+            $attempt++
+        } while ((-not $result.Success) -and ($attempt -le $RetryCount) -and (Test-AICliTransientFailure -Result $result))
 
         if ($ShowRawOutput -and $result.Output) {
             Write-Host "##[group]AI CLI Raw Output"
@@ -240,6 +257,20 @@ function Build-AICLiArguments {
     return $cliArgs
 }
 
+function Test-AICliTransientFailure {
+    [CmdletBinding()]
+    param(
+        [hashtable]$Result
+    )
+
+    $output = "$($Result.Output)`n$($Result.ErrorOutput)"
+    if ([string]::IsNullOrWhiteSpace($output)) {
+        return $false
+    }
+
+    return $output -match '(?i)\b529\b|overloaded|server-side issue|temporar(y|ily)|rate.?limit|try again'
+}
+
 function Resolve-AICliWorkingDirectory {
     [CmdletBinding()]
     param(
@@ -362,9 +393,10 @@ function Invoke-AICliBuffered {
             $process.Kill()
             Write-Warning "AI CLI process timed out after $TimeoutMinutes minutes"
             return @{
-                ExitCode = -1
-                Output   = "Process timed out after $TimeoutMinutes minutes"
-                Success  = $false
+                ExitCode    = -1
+                Output      = "Process timed out after $TimeoutMinutes minutes"
+                ErrorOutput = ''
+                Success     = $false
             }
         }
 
@@ -376,9 +408,10 @@ function Invoke-AICliBuffered {
         }
 
         return @{
-            ExitCode = $process.ExitCode
-            Output   = $output
-            Success  = ($process.ExitCode -eq 0)
+            ExitCode    = $process.ExitCode
+            Output      = $output
+            ErrorOutput = $errorOutput
+            Success     = ($process.ExitCode -eq 0)
         }
     }
     finally {
@@ -485,9 +518,10 @@ function Invoke-AICliStreaming {
                 Write-Host "##[endgroup]"
                 Write-Warning "AI CLI process timed out after $TimeoutMinutes minutes"
                 return @{
-                    ExitCode = -1
-                    Output   = $outputBuilder.ToString()
-                    Success  = $false
+                    ExitCode    = -1
+                    Output      = $outputBuilder.ToString()
+                    ErrorOutput = ''
+                    Success     = $false
                 }
             }
 
@@ -507,9 +541,10 @@ function Invoke-AICliStreaming {
         }
 
         return @{
-            ExitCode = $process.ExitCode
-            Output   = $outputBuilder.ToString()
-            Success  = ($process.ExitCode -eq 0)
+            ExitCode    = $process.ExitCode
+            Output      = $outputBuilder.ToString()
+            ErrorOutput = $errorOutput
+            Success     = ($process.ExitCode -eq 0)
         }
     }
     catch {
