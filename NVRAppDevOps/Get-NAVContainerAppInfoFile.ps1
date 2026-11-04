@@ -23,6 +23,16 @@ function Get-NavContainerAppInfoFile {
     #$args = @{"Path" = $containerPath}
 
     Invoke-ScriptInBcContainer -containerName $ContainerName -scriptblock { Param($Path)
-        Get-NavAppInfo -Path $Path | ConvertTo-Json -Depth 2
+        $info = Get-NavAppInfo -Path $Path
+        # Since BC 29 AppId is a System.Guid carrying an extra 'Value' NoteProperty. PowerShell 7
+        # serializes such a value as {"value": ..., "Value": ...}, which Windows PowerShell 5.1
+        # ConvertFrom-Json on the host rejects as duplicate keys. Pass AppId as a plain string,
+        # keeping the existing .AppId.value contract; all other properties are unchanged.
+        $dto = [ordered]@{}
+        foreach ($property in $info.PSObject.Properties) { $dto[$property.Name] = $property.Value }
+        $appId = $info.AppId
+        if ($null -ne $appId.Value) { $appId = $appId.Value }   # BC <= 28 wrapper type / BC 29 NoteProperty
+        $dto.AppId = @{ value = [string]$appId }
+        [pscustomobject]$dto | ConvertTo-Json -Depth 2
     } -argumentList $containerPath | ConvertFrom-Json
 }
