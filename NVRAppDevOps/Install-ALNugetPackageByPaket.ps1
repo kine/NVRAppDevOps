@@ -52,18 +52,58 @@ function Install-ALNugetPackageByPaket {
             $BaseAppPackageName = "$($IdPrefix)$(Format-AppNameForNuget `"Microsoft_Application`")"
             $PlatformAppPackageName = ''
         }
-        $Constraint = Get-BaseApplicationVersionConstraint -BaseApplicationVersion $BaseApplicationVersion
-        Write-Host "Adding $BaseAppPackageName $Constraint storage: none, $baseStrategy"
-        $paketdependencies += "nuget $($BaseAppPackageName) $Constraint storage: none, $baseStrategy"
-        if ($PlatformAppPackageName) {
-            $PlatformMajor = [int]($BaseApplicationVersion.Trim('<>=~ ') -split '\.')[0]
-            Write-Host "Adding $($PlatformAppPackageName) ~> $PlatformMajor storage: none, $baseStrategy"
-            $paketdependencies += "nuget $($PlatformAppPackageName) ~> $PlatformMajor storage: none, $baseStrategy"
+        if ($BaseApplicationVersion -match "[<>=~].+") {
+            Write-Host "Adding $BaseAppPackageName $($BaseApplicationVersion) storage: none, $baseStrategy"
+            $paketdependencies += "nuget $($BaseAppPackageName) $($BaseApplicationVersion) storage: none, $baseStrategy"
+            $BaseVersion = [version]($BaseApplicationVersion.Trim('<>=~ '))
+            if ($PlatformAppPackageName) {
+                Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
+                $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
+            }
+            Write-Host "`$env:ADDITIONAL_PAKET_LINES: $($env:ADDITIONAL_PAKET_LINES)"
+            if ($env:ADDITIONAL_PAKET_LINES) {
+                Write-Host "Adding $($env:ADDITIONAL_PAKET_LINES)"
+                $paketdependencies += $env:ADDITIONAL_PAKET_LINES
+            }
         }
-        Write-Host "`$env:ADDITIONAL_PAKET_LINES: $($env:ADDITIONAL_PAKET_LINES)"
-        if ($env:ADDITIONAL_PAKET_LINES) {
-            Write-Host "Adding $($env:ADDITIONAL_PAKET_LINES)"
-            $paketdependencies += $env:ADDITIONAL_PAKET_LINES
+        else {
+            #We want to take the highest version of the base app but same or lower than the limiting version
+            if ($BaseApplicationVersion.Contains('.')) {
+                $BaseVersion = [version]$BaseApplicationVersion
+            }
+            else {
+                Write-Host "Adding .0 to the version"
+                $BaseVersion = [version]"$($BaseApplicationVersion).0"
+            }
+            if ($BaseVersion.Build -ne 0) {
+                #We want specific build - release to specific environment. Do not take anything higher
+                $BaseAppConstraint = "<= $($BaseApplicationVersion)"
+                if ($BaseVersion.Build -gt 0) {
+                    #Build number given: ignore the revision, accept anything up to and including Major.Minor.Build.*
+                    $BaseAppConstraint = Get-BaseApplicationBuildConstraint -Version $BaseVersion
+                }
+                Write-Host "Adding $($BaseAppPackageName) $($BaseAppConstraint) storage: none, $baseStrategy"
+                $paketdependencies += "nuget $($BaseAppPackageName) $($BaseAppConstraint) storage: none, $baseStrategy"
+                if ($PlatformAppPackageName) {
+                    Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
+                    $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
+                }
+            }
+            else {
+                #Generic build, thus compailing for specific version. We can take even apps supporting higher minor, but not major
+                $BaseApplicationVersion = "$($BaseVersion.Major+1).0"
+                Write-Host "Adding $($BaseAppPackageName) < $($BaseApplicationVersion) storage: none, $baseStrategy"
+                $paketdependencies += "nuget $($BaseAppPackageName) < $($BaseApplicationVersion) storage: none, $baseStrategy"
+                if ($PlatformAppPackageName) {
+                    Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
+                    $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
+                }
+            }
+            Write-Host "`$env:ADDITIONAL_PAKET_LINES: $($env:ADDITIONAL_PAKET_LINES)"
+            if ($env:ADDITIONAL_PAKET_LINES) {
+                Write-Host "Adding $($env:ADDITIONAL_PAKET_LINES)"
+                $paketdependencies += $env:ADDITIONAL_PAKET_LINES
+            }
         }
     }
     New-Item -Path $TempFolder -ItemType directory -Force | Out-Null
