@@ -38,6 +38,7 @@ Describe 'Get-BaseApplicationVersionConstraint' {
 
     It 'keeps the original "<=" limit for a short version <Version>' -ForEach @(
         @{ Version = '29.0' }
+        @{ Version = '29.1' }
         @{ Version = '29' }
     ) {
         Get-BaseApplicationVersionConstraint -BaseApplicationVersion $Version |
