@@ -3,29 +3,17 @@ BeforeAll {
 }
 
 Describe 'Get-BaseApplicationVersionConstraint' {
-    It 'ignores the revision (patch) number for a specific environment build' {
-        Get-BaseApplicationVersionConstraint -BaseApplicationVersion '29.0.54011.55407' |
-            Should -Be '>= 29.0.54011 < 29.0.54012'
-    }
-
-    It 'never limits to an exact full version with <=' {
-        Get-BaseApplicationVersionConstraint -BaseApplicationVersion '29.0.54011.55407' |
-            Should -Not -Match '<='
-    }
-
-    It 'accepts a three-part build version' {
-        Get-BaseApplicationVersionConstraint -BaseApplicationVersion '29.0.54011' |
-            Should -Be '>= 29.0.54011 < 29.0.54012'
-    }
-
-    It 'treats the smallest non-zero build as a specific build' {
-        Get-BaseApplicationVersionConstraint -BaseApplicationVersion '29.0.1.5' |
-            Should -Be '>= 29.0.1 < 29.0.2'
-    }
-
-    It 'keeps a non-zero minor in the specific build range' {
-        Get-BaseApplicationVersionConstraint -BaseApplicationVersion '29.1.54011.7' |
-            Should -Be '>= 29.1.54011 < 29.1.54012'
+    It 'limits a specific build to Major.Minor.Build and drops the revision: <Version>' -ForEach @(
+        @{ Version = '29.0.54011.55407'; Expected = '<= 29.0.54011' }
+        @{ Version = '29.0.54011'; Expected = '<= 29.0.54011' }
+        @{ Version = '29.1.2.3'; Expected = '<= 29.1.2' }
+        @{ Version = '29.1.2.0'; Expected = '<= 29.1.2' }
+        @{ Version = '29.0.1'; Expected = '<= 29.0.1' }
+        @{ Version = '29.0.1.5'; Expected = '<= 29.0.1' }
+        @{ Version = '29.1.54011.7'; Expected = '<= 29.1.54011' }
+    ) {
+        Get-BaseApplicationVersionConstraint -BaseApplicationVersion $Version |
+            Should -Be $Expected
     }
 
     It 'allows any minor of the same major for a generic version <Version>' -ForEach @(

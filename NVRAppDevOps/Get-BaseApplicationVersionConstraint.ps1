@@ -4,8 +4,8 @@
 
 .DESCRIPTION
     - Explicit constraint (starts with an operator such as ~>, >=, <): returned unchanged.
-    - Specific build (e.g. 29.0.54011.55407): only the Major.Minor.Build part is significant. The revision
-      (patch) number is ignored, so any 29.0.54011.* package matches.
+    - Specific build (e.g. 29.0.54011.55407): limited to <= Major.Minor.Build (<= 29.0.54011). The revision
+      (patch) number is ignored.
     - Short version (e.g. 29.0 or 29): original "<=" limit, unchanged.
     - Generic version (29.0.0): any version below the next major.
 #>
@@ -29,8 +29,8 @@ function Get-BaseApplicationVersionConstraint {
     }
 
     if ($BaseVersion.Build -gt 0) {
-        # Specific environment build: stay within Major.Minor.Build, ignore the revision number.
-        return ">= $($BaseVersion.Major).$($BaseVersion.Minor).$($BaseVersion.Build) < $($BaseVersion.Major).$($BaseVersion.Minor).$($BaseVersion.Build + 1)"
+        # Specific environment build: limit to Major.Minor.Build, the revision number is ignored.
+        return "<= $($BaseVersion.Major).$($BaseVersion.Minor).$($BaseVersion.Build)"
     }
 
     if ($BaseVersion.Build -lt 0) {
