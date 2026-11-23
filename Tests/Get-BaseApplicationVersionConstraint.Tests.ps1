@@ -29,13 +29,19 @@ Describe 'Get-BaseApplicationVersionConstraint' {
     }
 
     It 'allows any minor of the same major for a generic version <Version>' -ForEach @(
-        @{ Version = '29.0' }
-        @{ Version = '29' }
         @{ Version = '29.0.0' }
         @{ Version = '29.0.0.5' }
     ) {
         Get-BaseApplicationVersionConstraint -BaseApplicationVersion $Version |
             Should -Be '< 30.0'
+    }
+
+    It 'keeps the original "<=" limit for a short version <Version>' -ForEach @(
+        @{ Version = '29.0' }
+        @{ Version = '29' }
+    ) {
+        Get-BaseApplicationVersionConstraint -BaseApplicationVersion $Version |
+            Should -Be "<= $Version"
     }
 
     It 'passes an explicit constraint through unchanged: <Constraint>' -ForEach @(
