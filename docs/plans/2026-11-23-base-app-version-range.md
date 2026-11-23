@@ -10,12 +10,12 @@ It writes `~> 29.0.54011.0 >= 1.0.0.0`: anything below `29.0.54011.*`+1, i.e. up
 
 **Approach**
 1. Add a small pure function `Get-BaseApplicationBuildConstraint` -> `~> Major.Minor.Build.0 >= 1.0.0.0`.
-2. In `Install-ALNugetPackageByPaket`, only the line generated for a specific build (Build > 0) uses it.
+2. In `Install-ALNugetPackageByPaket`, only the code that generates the line for a specific build (Build > 0) uses it.
    Everything else (short versions `29` / `29.0` -> `<= <version>`, `29.0.0` -> `< Major+1.0`, explicit
    constraints, the platform line) is the original code, untouched.
 
 **Files:** `NVRAppDevOps/Get-BaseApplicationBuildConstraint.ps1` (new),
-`NVRAppDevOps/Install-ALNugetPackageByPaket.ps1` (one line), `Tests/Get-BaseApplicationBuildConstraint.Tests.ps1` (new).
+`NVRAppDevOps/Install-ALNugetPackageByPaket.ps1` (one spot, a small block), `Tests/Get-BaseApplicationBuildConstraint.Tests.ps1` (new).
 
 **Tests (Pester):** the generated text for `29.0.54011.55407`, `29.0.54011`, `29.1.2.3`, `29.1.2.0`, `29.0.1`;
 and, when `Paket.Core.dll` is available, the real Paket parser proves the meaning: `29.0.54011.55575` accepted,
