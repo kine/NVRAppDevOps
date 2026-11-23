@@ -77,8 +77,13 @@ function Install-ALNugetPackageByPaket {
             }
             if ($BaseVersion.Build -ne 0) {
                 #We want specific build - release to specific environment. Do not take anything higher
-                Write-Host "Adding $($BaseAppPackageName) <= $($BaseApplicationVersion) storage: none, $baseStrategy"
-                $paketdependencies += "nuget $($BaseAppPackageName) <= $($BaseApplicationVersion) storage: none, $baseStrategy"
+                $BaseAppConstraint = "<= $($BaseApplicationVersion)"
+                if ($BaseVersion.Build -gt 0) {
+                    #Build number given: ignore the revision, accept anything up to and including Major.Minor.Build.*
+                    $BaseAppConstraint = Get-BaseApplicationBuildConstraint -Version $BaseVersion
+                }
+                Write-Host "Adding $($BaseAppPackageName) $($BaseAppConstraint) storage: none, $baseStrategy"
+                $paketdependencies += "nuget $($BaseAppPackageName) $($BaseAppConstraint) storage: none, $baseStrategy"
                 if ($PlatformAppPackageName) {
                     Write-Host "Adding $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
                     $paketdependencies += "nuget $($PlatformAppPackageName) ~> $($BaseVersion.Major) storage: none, $baseStrategy"
